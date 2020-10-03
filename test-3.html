@@ -40,6 +40,7 @@ let context = canvas.getContext("2d");
 let kirbSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "kirball");
 kirbSprite.setSize(50,50);
 kirbSprite.setVelocity(0,0);
+kirbSprite.setBound(512, 512);
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
 let spriteArray = [];
@@ -60,6 +61,14 @@ function update()
 	if ( input.isKeyPressed("ArrowDown") )
 	{
 		kirbSprite.y += 1;
+	}
+	if ( input.isKeyPressed("ArrowLeft") )
+	{
+		kirbSprite.x -= 1;
+	}
+	if ( input.isKeyPressed("ArrowRight") )
+	{
+		kirbSprite.x += 1;
 	}
 
 	console.log("Keys:")
