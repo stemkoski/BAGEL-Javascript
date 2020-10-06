@@ -1,0 +1,107 @@
+<html>
+<head>
+	<title>Starfish Collector</title>
+</head>
+<body>
+
+<script src="js/sprite.js"></script>
+<script src="js/input.js"></script>
+
+<canvas width=512 height=512 id="canvas"></canvas>
+
+<img src = "images/starfish-collector/water-background.png" id = "background" hidden>
+<img src = "images/starfish-collector/turtle.png" id = "turtle" hidden>
+<img src = "images/starfish-collector/starfish.png" id = "starfish" hidden>
+
+<script>
+
+// =================================================
+
+// Create a new variable, "input", that is set as an Object of the input.js class.
+let input = new Input();
+
+// Set up our canvas and Graphics Context.
+let canvas = document.getElementById("canvas");
+let context = canvas.getContext("2d");
+
+
+// Create the background image and size it to the canvas size.
+let backSprite = new Sprite(0, 0, "background");
+backSprite.setSize(512, 512);
+
+// Create turtleSprite, the sprite that the player will control, and set its position and velocity.
+// Also call the respective methods to specify its behavior (doesBound, doesBounce, etc.)
+Let turtleSprite = new Sprite(50, 50, "turtle");
+turtleSprite.setSize(50, 50);
+turtleSprite.setVelocity(0,0);
+//turtleSprite.setBound();
+
+// NEED TO CREATE ARRAY OF STARFISH SPRITES WITH EACH BEING INSTANTIATED AT RANDOM POSITIONS.
+
+
+// Create the array spriteArray, and push each Sprite into the array to be instantiated.
+let spriteArray = [];
+spriteArray.push(backSprite, turtleSprite);
+
+function update()
+{
+	// Instantiate each Sprite in spriteArray.
+	for (let i = 0; i < spriteArray.length; i++)
+	{
+		spriteArray[i].update();
+	}
+
+	// Below is the code that account for the player sprite moving. (turtleSprite)
+	if ( input.isKeyPressed("ArrowUp") )
+	{
+		turtleSprite.y -= 1;
+	}
+
+	if ( input.isKeyPressed("ArrowDown") )
+	{
+		turtleSprite.y += 1;
+	}
+/*
+	if ( input.isKeyPressed("ArrowRight") )
+	{
+		turtleSprite.x += 1;
+	}
+
+	if ( input.isKeyPressed("ArrowLeft") )
+	{
+		turtleSprite.x -= 1;
+	}
+	*/
+
+	console.log("Keys:")
+	console.log(input)
+}
+
+function render()
+{
+	// Clear the screen with the following color, and create a stroke around the canvas. 
+	context.fillStyle = "#ADD8E6"
+	context.fillRect(0,0, 512,512);
+	context.strokeRect(0, 0, 512, 512);
+
+	for (let i = 0; i < spriteArray.length; i++)
+	{
+		spriteArray[i].render(context);
+	}
+}
+
+function loop()
+{
+	// Call all of our functions in order, then recall this function again.
+	update();
+	render();
+	requestAnimationFrame(loop);
+}
+
+// Start the program.
+loop();
+
+</script>
+
+</body>
+</html>

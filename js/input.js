@@ -23,6 +23,7 @@ class Input
 		}
 		
 		document.addEventListener("keyup", onKeyUp );
+
 	}
 
 	update()

@@ -24,11 +24,9 @@ class Sprite
 		this.doesWrap = false;
 		this.doesBound = false;
 
-		// world size
+		// These variables store the worldSize for later use.
 		this.worldWidth = 512;
 		this.worldHeight = 512;
-
-		// might also need to store world size values somewhere...
 	}
 
 	setSize(w, h)
@@ -127,16 +125,21 @@ class Sprite
 		}
 	}
 
-	// TODO: comment this!
-	overlaps( otherSprite )
+	// The following method, essentially, checks if one sprite is overlapping another by
+	// checking the space between one sprite and another sprite, and seeing if there is an "invisible line" (or empty space)
+	// between the two in any linear direction.
+	overlaps(otherSprite)
 	{
 		let noOverlap = this.x > otherSprite.x + otherSprite.w ||
 						this.x + this.w < otherSprite.x ||
 						this.y > otherSprite.y + otherSprite.h ||
 						this.y + this.h < otherSprite.y;
 
+		// noOverlap is a boolean that stores whether or not the sprites are overlapping.
+		// Whether they are or not, it is always returned when the overlaps() function is called.
 		return !noOverlap;			
 	}
+
 	update()
 	{
 		// Changes Sprite's position according to velocity (dx,dy).
