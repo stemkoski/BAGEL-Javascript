@@ -9,6 +9,9 @@ class Sprite
 		// This Sprite's imageID (the ID each image is given when imported at the top of the main HTML file).
 		this.image = document.getElementById(imageID);
 
+		// starting angle
+		this.angle = 0;
+
 		// -Default Size Values- (width, height)
 		this.w = 32;
 		this.h = 32;
@@ -169,6 +172,14 @@ class Sprite
 
 	render(context)
 	{
-		context.drawImage(this.image, this.x, this.y, this.w, this.h)
+		// convert angle from degrees to radians
+		let A = this.angle * Math.PI / 180;
+		let cosA = Math.cos(A);
+		let sinA = Math.sin(A);
+
+		// transform the drawing area
+		context.setTransform( cosA, sinA, -sinA, cosA, this.x, this.y );
+
+		context.drawImage(this.image, this.x, this.y, this.w, this.h);
 	}
 }
