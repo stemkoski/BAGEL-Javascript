@@ -51,12 +51,7 @@ spriteArray.push(backSprite, turtleSprite);
 
 function update()
 {
-	// Instantiate each Sprite in spriteArray.
-	for (let i = 0; i < spriteArray.length; i++)
-	{
-		spriteArray[i].update();
-	}
-	// Starfish are not updated because they do nothing- if this changes, so should this code.
+	
 
 	// Below is the code that account for the player sprite moving. (turtleSprite)
 	if ( input.isKeyPressed("ArrowUp") )
@@ -79,11 +74,18 @@ function update()
 		turtleSprite.x -= 1;
 	}
 
+	// Instantiate each Sprite in spriteArray.
+	for (let i = 0; i < spriteArray.length; i++)
+	{
+		spriteArray[i].update();
+	}
+	// Starfish are not updated because they do nothing- if this changes, so should this code.
+
 	// Removes a star the turtle touches... is what I'd say if it worked yet.
 	for (let i = 0; i < starArray.length; i++)
 	{
 		if(starArray[i].overlaps(turtleSprite))
-			//INSERT SOMETHING HERE
+			starArray.splice(i, 1);
 	}
 	
 
