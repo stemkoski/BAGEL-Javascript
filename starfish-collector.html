@@ -33,15 +33,15 @@ backSprite.setSize(512, 512);
 // Also call the respective methods to specify its behavior (doesBound, doesBounce, etc.)
 let turtleSprite = new Sprite(50, 50, "turtle");
 turtleSprite.setSize(50, 50);
-turtleSprite.setVelocity(0,0);
-turtleSprite.setBound();
+turtleSprite.setBound(512, 512);
 
-// NEED TO CREATE ARRAY OF STARFISH SPRITES WITH EACH BEING INSTANTIATED AT RANDOM POSITIONS.
+// The following code first creates an array called starArray, which will take in a set number of starfish Sprites.
+// Then, we use a loop to go through the array and instantiate each starfish Sprite at a Random position on the canvas.
 let starArray = [];
 
 for(i = 0; i < 10; i++)
 {
-	starArray.push(new Sprite(450 * Math.random(), 450 * Math.random(), "starfish"))
+	starArray.push(new Sprite(450 * Math.random(), 450 * Math.random(), "starfish"));
 }
 
 
@@ -79,8 +79,8 @@ function update()
 	}
 	
 
-	console.log("Keys:")
-	console.log(input)
+	console.log("Keys:");
+	console.log(input);
 }
 
 function render()
@@ -90,12 +90,13 @@ function render()
 	context.fillRect(0,0, 512,512);
 	context.strokeRect(0, 0, 512, 512);
 
-	// Draws everything in the spriteArray (Background and turtle)
+	// Draws everything in the spriteArray to the screen. (Background and turtleSprite)
 	for (let i = 0; i < spriteArray.length; i++)
 	{
 		spriteArray[i].render(context);
 	}
-	// Draws all of the starfish
+
+	// Draws all of the starfish in starArray to the screen.
 	for (let i = 0; i < starArray.length; i++)
 	{
 		starArray[i].render(context);

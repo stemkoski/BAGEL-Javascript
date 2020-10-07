@@ -99,35 +99,41 @@ class Sprite
 			this.y = this.y - (this.worldHeight + this.h);
 	}
 
-	// NOTE- Current implementation makes the sprite wiggle a bit if you mash the key against the wall. Odd.
+	// NOTE - Current implementation makes the sprite wiggle a bit if you mash the key against the wall. Odd.
+	// NOTE 2 - Sprite also currently bounces off of Right Wall, but is kept bounded.
 	bound()
 	{
 		// The following code makes the canvas wall impassable to the sprite
 		// As well as stopping its movement in that direction when hitting a wall.
-		if (this.x < 0){
+
+		// Left Wall
+		if (this.x < 0)
+		{
 			this.x = 0;
-			this.dx = 0;
 		}
 		
-		if (this.x + this.w > this.worldWidth){
+		// Right Wall
+		if ((this.x + this.w) > this.worldWidth)
+		{
 			this.x = this.worldWidth - this.w;
-			this.dx = 0;
 		}
 
-		if (this.y < 0){
+		// Top Wall
+		if (this.y < 0)
+		{
 			this.y = 0;
-			this.dy = 0;
 		}
 
-		if (this.y + this.h > this.worldHeight){
+		// Bottom Wall
+		if ((this.y + this.h) > this.worldHeight)
+		{
 			this.y = this.worldHeight - this.h;
-			this.dy = 0;
 		}
 	}
 
 	// The following method, essentially, checks if one sprite is overlapping another by
-	// checking the space between one sprite and another sprite, and seeing if there is an "invisible line" (or empty space)
-	// between the two in any linear direction.
+	// checking the space between one sprite and another sprite, and seeing if there is an "invisible line"
+	// (or empty space) between the two in any linear direction.
 	overlaps(otherSprite)
 	{
 		let noOverlap = this.x > otherSprite.x + otherSprite.w ||
