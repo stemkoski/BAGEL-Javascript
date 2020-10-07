@@ -31,12 +31,18 @@ backSprite.setSize(512, 512);
 
 // Create turtleSprite, the sprite that the player will control, and set its position and velocity.
 // Also call the respective methods to specify its behavior (doesBound, doesBounce, etc.)
-Let turtleSprite = new Sprite(50, 50, "turtle");
+let turtleSprite = new Sprite(50, 50, "turtle");
 turtleSprite.setSize(50, 50);
 turtleSprite.setVelocity(0,0);
-//turtleSprite.setBound();
+turtleSprite.setBound();
 
 // NEED TO CREATE ARRAY OF STARFISH SPRITES WITH EACH BEING INSTANTIATED AT RANDOM POSITIONS.
+let starArray = [];
+
+for(i = 0; i < 10; i++)
+{
+	starArray.push(new Sprite(450 * Math.random(), 450 * Math.random(), "starfish"))
+}
 
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
@@ -61,7 +67,7 @@ function update()
 	{
 		turtleSprite.y += 1;
 	}
-/*
+
 	if ( input.isKeyPressed("ArrowRight") )
 	{
 		turtleSprite.x += 1;
@@ -71,7 +77,7 @@ function update()
 	{
 		turtleSprite.x -= 1;
 	}
-	*/
+	
 
 	console.log("Keys:")
 	console.log(input)
@@ -84,9 +90,15 @@ function render()
 	context.fillRect(0,0, 512,512);
 	context.strokeRect(0, 0, 512, 512);
 
+	// Draws everything in the spriteArray (Background and turtle)
 	for (let i = 0; i < spriteArray.length; i++)
 	{
 		spriteArray[i].render(context);
+	}
+	// Draws all of the starfish
+	for (let i = 0; i < starArray.length; i++)
+	{
+		starArray[i].render(context);
 	}
 }
 
