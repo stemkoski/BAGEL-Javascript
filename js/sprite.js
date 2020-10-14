@@ -1,18 +1,18 @@
 class Sprite
 {
-	constructor(x, y, imageID)
+	constructor(x, y)
 	{
 		// The starting point of the Sprite on the canvas in x and y coordinates.
 		this.x = x;
 		this.y = y;
 
-		// This Sprite's imageID (the ID each image is given when imported at the top of the main HTML file).
-		this.image = document.getElementById(imageID);
+		// store image-related data
+		this.texture = null;
 
-		// starting angle
+		// starting angle, measured in degrees
 		this.angle = 0;
 
-		// -Default Size Values- (width, height)
+		// size to draw texture (width, height)
 		this.w = 32;
 		this.h = 32;
 
@@ -30,6 +30,11 @@ class Sprite
 		// These variables store the worldSize for later use.
 		this.worldWidth = 512;
 		this.worldHeight = 512;
+	}
+
+	setTexture(tex)
+	{
+		this.texture = tex;
 	}
 
 	setSize(w, h)
@@ -71,6 +76,16 @@ class Sprite
 		this.doesBound = true;
 	}
 
+	moveDistanceAtAngle(distance, angle)
+	{
+		// convert angle from degrees to radians
+		let A = angle * Math.PI / 180;
+		this.x += distance * Math.cos(A);
+		this.y += distance * Math.sin(A);
+	}
+
+	// TODO: (x,y) now refers to center of image. Need to update bounce,wrap,bound.
+
 	bounce()
 	{
 		// The following code accounts for Sprites bouncing against the canvas walls.
@@ -89,8 +104,10 @@ class Sprite
 		// Although it would be simpler to teleport the spirte to the other side,
 		// moving it by the world size accounts for the distanced traveled over the side of the canvas.
 		// this makes it travel an accurate (canvas size + (width/height)*2).
-		if (this.x + this.w < 0)
-			this.x = (this.worldWidth + this.w) + this.x;
+		
+		// right edge of sprite moves past left edge of screen
+		if (this.x + this.w/2 < 0)
+			this.x = (this.worldWidth + this.w/2) + this.x;
 		
 		if (this.x > this.worldWidth)
 			this.x = this.x - (this.worldWidth + this.w);
@@ -139,10 +156,10 @@ class Sprite
 	// (or empty space) between the two in any linear direction.
 	overlaps(otherSprite)
 	{
-		let noOverlap = this.x > otherSprite.x + otherSprite.w ||
-						this.x + this.w < otherSprite.x ||
-						this.y > otherSprite.y + otherSprite.h ||
-						this.y + this.h < otherSprite.y;
+		let noOverlap = this.x > otherSprite.x + otherSprite.w/2 ||
+						this.x + this.w/2 < otherSprite.x ||
+						this.y > otherSprite.y + otherSprite.h/2 ||
+						this.y + this.h/2 < otherSprite.y;
 
 		// noOverlap is a boolean that stores whether or not the sprites are overlapping.
 		// Whether they are or not, it is always returned when the overlaps() function is called.
@@ -178,13 +195,14 @@ class Sprite
 		let sinA = Math.sin(A);
 
 		// transform the drawing area
-		// context.setTransform( 1,0,0,1, this.x, this.y );
 		context.setTransform( cosA,sinA, -sinA,cosA, this.x, this.y );
 
 		// image, source location/size, destination location/size
 		//context.drawImage(this.image, this.x, this.y, this.w, this.h)
-		context.drawImage(this.image, 
-			        0,         0, this.w, this.h,
-			-this.w/2, -this.h/2, this.w, this.h);
+		context.drawImage(this.texture.image, 
+			// actual size of original image
+			        0,         0, this.texture.width, this.texture.height,  
+			// size we want the image to be
+			-this.w/2, -this.h/2, this.w, this.h); 
 	}
 }

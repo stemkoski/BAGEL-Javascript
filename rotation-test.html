@@ -6,12 +6,9 @@
 
 <script src="js/sprite.js"></script>
 <script src="js/input.js"></script>
+<script src="js/texture.js"></script>
 
 <canvas width=512 height=512 id="canvas"></canvas>
-
-<img src = "images/starfish-collector/water-background.png" id = "background" hidden>
-<img src = "images/starfish-collector/turtle2.png" id = "turtle" hidden>
-
 
 <script>
 
@@ -26,16 +23,18 @@ let context = canvas.getContext("2d");
 
 
 // Create the background image and size it to the canvas size.
-let backSprite = new Sprite(512,512, "background");
-backSprite.setSize(1000, 1000);
+let backSprite = new Sprite(256, 256, "background");
+backSprite.setTexture( 
+	new Texture("images/starfish-collector/water-background.png") ); 
+backSprite.setSize(512, 512);
 
 // Create turtleSprite, the sprite that the player will control, and set its position and velocity.
 // Also call the respective methods to specify its behavior (doesBound, doesBounce, etc.)
 let turtleSprite = new Sprite(50, 50, "turtle");
+turtleSprite.setTexture( 
+	new Texture("images/starfish-collector/turtle2.png") ); 
 turtleSprite.setSize(50, 50);
 turtleSprite.setBound(512, 512);
-
-
 
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
@@ -49,7 +48,7 @@ function update()
 	// Below is the code that account for the player sprite moving. (turtleSprite)
 	if ( input.isKeyPressed("ArrowUp") )
 	{
-		// turtleSprite.moveDistanceAtAngle(1, turtleSprite.angle);
+		turtleSprite.moveDistanceAtAngle(1, turtleSprite.angle);
 	}
 
 	// turn right / left
