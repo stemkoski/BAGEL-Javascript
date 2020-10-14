@@ -1,0 +1,107 @@
+<html>
+<head>
+	<title>Starfish Collector</title>
+</head>
+<body>
+
+<script src="js/sprite.js"></script>
+<script src="js/input.js"></script>
+
+<canvas width=512 height=512 id="canvas"></canvas>
+
+<img src = "images/starfish-collector/water-background.png" id = "background" hidden>
+<img src = "images/starfish-collector/turtle2.png" id = "turtle" hidden>
+
+
+<script>
+
+// =================================================
+
+// Create a new variable, "input", that is set as an Object of the input.js class.
+let input = new Input();
+
+// Set up our canvas and Graphics Context.
+let canvas = document.getElementById("canvas");
+let context = canvas.getContext("2d");
+
+
+// Create the background image and size it to the canvas size.
+let backSprite = new Sprite(512,512, "background");
+backSprite.setSize(1000, 1000);
+
+// Create turtleSprite, the sprite that the player will control, and set its position and velocity.
+// Also call the respective methods to specify its behavior (doesBound, doesBounce, etc.)
+let turtleSprite = new Sprite(50, 50, "turtle");
+turtleSprite.setSize(50, 50);
+turtleSprite.setBound(512, 512);
+
+
+
+
+// Create the array spriteArray, and push each Sprite into the array to be instantiated.
+let spriteArray = [];
+spriteArray.push(backSprite, turtleSprite);
+
+function update()
+{
+	
+
+	// Below is the code that account for the player sprite moving. (turtleSprite)
+	if ( input.isKeyPressed("ArrowUp") )
+	{
+		// turtleSprite.moveDistanceAtAngle(1, turtleSprite.angle);
+	}
+
+	// turn right / left
+	if ( input.isKeyPressed("ArrowRight") )
+	{
+		turtleSprite.angle += 2;
+	}
+
+	if ( input.isKeyPressed("ArrowLeft") )
+	{
+		turtleSprite.angle -= 2;
+	}
+
+	// Instantiate each Sprite in spriteArray.
+	for (let i = 0; i < spriteArray.length; i++)
+	{
+		spriteArray[i].update();
+	}
+	
+	
+}
+
+function render()
+{
+	// reset transformation
+	context.setTransform( 1,0,0,1, 0,0 );
+	// Clear the screen with the following color, and create a stroke around the canvas. 
+	context.fillStyle = "#ADD8E6"
+	context.fillRect(0,0, 512,512);
+	context.strokeRect(0, 0, 512, 512);
+
+	// Draws everything in the spriteArray to the screen. (Background and turtleSprite)
+	for (let i = 0; i < spriteArray.length; i++)
+	{
+		spriteArray[i].render(context);
+	}
+
+	
+}
+
+function loop()
+{
+	// Call all of our functions in order, then recall this function again.
+	update();
+	render();
+	requestAnimationFrame(loop);
+}
+
+// Start the program.
+loop();
+
+</script>
+
+</body>
+</html>

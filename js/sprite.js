@@ -178,8 +178,13 @@ class Sprite
 		let sinA = Math.sin(A);
 
 		// transform the drawing area
-		context.setTransform( cosA, sinA, -sinA, cosA, this.x, this.y );
+		// context.setTransform( 1,0,0,1, this.x, this.y );
+		context.setTransform( cosA,sinA, -sinA,cosA, this.x, this.y );
 
-		context.drawImage(this.image, this.x, this.y, this.w, this.h);
+		// image, source location/size, destination location/size
+		//context.drawImage(this.image, this.x, this.y, this.w, this.h)
+		context.drawImage(this.image, 
+			        0,         0, this.w, this.h,
+			-this.w/2, -this.h/2, this.w, this.h);
 	}
 }
