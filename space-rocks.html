@@ -83,22 +83,35 @@ function update()
 		shipSprite.angle -= 2;
 	}
 
+	// Code to fire the laser
+	// For some reason the Spacebar's name is a space?!
+
+	// ERROR- FIRES WHEN HELD, SHOULD ONLY FIRE WHEN PRESSED
+	if ( input.isKeyPressed(" ") )
+	{
+		laserArray.push(new Sprite(shipSprite.x, shipSprite.y))
+		//The newly created laser is pushed to the end of the array, so it's located at laserArray.length - 1.
+			laserArray[laserArray.length - 1].setTexture( 						new Texture("images/space-rocks/laser-green.png") );
+			laserArray[laserArray.length - 1].setSize(10, 10);
+			laserArray[laserArray.length - 1].setWrap(512, 512);
+			// Another situation where a setAngle method would be good
+			laserArray[laserArray.length - 1].angle = shipSprite.angle
+
+
+		
+	}
+
 	// Below is the code for spawning laser Sprites when the user hits Space.
 	// THIS CODE DOESN'T WORK YET
-	if ( input.isKeyPressed("Space") )
-	{
-		for(i = 0; i < laserArray.length; i++)
+	
+	// Moves and updates each laser
+	for(i = 0; i < laserArray.length; i++)
 		{
-			laserArray.push(new Sprite(shipSprite.x, shipSprite.y))
-			laserArray[i].setTexture( 															
-				new Texture("images/space-rocks/laser-green.png") );
-			laserArray[i].setSize(10, 10);				
-			laserArray[i].moveDistanceAtAngle(3, shipSprite.angle);
-			laserArray[i].setWrap(512, 512);		
-
+							
+			laserArray[i].moveDistanceAtAngle(3, laserArray[i].angle);
+					
 			laserArray[i].update();
 		}
-	}
 
 	// Check if a laser Sprite and rock Sprite are overlapping.
 
