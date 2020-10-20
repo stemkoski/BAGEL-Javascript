@@ -48,6 +48,8 @@ for(i = 0; i < 3; i++)
 		new Texture("images/space-rocks/rock.png") );
 	rockArray[i].setSize(50, 50);
 	rockArray[i].setWrap(512, 512);
+	// If a setAngle function is ever implemented, it should be used here
+	rockArray[i].angle = (360 * Math.random());
 
 }
 
@@ -86,6 +88,8 @@ function update()
 	// Updates each rock
 	for (let i = 0; i < rockArray.length; i++)
 	{
+		//Moves the rock before updating it
+		rockArray[i].moveDistanceAtAngle(1, rockArray[i].angle);
 		rockArray[i].update();
 	}
 	
