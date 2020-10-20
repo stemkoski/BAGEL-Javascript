@@ -89,10 +89,10 @@ class Sprite
 	bounce()
 	{
 		// The following code accounts for Sprites bouncing against the canvas walls.
-		if (this.x + this.w > this.worldWidth || this.x < 0)
+		if (this.x + this.w/2 > this.worldWidth || this.x - this.w/2 < 0)
 			this.dx = -1 * this.dx;
 
-		if (this.y + this.h > this.worldHeight || this.y < 0)
+		if (this.y + this.h/2 > this.worldHeight || this.y - this.h/2 < 0)
 			this.dy = -1 * this.dy;
 	}
 
@@ -109,13 +109,13 @@ class Sprite
 		if (this.x + this.w/2 < 0)
 			this.x = (this.worldWidth + this.w/2) + this.x;
 		
-		if (this.x > this.worldWidth)
+		if (this.x - this.w/2 > this.worldWidth)
 			this.x = this.x - (this.worldWidth + this.w);
 
-		if (this.y + this.h < 0)
+		if (this.y + this.h/2 < 0)
 			this.y = (this.worldHeight + this.h) + this.y;
 
-		if (this.y > this.worldHeight)
+		if (this.y - this.h/2 > this.worldHeight)
 			this.y = this.y - (this.worldHeight + this.h);
 	}
 
@@ -127,25 +127,25 @@ class Sprite
 		// As well as stopping its movement in that direction when hitting a wall.
 
 		// Left Wall
-		if (this.x < 0)
+		if ((this.x - this.w/2) < 0)
 		{
 			this.x = 0;
 		}
 		
 		// Right Wall
-		if ((this.x + this.w) > this.worldWidth)
+		if ((this.x + this.w/2) > this.worldWidth)
 		{
 			this.x = this.worldWidth - this.w;
 		}
 
 		// Top Wall
-		if (this.y < 0)
+		if ((this.y - this.h/2) < 0)
 		{
 			this.y = 0;
 		}
 
 		// Bottom Wall
-		if ((this.y + this.h) > this.worldHeight)
+		if ((this.y + this.h/2) > this.worldHeight)
 		{
 			this.y = this.worldHeight - this.h;
 		}

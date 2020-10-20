@@ -1,0 +1,133 @@
+<html>
+<head>
+	<title>Space Rocks</title>
+</head>
+<body>
+
+<script src="js/sprite.js"></script>
+<script src="js/input.js"></script>
+<script src="js/texture.js"></script>
+
+<canvas width=512 height=512 id="canvas"></canvas>
+
+<script>
+
+// =================================================
+
+// Create a new variable, "input", that is set as an Object of the input.js class.
+let input = new Input();
+
+// Set up our canvas and Graphics Context.
+let canvas = document.getElementById("canvas");
+let context = canvas.getContext("2d");
+
+
+// Create the background image and size it to the canvas size.
+let backSprite = new Sprite(256, 256, "background");
+backSprite.setTexture( 
+	new Texture("images/space-rocks/space-background.png") ); 
+backSprite.setSize(512, 512);
+
+// Create shipSprite, the sprite that the player will control, and set its position and velocity.
+// Also call the respective methods to specify its behavior (doesBound, doesBounce, etc.)
+let shipSprite = new Sprite(50, 50, "spaceship");
+shipSprite.setTexture( 
+	new Texture("images/space-rocks/spaceship.png") ); 
+shipSprite.setSize(50, 50);
+shipSprite.setWrap(512, 512);
+
+
+// Creates rockArray to hold any rocks on screen
+let rockArray = [];
+
+// Fills the array with rocks, sets their texture, their size, and the size of the screen.
+for(i = 0; i < 3; i++)
+{
+	rockArray.push(new Sprite(450 * Math.random(), 450 * Math.random(), "rock"));
+	rockArray[i].setTexture( 
+		new Texture("images/space-rocks/rock.png") );
+	rockArray[i].setSize(50, 50);
+	rockArray[i].setWrap(512, 512);
+
+}
+
+
+// Create the array spriteArray, and push each Sprite into the array to be instantiated.
+let spriteArray = [];
+spriteArray.push(backSprite, shipSprite);
+
+function update()
+{
+	
+
+	// Below is the code that account for the player sprite moving. (shipSprite)
+	if ( input.isKeyPressed("ArrowUp") )
+	{
+		shipSprite.moveDistanceAtAngle(1, shipSprite.angle);
+	}
+
+	// turn right / left
+	if ( input.isKeyPressed("ArrowRight") )
+	{
+		shipSprite.angle += 2;
+	}
+
+	if ( input.isKeyPressed("ArrowLeft") )
+	{
+		shipSprite.angle -= 2;
+	}
+
+	// Instantiate each Sprite in spriteArray.
+	for (let i = 0; i < spriteArray.length; i++)
+	{
+		spriteArray[i].update();
+	}
+
+	// Updates each rock
+	for (let i = 0; i < rockArray.length; i++)
+	{
+		rockArray[i].update();
+	}
+	
+	
+}
+
+function render()
+{
+	// reset transformation
+	context.setTransform( 1,0,0,1, 0,0 );
+	// Clear the screen with the following color, and create a stroke around the canvas. 
+	context.fillStyle = "#ADD8E6"
+	context.fillRect(0,0, 512,512);
+	context.strokeRect(0, 0, 512, 512);
+
+	// Draws everything in the spriteArray to the screen. (Background and shipSprite)
+	for (let i = 0; i < spriteArray.length; i++)
+	{
+		spriteArray[i].render(context);
+	}
+
+	// Renders each rock
+	for (let i = 0; i < rockArray.length; i++)
+	{
+		rockArray[i].render(context);
+	}
+
+	
+}
+
+function loop()
+{
+	// Call all of our functions in order, then recall this function again.
+	update();
+	render();
+	requestAnimationFrame(loop);
+}
+
+// Start the program.
+loop();
+
+</script>
+
+</body>
+</html>
