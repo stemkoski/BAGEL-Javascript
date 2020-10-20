@@ -21,69 +21,94 @@ let input = new Input();
 let canvas = document.getElementById("canvas");
 let context = canvas.getContext("2d");
 
-
 // Create the background image and size it to the canvas size.
-let backSprite = new Sprite(256, 256, "background");
+let backSprite = new Sprite(256, 256);
 backSprite.setTexture( 
 	new Texture("images/space-rocks/space-background.png") ); 
 backSprite.setSize(512, 512);
 
-// Create shipSprite, the sprite that the player will control, and set its position and velocity.
-// Also call the respective methods to specify its behavior (doesBound, doesBounce, etc.)
-let shipSprite = new Sprite(50, 50, "spaceship");
+// Create shipSprite, the sprite that the player will control, and set its starting
+// position, texture, size, and wrapping. Velocity is set within update(), in moveDistanceAtAngle() function call.
+let shipSprite = new Sprite(50, 50);
 shipSprite.setTexture( 
 	new Texture("images/space-rocks/spaceship.png") ); 
 shipSprite.setSize(50, 50);
 shipSprite.setWrap(512, 512);
 
-
-// Creates rockArray to hold any rocks on screen
-let rockArray = [];
-
-// Fills the array with rocks, sets their texture, their size, and the size of the screen.
-for(i = 0; i < 3; i++)
-{
-	rockArray.push(new Sprite(450 * Math.random(), 450 * Math.random(), "rock"));
-	rockArray[i].setTexture( 
-		new Texture("images/space-rocks/rock.png") );
-	rockArray[i].setSize(50, 50);
-	rockArray[i].setWrap(512, 512);
-
-}
-
-
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
 let spriteArray = [];
 spriteArray.push(backSprite, shipSprite);
 
+// Creates laserArray to hold any of the lasers that are spawned by shipSprite.
+let laserArray = [];
+
+// Creates rockArray to hold any rocks on screen
+let rockArray = [];
+
+// Fills rockArray with rocks, sets their starting position, their texture, their size, their
+// velocity, and their wrapping.
+for(i = 0; i < 3; i++)
+{
+	rockArray.push(new Sprite(450 * Math.random(), 450 * Math.random()));		
+	rockArray[i].setTexture( 															
+		new Texture("images/space-rocks/rock.png") );
+	rockArray[i].setSize(50, 50);				
+
+	// Set the rock Sprite's x and y velocity to a random between approximately 3 (max, non-inclusive) and 1 (min, inclusive).
+	rockArray[i].setVelocity(Math.random() * (3 - 1) + 1, Math.random() * (3 - 1) + 1);	
+
+	rockArray[i].setWrap(512, 512);														
+}
+
 function update()
 {
-	
-
 	// Below is the code that account for the player sprite moving. (shipSprite)
 	if ( input.isKeyPressed("ArrowUp") )
 	{
-		shipSprite.moveDistanceAtAngle(1, shipSprite.angle);
+		shipSprite.moveDistanceAtAngle(3, shipSprite.angle);
 	}
 
-	// turn right / left
+	// Code for turning right.
 	if ( input.isKeyPressed("ArrowRight") )
 	{
 		shipSprite.angle += 2;
 	}
 
+	// Code for turning left.
 	if ( input.isKeyPressed("ArrowLeft") )
 	{
 		shipSprite.angle -= 2;
 	}
 
+	// Below is the code for spawning laser Sprites when the user hits Space.
+	// THIS CODE DOESN'T WORK YET
+	if ( input.isKeyPressed("Space") )
+	{
+		for(i = 0; i < laserArray.length; i++)
+		{
+			laserArray.push(new Sprite(shipSprite.x, shipSprite.y))
+			laserArray[i].setTexture( 															
+				new Texture("images/space-rocks/laser-green.png") );
+			laserArray[i].setSize(10, 10);				
+			laserArray[i].moveDistanceAtAngle(3, shipSprite.angle);
+			laserArray[i].setWrap(512, 512);		
+
+			laserArray[i].update();
+		}
+	}
+
+	// Check if a laser Sprite and rock Sprite are overlapping.
+
+	// CODE NEEDS TO BE ADDED HERE
+
+	
 	// Instantiate each Sprite in spriteArray.
 	for (let i = 0; i < spriteArray.length; i++)
 	{
 		spriteArray[i].update();
 	}
 
-	// Updates each rock
+	// Instantiate each Rock in rockArray.
 	for (let i = 0; i < rockArray.length; i++)
 	{
 		rockArray[i].update();
@@ -94,8 +119,9 @@ function update()
 
 function render()
 {
-	// reset transformation
+	// Reset canvas transform.
 	context.setTransform( 1,0,0,1, 0,0 );
+
 	// Clear the screen with the following color, and create a stroke around the canvas. 
 	context.fillStyle = "#ADD8E6"
 	context.fillRect(0,0, 512,512);
@@ -107,13 +133,17 @@ function render()
 		spriteArray[i].render(context);
 	}
 
-	// Renders each rock
+	// Renders each rock.
 	for (let i = 0; i < rockArray.length; i++)
 	{
 		rockArray[i].render(context);
 	}
 
-	
+	// Renders each laser.
+	for (let i = 0; i < laserArray.length; i++)
+	{
+		laserArray[i].render(context);
+	}
 }
 
 function loop()
