@@ -5,18 +5,17 @@
 <body>
 
 <script src="js/sprite.js"></script>
+<script src="js/texture.js"></script>
 <script src="js/input.js"></script>
+<script src="js/label.js"></script>
 
 <canvas width=512 height=512 id="canvas"></canvas>
-
-<img src = "images/starfish-collector/water-background.png" id = "background" hidden>
-<img src = "images/starfish-collector/turtle.png" id = "turtle" hidden>
-<img src = "images/starfish-collector/starfish.png" id = "starfish" hidden>
 
 <script>
 
 // =================================================
 
+let running = true;
 // Create a new variable, "input", that is set as an Object of the input.js class.
 let input = new Input();
 
@@ -26,24 +25,35 @@ let context = canvas.getContext("2d");
 
 
 // Create the background image and size it to the canvas size.
-let backSprite = new Sprite(0, 0, "background");
+let backSprite = new Sprite(256, 256);
+backSprite.setTexture( new Texture("images/starfish-collector/water-background.png") );
 backSprite.setSize(512, 512);
+
 
 // Create turtleSprite, the sprite that the player will control, and set its position and velocity.
 // Also call the respective methods to specify its behavior (doesBound, doesBounce, etc.)
-let turtleSprite = new Sprite(50, 50, "turtle");
+let turtleSprite = new Sprite(50, 50);
+turtleSprite.setTexture( new Texture("images/starfish-collector/turtle.png"));
 turtleSprite.setSize(50, 50);
 turtleSprite.setBound(512, 512);
 
 // The following code first creates an array called starArray, which will take in a set number of starfish Sprites.
 // Then, we use a loop to go through the array and instantiate each starfish Sprite at a Random position on the canvas.
 let starArray = [];
+let starTexture = new Texture("images/starfish-collector/starfish.png");
 
 for(i = 0; i < 10; i++)
 {
-	starArray.push(new Sprite(450 * Math.random(), 450 * Math.random(), "starfish"));
+	let starfish = new Sprite(450 * Math.random(), 450 * Math.random());
+	starfish.setTexture( starTexture );
+	starArray.push( starfish );
 }
 
+let score = 0;
+let scoreLabel = new Label(100,50);
+scoreLabel.setText("Score: " + score);
+scoreLabel.setFont("Arial Black", 36);
+scoreLabel.borderSize = 2;
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
 let spriteArray = [];
@@ -85,12 +95,13 @@ function update()
 	for (let i = 0; i < starArray.length; i++)
 	{
 		if(starArray[i].overlaps(turtleSprite))
+		{
 			starArray.splice(i, 1);
+			score += 1;
+			scoreLabel.setText("Score: " + score);
+		}
 	}
-	
 
-	console.log("Keys:");
-	console.log(input);
 }
 
 function render()
@@ -111,14 +122,19 @@ function render()
 	{
 		starArray[i].render(context);
 	}
+
+	scoreLabel.render(context);
 }
 
 function loop()
 {
-	// Call all of our functions in order, then recall this function again.
-	update();
-	render();
-	requestAnimationFrame(loop);
+	if (running)
+	{
+		// Call all of our functions in order, then recall this function again.
+		update();
+		render();
+		requestAnimationFrame(loop);
+	}
 }
 
 // Start the program.

@@ -127,27 +127,27 @@ class Sprite
 		// As well as stopping its movement in that direction when hitting a wall.
 
 		// Left Wall
-		if ((this.x - this.w/2) < 0)
+		if (this.x < this.w/2 )
 		{
-			this.x = 0;
+			this.x = this.w/2;
 		}
 		
 		// Right Wall
 		if ((this.x + this.w/2) > this.worldWidth)
 		{
-			this.x = this.worldWidth - this.w;
+			this.x = this.worldWidth - this.w/2;
 		}
 
 		// Top Wall
 		if ((this.y - this.h/2) < 0)
 		{
-			this.y = 0;
+			this.y = this.h/2;
 		}
 
 		// Bottom Wall
 		if ((this.y + this.h/2) > this.worldHeight)
 		{
-			this.y = this.worldHeight - this.h;
+			this.y = this.worldHeight - this.h/2;
 		}
 	}
 

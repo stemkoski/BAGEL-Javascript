@@ -1,22 +1,8 @@
 SPACE ROCKS:
 
-- space background
-- rocks (3?) in rockArray
-- spaceship
-- lasers (0) in laserArray
+- display # of ROCKS left (yellow)
+- "You Win" message when all rocks are gone (green)
+- "Game Over" message if ship hits a ROCK (red)
+- setter methods for Label class
 
-Everything wraps
-
-Rocks: set random starting velocity...
-
-When pressing Space Bar, shoot laser:
-  - create laser
-  - set laser position to ship position
-  - set laser angle to ship angle
-  - set laser velocity (dx, dy) to be going in correct direction (see: moveDistanceAtAngle)
-
-In update function:
-  - check to see if any laser overlaps any rock. if so: "destroy" laser and rock.
-  (remove it from array)
-
- Suggestion: use block/square size graphic for all objects. (rectangles don't rotate)
+- nice colorful labels!
