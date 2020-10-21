@@ -24,14 +24,14 @@ let context = canvas.getContext("2d");
 // Create the background image and size it to the canvas size.
 let backSprite = new Sprite(256, 256);
 backSprite.setTexture( 
-	new Texture("images/space-rocks/space-background.png") ); 
+	new Texture("images/space-rocks/space-background.png")); 
 backSprite.setSize(512, 512);
 
 // Create shipSprite, the sprite that the player will control, and set its starting
 // position, texture, size, and wrapping. Velocity is set within update(), in moveDistanceAtAngle() function call.
 let shipSprite = new Sprite(50, 50);
 shipSprite.setTexture( 
-	new Texture("images/space-rocks/spaceship.png") ); 
+	new Texture("images/space-rocks/spaceship.png")); 
 shipSprite.setSize(50, 50);
 shipSprite.setWrap(512, 512);
 
@@ -51,7 +51,7 @@ for(i = 0; i < 3; i++)
 {
 	rockArray.push(new Sprite(450 * Math.random(), 450 * Math.random()));		
 	rockArray[i].setTexture( 															
-		new Texture("images/space-rocks/rock.png") );
+		new Texture("images/space-rocks/rock.png"));
 	rockArray[i].setSize(50, 50);				
 
 	// If a setAngle function is ever implemented, it should be used here
@@ -66,57 +66,63 @@ for(i = 0; i < 3; i++)
 function update()
 {
 	// Below is the code that account for the player sprite moving. (shipSprite)
-	if ( input.isKeyPressed("ArrowUp") )
+	if (input.isKeyPressed("ArrowUp"))
 	{
 		shipSprite.moveDistanceAtAngle(3, shipSprite.angle);
 	}
 
 	// Code for turning right.
-	if ( input.isKeyPressed("ArrowRight") )
+	if (input.isKeyPressed("ArrowRight"))
 	{
 		shipSprite.angle += 2;
 	}
 
 	// Code for turning left.
-	if ( input.isKeyPressed("ArrowLeft") )
+	if (input.isKeyPressed("ArrowLeft"))
 	{
 		shipSprite.angle -= 2;
 	}
 
-	// Code to fire the laser
+	// Code to fire the laser.
 	// For some reason the Spacebar's name is a space?!
 
 	// ERROR- FIRES WHEN HELD, SHOULD ONLY FIRE WHEN PRESSED
-	if ( input.isKeyPressed(" ") )
+	if (input.isKeyPressed(" "))
 	{
 		laserArray.push(new Sprite(shipSprite.x, shipSprite.y))
 		//The newly created laser is pushed to the end of the array, so it's located at laserArray.length - 1.
-			laserArray[laserArray.length - 1].setTexture( 						new Texture("images/space-rocks/laser-green.png") );
+			laserArray[laserArray.length - 1].setTexture( 						
+				new Texture("images/space-rocks/laser-green.png") );
 			laserArray[laserArray.length - 1].setSize(10, 10);
 			laserArray[laserArray.length - 1].setWrap(512, 512);
-			// Another situation where a setAngle method would be good
-			laserArray[laserArray.length - 1].angle = shipSprite.angle
-
-
-		
+			// Another situation where a setAngle method would be good.
+			laserArray[laserArray.length - 1].angle = shipSprite.angle;
 	}
 
-	// Below is the code for spawning laser Sprites when the user hits Space.
-	// THIS CODE DOESN'T WORK YET
-	
-	// Moves and updates each laser
+	// Moves and updates each laser.
 	for(i = 0; i < laserArray.length; i++)
-		{
-							
-			laserArray[i].moveDistanceAtAngle(3, laserArray[i].angle);
-					
+		{			
+			laserArray[i].moveDistanceAtAngle(3, laserArray[i].angle);	
 			laserArray[i].update();
 		}
 
-	// Check if a laser Sprite and rock Sprite are overlapping.
+	// Check if a laser Sprite and rock Sprite are overlapping, and if so, removes both of them from
+	// their respective arrays.
 
-	// CODE NEEDS TO BE ADDED HERE
-
+	/* Attempt at overlapping code...
+	for (let i = 0; i < rockArray.length; i++)
+	{
+		for (let j = 0; j < laserArray.length; j++)
+		{
+			if(rockArray[i].overlaps(laserArray[j]))
+			{
+				rockArray.splice(i, 1);
+				laserArray.splice(j, 1);
+			}
+		}
+	}
+	*/
+	
 	
 	// Instantiate each Sprite in spriteArray.
 	for (let i = 0; i < spriteArray.length; i++)
