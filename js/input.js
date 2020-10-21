@@ -14,7 +14,7 @@ class Input
 			self.keyPressedSet.add( eventData.key );
 		}
 
-		document.addEventListener("keydown", onKeyDown );
+		document.addEventListener("keydown", onKeyDown);
 
 		function onKeyUp(eventData)
 		{
@@ -22,7 +22,7 @@ class Input
 			self.keyUpSet.add( eventData.key );
 		}
 		
-		document.addEventListener("keyup", onKeyUp );
+		document.addEventListener("keyup", onKeyUp);
 
 	}
 

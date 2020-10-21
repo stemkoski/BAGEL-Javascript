@@ -87,7 +87,7 @@ function update()
 	// For some reason the Spacebar's name is a space?!
 
 	// ERROR- FIRES WHEN HELD, SHOULD ONLY FIRE WHEN PRESSED
-	if (input.isKeyPressed(" "))
+	if (input.isKeyDown(" "))
 	{
 		laserArray.push(new Sprite(shipSprite.x, shipSprite.y))
 		//The newly created laser is pushed to the end of the array, so it's located at laserArray.length - 1.
@@ -109,7 +109,7 @@ function update()
 	// Check if a laser Sprite and rock Sprite are overlapping, and if so, removes both of them from
 	// their respective arrays.
 
-	/* Attempt at overlapping code...
+	// Attempt at overlapping code...
 	for (let i = 0; i < rockArray.length; i++)
 	{
 		for (let j = 0; j < laserArray.length; j++)
@@ -118,10 +118,10 @@ function update()
 			{
 				rockArray.splice(i, 1);
 				laserArray.splice(j, 1);
+				break;
 			}
 		}
 	}
-	*/
 	
 	
 	// Instantiate each Sprite in spriteArray.
@@ -138,7 +138,8 @@ function update()
 		rockArray[i].update();
 	}
 	
-	
+	// Call update on the input function.
+	input.update();
 }
 
 function render()
