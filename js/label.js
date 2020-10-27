@@ -2,7 +2,8 @@ class Label
 {
 	constructor(x, y)
 	{
-		// default text/font properties
+		// Default Text/Font Properties
+		// Each of the below properties are present within a setter below the constructor. 
 		this.fontName = "Arial";
 		this.fontSize = 16;
 		this.font = this.fontSize + "px " + this.fontName;
@@ -10,20 +11,29 @@ class Label
 		this.text = "Hello, World!";
 		this.borderSize = 1;
 		this.borderColor = "black";
+
+		// Set this.x and this.y using the values provided from the constructor parameters.
 		this.x = x;
 		this.y = y;
 	}
 
-	setFont(fontName, fontSize)
+	setFont(fontName, fontSize, fontColor)
 	{
 		this.fontName = fontName;
 		this.fontSize = fontSize;
 		this.font = this.fontSize + "px " + this.fontName;
+		this.fontColor = fontColor;
 	}
 
 	setText(text)
 	{
 		this.text = text;
+	}
+
+	setBorder(borderSize, borderColor)
+	{
+		this.borderSize = borderSize; 
+		this.borderColor = borderColor;
 	}
 
 	update()

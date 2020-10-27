@@ -7,6 +7,7 @@
 <script src="js/sprite.js"></script>
 <script src="js/input.js"></script>
 <script src="js/texture.js"></script>
+<script src="js/label.js"></script>
 
 <canvas width=512 height=512 id="canvas"></canvas>
 
@@ -63,6 +64,15 @@ for(i = 0; i < 3; i++)
 	rockArray[i].setWrap(512, 512);														
 }
 
+// Create a new counter that signifies the number of rocks left in rockArray, and also create a label that
+// displays the counter.
+let rockCount = rockArray.length;
+let rockLabel = new Label(100,50);
+rockLabel.setText("Rocks Left: " + rockCount);
+rockLabel.setFont("Arial Black", 36, "yellow");
+rockLabel.setBorder(2, "black");
+
+
 function update()
 {
 	// Below is the code that account for the player sprite moving. (shipSprite)
@@ -84,17 +94,17 @@ function update()
 	}
 
 	// Code to fire the laser.
-	// For some reason the Spacebar's name is a space?!
-
-	// ERROR- FIRES WHEN HELD, SHOULD ONLY FIRE WHEN PRESSED
+	// Name for space bar is an actual space.
 	if (input.isKeyDown(" "))
 	{
 		laserArray.push(new Sprite(shipSprite.x, shipSprite.y))
-		//The newly created laser is pushed to the end of the array, so it's located at laserArray.length - 1.
+
+			// The newly created laser is pushed to the end of the array, so it's located at laserArray.length - 1.
 			laserArray[laserArray.length - 1].setTexture( 						
 				new Texture("images/space-rocks/laser-green.png") );
 			laserArray[laserArray.length - 1].setSize(10, 10);
 			laserArray[laserArray.length - 1].setWrap(512, 512);
+
 			// Another situation where a setAngle method would be good.
 			laserArray[laserArray.length - 1].angle = shipSprite.angle;
 	}
@@ -108,16 +118,20 @@ function update()
 
 	// Check if a laser Sprite and rock Sprite are overlapping, and if so, removes both of them from
 	// their respective arrays.
-
-	// Attempt at overlapping code...
 	for (let i = 0; i < rockArray.length; i++)
 	{
 		for (let j = 0; j < laserArray.length; j++)
 		{
 			if(rockArray[i].overlaps(laserArray[j]))
 			{
+				// Remove both rock and laser from their respective arrays.
 				rockArray.splice(i, 1);
 				laserArray.splice(j, 1);
+
+				// Set rockCount to rockCount - 1, signifying that one of the rocks has been destroyed.
+				// Then change the label accordingly.
+				rockCount -= 1;
+				rockLabel.setText("Rocks Left: " + rockCount);
 				break;
 			}
 		}
@@ -169,6 +183,9 @@ function render()
 	{
 		laserArray[i].render(context);
 	}
+
+	// Render rockLabel to the screen.
+	rockLabel.render(context);
 }
 
 function loop()

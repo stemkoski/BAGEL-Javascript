@@ -1,8 +1,8 @@
 SPACE ROCKS:
 
-- display # of ROCKS left (yellow)
+- display # of ROCKS left (yellow) (DONE)
 - "You Win" message when all rocks are gone (green)
 - "Game Over" message if ship hits a ROCK (red)
-- setter methods for Label class
+- setter methods for Label class (DONE)
 
 - nice colorful labels!
