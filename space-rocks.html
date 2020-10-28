@@ -35,6 +35,8 @@ shipSprite.setTexture(
 	new Texture("images/space-rocks/spaceship.png")); 
 shipSprite.setSize(50, 50);
 shipSprite.setWrap(512, 512);
+shipSprite.x = 256;
+shipSprite.y = 256;
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
 let spriteArray = [];
@@ -59,7 +61,7 @@ for(i = 0; i < 3; i++)
 	// rockArray[i].angle = (360 * Math.random());
 
 	// Set the rock Sprite's x and y velocity to a random between approximately 3 (max, non-inclusive) and 1 (min, inclusive).
-	rockArray[i].setVelocity(Math.random() * (3 - 1) + 1, Math.random() * (3 - 1) + 1);	
+	rockArray[i].setVelocity(Math.random() * (3 - 2) + 0.5, Math.random() * (3 - 2) + 0.5);	
 
 	rockArray[i].setWrap(512, 512);														
 }
@@ -71,6 +73,22 @@ let rockLabel = new Label(100,50);
 rockLabel.setText("Rocks Left: " + rockCount);
 rockLabel.setFont("Arial Black", 36, "yellow");
 rockLabel.setBorder(2, "black");
+
+// Create a new label to display a game over
+let loseLabel = new Label(150,250);
+loseLabel.setText("Game Over!");
+loseLabel.setFont("Arial Black", 36, "red");
+loseLabel.setBorder(2, "black");
+
+// Create a new label to display a win
+let winLabel = new Label(150,250);
+winLabel.setText("You Win!");
+winLabel.setFont("Arial Black", 36, "green");
+winLabel.setBorder(2, "black");
+
+//Two new varaibles to check whether the game is over, and how
+winState = false;
+loseState = false;
 
 
 function update()
@@ -154,6 +172,22 @@ function update()
 	
 	// Call update on the input function.
 	input.update();
+
+	// Checks if the rocks overlap the ship, and causes a loss if so
+	for (let i = 0; i < rockArray.length; i++)
+	{
+		if(rockArray[i].overlaps(shipSprite))
+		{
+			loseState = true;
+		}
+	}
+
+	// Checks if there are any rocks left, and causes a win if not. 
+	if(rockArray.length == 0){
+		winState = true;
+	}
+
+
 }
 
 function render()
@@ -186,6 +220,18 @@ function render()
 
 	// Render rockLabel to the screen.
 	rockLabel.render(context);
+
+	//Renders the winLabel if the game is won
+	if(winState)
+	{
+		winLabel.render(context);
+	}
+
+	//Renders the loseLabel if the game is lost
+	if(loseState)
+	{
+		loseLabel.render(context);
+	}
 }
 
 function loop()
@@ -193,7 +239,10 @@ function loop()
 	// Call all of our functions in order, then recall this function again.
 	update();
 	render();
-	requestAnimationFrame(loop);
+	if(!winState && !loseState)
+	{
+		requestAnimationFrame(loop);
+	}
 }
 
 // Start the program.
