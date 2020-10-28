@@ -16,9 +16,8 @@ class Sprite
 		this.w = 32;
 		this.h = 32;
 
-		// -Default Velocity Values-
-		this.dx = 0;
-		this.dy = 0;
+		// physics data
+		this.physics = null;
 
 		// -Default Wall Interaction Values-
 		// Similarly to x, y, and imageID, the main HTML file provides a value (in this case, boolean) for each
@@ -43,10 +42,9 @@ class Sprite
 		this.h = h;
 	}
 
-	setVelocity(dx, dy)
+	setPhysics(accValue, maxSpeed, decValue)
 	{
-		this.dx = dx;
-		this.dy = dy;
+		this.physics = new Physics(accValue, maxSpeed, decValue);
 	}
 
 	setBounce(worldWidth, worldHeight)
@@ -169,8 +167,13 @@ class Sprite
 	update()
 	{
 		// Changes Sprite's position according to velocity (dx,dy).
-		this.x += this.dx;
-		this.y += this.dy;
+		if (this.physics != null)
+		{
+			this.physics.positionVector.setValues(this.x, this.y);
+			this.physics.update(1/60);
+			this.x = this.physics.positionVector.x;
+			this.y = this.physics.positionVector.y;
+		}
 
 		// If doesBounce is true for this Sprite...Sprite will bounce against the designated walls of the canvas.
 		if (this.doesBounce)

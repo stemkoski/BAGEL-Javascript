@@ -4,8 +4,13 @@
 </head>
 <body>
 
-<script src="js/sprite.js"></script>
+<script src="js/vector2.js"></script>
+<script src="js/physics.js"></script>
+
 <script src="js/texture.js"></script>
+
+<script src="js/sprite.js"></script>
+
 <script src="js/input.js"></script>
 <script src="js/label.js"></script>
 
@@ -36,6 +41,7 @@ let turtleSprite = new Sprite(50, 50);
 turtleSprite.setTexture( new Texture("images/starfish-collector/turtle.png"));
 turtleSprite.setSize(50, 50);
 turtleSprite.setBound(512, 512);
+turtleSprite.setPhysics(50, 200, 50);
 
 // The following code first creates an array called starArray, which will take in a set number of starfish Sprites.
 // Then, we use a loop to go through the array and instantiate each starfish Sprite at a Random position on the canvas.
@@ -64,23 +70,26 @@ function update()
 	// Below is the code that account for the player sprite moving. (turtleSprite)
 	if ( input.isKeyPressed("ArrowUp") )
 	{
-		turtleSprite.y -= 1;
+		turtleSprite.physics.accelerateAtAngle(270);
 	}
 
 	if ( input.isKeyPressed("ArrowDown") )
 	{
-		turtleSprite.y += 1;
+		turtleSprite.physics.accelerateAtAngle(90);
 	}
 
 	if ( input.isKeyPressed("ArrowRight") )
 	{
-		turtleSprite.x += 1;
+		turtleSprite.physics.accelerateAtAngle(0);
 	}
 
 	if ( input.isKeyPressed("ArrowLeft") )
 	{
-		turtleSprite.x -= 1;
+		turtleSprite.physics.accelerateAtAngle(180);
 	}
+
+	if ( turtleSprite.physics.getSpeed() > 0 )
+		turtleSprite.angle = turtleSprite.physics.getMotionAngle();
 
 	// Instantiate each Sprite in spriteArray.
 	for (let i = 0; i < spriteArray.length; i++)
