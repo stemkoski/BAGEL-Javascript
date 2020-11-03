@@ -4,6 +4,9 @@
 </head>
 <body>
 
+<script src="js/vector2.js"></script>
+<script src="js/physics.js"></script>
+
 <script src="js/sprite.js"></script>
 <script src="js/input.js"></script>
 <script src="js/texture.js"></script>
@@ -14,6 +17,8 @@
 <script>
 
 // =================================================
+
+let running = true;
 
 // Create a new variable, "input", that is set as an Object of the input.js class.
 let input = new Input();
@@ -30,13 +35,12 @@ backSprite.setSize(512, 512);
 
 // Create shipSprite, the sprite that the player will control, and set its starting
 // position, texture, size, and wrapping. Velocity is set within update(), in moveDistanceAtAngle() function call.
-let shipSprite = new Sprite(50, 50);
+let shipSprite = new Sprite(256, 256);
 shipSprite.setTexture( 
 	new Texture("images/space-rocks/spaceship.png")); 
 shipSprite.setSize(50, 50);
 shipSprite.setWrap(512, 512);
-shipSprite.x = 256;
-shipSprite.y = 256;
+shipSprite.setPhysics(50, 200, 50);
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
 let spriteArray = [];
@@ -60,8 +64,11 @@ for(i = 0; i < 3; i++)
 	// If a setAngle function is ever implemented, it should be used here
 	// rockArray[i].angle = (360 * Math.random());
 
-	// Set the rock Sprite's x and y velocity to a random between approximately 3 (max, non-inclusive) and 1 (min, inclusive).
-	rockArray[i].setVelocity(Math.random() * (3 - 2) + 0.5, Math.random() * (3 - 2) + 0.5);	
+	// Set the current rock Sprite's physics, using maxVel and minVel to generate a random velocity between a range, and
+	// manually setting the acceleration and deceleration.  
+ 	let maxMaxSpeed = 50;	// Maximum of what the rock's max speed could be, inclusive.
+ 	let minMaxSpeed = 25;	// Minimum of what the rock's max speed could be, inclusive.
+	rockArray[i].setPhysics(50, (Math.random() * (maxMaxSpeed - minMaxSpeed + 1) + minMaxSpeed), 50);	
 
 	rockArray[i].setWrap(512, 512);														
 }
@@ -74,19 +81,19 @@ rockLabel.setText("Rocks Left: " + rockCount);
 rockLabel.setFont("Arial Black", 36, "yellow");
 rockLabel.setBorder(2, "black");
 
-// Create a new label to display a game over
+// Create a new label to display a game over.
 let loseLabel = new Label(150,250);
 loseLabel.setText("Game Over!");
 loseLabel.setFont("Arial Black", 36, "red");
 loseLabel.setBorder(2, "black");
 
-// Create a new label to display a win
+// Create a new label to display a win. 
 let winLabel = new Label(150,250);
 winLabel.setText("You Win!");
 winLabel.setFont("Arial Black", 36, "green");
 winLabel.setBorder(2, "black");
 
-//Two new varaibles to check whether the game is over, and how
+// Two new varaibles to check whether the game is over, and how.
 winState = false;
 loseState = false;
 
@@ -96,19 +103,21 @@ function update()
 	// Below is the code that account for the player sprite moving. (shipSprite)
 	if (input.isKeyPressed("ArrowUp"))
 	{
-		shipSprite.moveDistanceAtAngle(3, shipSprite.angle);
+		shipSprite.accelerateAtAngle(shipSprite.getMotionAngle());
 	}
 
 	// Code for turning right.
 	if (input.isKeyPressed("ArrowRight"))
 	{
-		shipSprite.angle += 2;
+		//shipSprite.angle += 2;
+		shipSprite.setMotionAngle(shipSprite.getMotionAngle() + 2);
 	}
 
 	// Code for turning left.
 	if (input.isKeyPressed("ArrowLeft"))
 	{
-		shipSprite.angle -= 2;
+		//shipSprite.angle -= 2;
+		shipSprite.setMotionAngle(shipSprite.getMotionAngle() - 2);
 	}
 
 	// Code to fire the laser.
@@ -122,15 +131,16 @@ function update()
 				new Texture("images/space-rocks/laser-green.png") );
 			laserArray[laserArray.length - 1].setSize(10, 10);
 			laserArray[laserArray.length - 1].setWrap(512, 512);
+			laserArray[laserArray.length - 1].setPhysics(50, 200, 50);
 
 			// Another situation where a setAngle method would be good.
-			laserArray[laserArray.length - 1].angle = shipSprite.angle;
+			laserArray[laserArray.length - 1].setMotionAngle() = shipSprite.getMotionAngle();
 	}
 
 	// Moves and updates each laser.
 	for(i = 0; i < laserArray.length; i++)
 		{			
-			laserArray[i].moveDistanceAtAngle(3, laserArray[i].angle);	
+			laserArray[i].accelerateAtAngle(laserArray[i].getMotionAngle());	
 			laserArray[i].update();
 		}
 
@@ -166,7 +176,7 @@ function update()
 	for (let i = 0; i < rockArray.length; i++)
 	{
 		//Moves the rock before updating it
-		rockArray[i].moveDistanceAtAngle(1, rockArray[i].angle);
+		rockArray[i].accelerateAtAngle(rockArray[i].getMotionAngle());
 		rockArray[i].update();
 	}
 	

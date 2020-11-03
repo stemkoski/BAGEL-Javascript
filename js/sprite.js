@@ -74,6 +74,7 @@ class Sprite
 		this.doesBound = true;
 	}
 
+	/*
 	moveDistanceAtAngle(distance, angle)
 	{
 		// convert angle from degrees to radians
@@ -81,8 +82,7 @@ class Sprite
 		this.x += distance * Math.cos(A);
 		this.y += distance * Math.sin(A);
 	}
-
-	// TODO: (x,y) now refers to center of image. Need to update bounce,wrap,bound.
+	*/
 
 	bounce()
 	{
@@ -99,26 +99,27 @@ class Sprite
 		// The following code has the Sprite wrap to the opposite side of the canvas
 		// if it moves past any of the canvas walls.
 
-		// Although it would be simpler to teleport the spirte to the other side,
+		// Although it would be simpler to teleport the sprite to the other side,
 		// moving it by the world size accounts for the distanced traveled over the side of the canvas.
 		// this makes it travel an accurate (canvas size + (width/height)*2).
 		
-		// right edge of sprite moves past left edge of screen
+		// Right edge of sprite moves past left edge of screen.
 		if (this.x + this.w/2 < 0)
 			this.x = (this.worldWidth + this.w/2) + this.x;
 		
+		// Left edge of sprite moves past right edge of screen.
 		if (this.x - this.w/2 > this.worldWidth)
 			this.x = this.x - (this.worldWidth + this.w);
 
+		// Bottom edge of sprite moves past top edge of screen.
 		if (this.y + this.h/2 < 0)
 			this.y = (this.worldHeight + this.h) + this.y;
 
+		// Top edge of sprite moves past bottom edge of screen. 
 		if (this.y - this.h/2 > this.worldHeight)
 			this.y = this.y - (this.worldHeight + this.h);
 	}
 
-	// NOTE - Current implementation makes the sprite wiggle a bit if you mash the key against the wall. Odd.
-	// NOTE 2 - Sprite also currently bounces off of Right Wall, but is kept bounded.
 	bound()
 	{
 		// The following code makes the canvas wall impassable to the sprite
