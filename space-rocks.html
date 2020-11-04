@@ -61,9 +61,6 @@ for(i = 0; i < 3; i++)
 		new Texture("images/space-rocks/rock.png"));
 	rockArray[i].setSize(50, 50);				
 
-	// If a setAngle function is ever implemented, it should be used here
-	// rockArray[i].angle = (360 * Math.random());
-
 	// Set the current rock Sprite's physics, using maxVel and minVel to generate a random velocity between a range, and
 	// manually setting the acceleration and deceleration.  
  	let maxMaxSpeed = 50;	// Maximum of what the rock's max speed could be, inclusive.
@@ -111,20 +108,25 @@ function update()
 	// Code for turning right.
 	if (input.isKeyPressed("ArrowRight"))
 	{
-		//shipSprite.angle += 2;
-		shipSprite.physics.setMotionAngle(shipSprite.physics.getMotionAngle() + 2);
+		// Use shipSprite.angle for the actual turning of the Sprite, and
+		// then set shipSprite's motionAngle to its Sprite angle.
+		shipSprite.angle += 2;
+		shipSprite.physics.setMotionAngle(shipSprite.angle);
 	}
 
 	// Code for turning left.
 	if (input.isKeyPressed("ArrowLeft"))
 	{
-		//shipSprite.angle -= 2;
-		shipSprite.physics.setMotionAngle(shipSprite.physics.getMotionAngle() - 2);
+		// Once again, use shipSprite.angle for the actual turning of the Sprite, and
+		// then set shipSprite's motionAngle to its Sprite angle.
+		shipSprite.angle -= 2;
+		shipSprite.physics.setMotionAngle(shipSprite.angle);
 	}
 
-	//PROBLEM- This code taken from Starfish Collector. We need to turn at a standstill, but can't divide by 0.
-	if ( shipSprite.physics.getSpeed() > 0 )
-		shipSprite.angle = shipSprite.physics.getMotionAngle();
+	// If the shipSprite's speed is greater than 0...
+	if (shipSprite.physics.getSpeed() > 0)
+		// Make sure that the shipSprite's motionAngle is being set to the Sprite angle.
+		shipSprite.physics.setMotionAngle(shipSprite.angle);
 
 	// Code to fire the laser.
 	// Name for space bar is an actual space.
@@ -139,8 +141,8 @@ function update()
 			laserArray[laserArray.length - 1].setWrap(512, 512);
 			laserArray[laserArray.length - 1].setPhysics(50, 200, 50);
 
-			// Another situation where a setAngle method would be good.
-			laserArray[laserArray.length - 1].physics.setMotionAngle( shipSprite.physics.getMotionAngle());
+			// Set the motion angle of the current laser to the Sprite angle of shipSprite as of the moment it was shot.
+			laserArray[laserArray.length - 1].physics.setMotionAngle(shipSprite.physics.getMotionAngle());
 	}
 
 	// Moves and updates each laser.
@@ -181,7 +183,7 @@ function update()
 	// Instantiate each Rock in rockArray.
 	for (let i = 0; i < rockArray.length; i++)
 	{
-		//Moves the rock before updating it
+		// Moves the rock before updating it.
 		rockArray[i].physics.accelerateAtAngle(rockArray[i].physics.getMotionAngle());
 		rockArray[i].update();
 	}
@@ -189,7 +191,7 @@ function update()
 	// Call update on the input function.
 	input.update();
 
-	// Checks if the rocks overlap the ship, and causes a loss if so
+	// Checks if the rocks overlap the ship, and causes a loss if so.
 	for (let i = 0; i < rockArray.length; i++)
 	{
 		if(rockArray[i].overlaps(shipSprite))
@@ -199,11 +201,10 @@ function update()
 	}
 
 	// Checks if there are any rocks left, and causes a win if not. 
-	if(rockArray.length == 0){
+	if(rockArray.length == 0)
+	{
 		winState = true;
 	}
-
-
 }
 
 function render()
@@ -237,13 +238,13 @@ function render()
 	// Render rockLabel to the screen.
 	rockLabel.render(context);
 
-	//Renders the winLabel if the game is won
+	// Renders the winLabel if the game is won.
 	if(winState)
 	{
 		winLabel.render(context);
 	}
 
-	//Renders the loseLabel if the game is lost
+	// Renders the loseLabel if the game is lost.
 	if(loseState)
 	{
 		loseLabel.render(context);

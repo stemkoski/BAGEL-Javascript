@@ -49,7 +49,7 @@ class Physics
 		let speed = this.getSpeed();
 
 		// decrease speed (decelerate) when not accelerating
-		if ( this.accelerationVector.getLength() == 0 )
+		if (this.accelerationVector.getLength() == 0)
 			speed -= this.decelerationValue * dt;
 
 		// keep speed within min/max bounds
