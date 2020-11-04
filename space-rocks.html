@@ -68,7 +68,9 @@ for(i = 0; i < 3; i++)
 	// manually setting the acceleration and deceleration.  
  	let maxMaxSpeed = 50;	// Maximum of what the rock's max speed could be, inclusive.
  	let minMaxSpeed = 25;	// Minimum of what the rock's max speed could be, inclusive.
-	rockArray[i].setPhysics(50, (Math.random() * (maxMaxSpeed - minMaxSpeed + 1) + minMaxSpeed), 50);	
+	rockArray[i].setPhysics(50, (Math.random() * (maxMaxSpeed - minMaxSpeed + 1) + minMaxSpeed), 50);
+
+	rockArray[i].physics.setMotionAngle(Math.random() * 360);	
 
 	rockArray[i].setWrap(512, 512);														
 }
@@ -103,22 +105,26 @@ function update()
 	// Below is the code that account for the player sprite moving. (shipSprite)
 	if (input.isKeyPressed("ArrowUp"))
 	{
-		shipSprite.accelerateAtAngle(shipSprite.getMotionAngle());
+		shipSprite.physics.accelerateAtAngle(shipSprite.physics.getMotionAngle());
 	}
 
 	// Code for turning right.
 	if (input.isKeyPressed("ArrowRight"))
 	{
 		//shipSprite.angle += 2;
-		shipSprite.setMotionAngle(shipSprite.getMotionAngle() + 2);
+		shipSprite.physics.setMotionAngle(shipSprite.physics.getMotionAngle() + 2);
 	}
 
 	// Code for turning left.
 	if (input.isKeyPressed("ArrowLeft"))
 	{
 		//shipSprite.angle -= 2;
-		shipSprite.setMotionAngle(shipSprite.getMotionAngle() - 2);
+		shipSprite.physics.setMotionAngle(shipSprite.physics.getMotionAngle() - 2);
 	}
+
+	//PROBLEM- This code taken from Starfish Collector. We need to turn at a standstill, but can't divide by 0.
+	if ( shipSprite.physics.getSpeed() > 0 )
+		shipSprite.angle = shipSprite.physics.getMotionAngle();
 
 	// Code to fire the laser.
 	// Name for space bar is an actual space.
@@ -134,13 +140,13 @@ function update()
 			laserArray[laserArray.length - 1].setPhysics(50, 200, 50);
 
 			// Another situation where a setAngle method would be good.
-			laserArray[laserArray.length - 1].setMotionAngle() = shipSprite.getMotionAngle();
+			laserArray[laserArray.length - 1].physics.setMotionAngle( shipSprite.physics.getMotionAngle());
 	}
 
 	// Moves and updates each laser.
 	for(i = 0; i < laserArray.length; i++)
 		{			
-			laserArray[i].accelerateAtAngle(laserArray[i].getMotionAngle());	
+			laserArray[i].physics.accelerateAtAngle(laserArray[i].physics.getMotionAngle());	
 			laserArray[i].update();
 		}
 
@@ -176,7 +182,7 @@ function update()
 	for (let i = 0; i < rockArray.length; i++)
 	{
 		//Moves the rock before updating it
-		rockArray[i].accelerateAtAngle(rockArray[i].getMotionAngle());
+		rockArray[i].physics.accelerateAtAngle(rockArray[i].physics.getMotionAngle());
 		rockArray[i].update();
 	}
 	
