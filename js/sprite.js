@@ -194,6 +194,7 @@ class Sprite
 	render(context)
 	{
 		// convert angle from degrees to radians
+		// TODO- Make into utility function, going both ways
 		let A = this.angle * Math.PI / 180;
 		let cosA = Math.cos(A);
 		let sinA = Math.sin(A);

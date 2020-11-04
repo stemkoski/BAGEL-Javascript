@@ -11,6 +11,7 @@
 <script src="js/input.js"></script>
 <script src="js/texture.js"></script>
 <script src="js/label.js"></script>
+<script src="js/utilities.js"></script>
 
 <canvas width=512 height=512 id="canvas"></canvas>
 
@@ -40,7 +41,7 @@ shipSprite.setTexture(
 	new Texture("images/space-rocks/spaceship.png")); 
 shipSprite.setSize(50, 50);
 shipSprite.setWrap(512, 512);
-shipSprite.setPhysics(50, 200, 50);
+shipSprite.setPhysics(50, 200, 10);
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
 let spriteArray = [];
@@ -52,24 +53,32 @@ let laserArray = [];
 // Creates rockArray to hold any rocks on screen
 let rockArray = [];
 
+let rockTexture = new Texture("images/space-rocks/rock.png");
+
 // Fills rockArray with rocks, sets their starting position, their texture, their size, their
 // velocity, and their wrapping.
 for(i = 0; i < 3; i++)
 {
-	rockArray.push(new Sprite(450 * Math.random(), 450 * Math.random()));		
-	rockArray[i].setTexture( 															
-		new Texture("images/space-rocks/rock.png"));
-	rockArray[i].setSize(50, 50);				
+	let tempAngle = Math.random() * (2 * Math.PI);
+	let tempX = Math.cos(tempAngle) * 200 + 256;
+	let tempY = Math.sin(tempAngle) * 200 + 256;
+
+	let rockSprite = new Sprite(tempX, tempY);	
+	rockSprite.setTexture(rockTexture);
+	rockSprite.setSize(50, 50);				
 
 	// Set the current rock Sprite's physics, using maxVel and minVel to generate a random velocity between a range, and
 	// manually setting the acceleration and deceleration.  
- 	let maxMaxSpeed = 50;	// Maximum of what the rock's max speed could be, inclusive.
- 	let minMaxSpeed = 25;	// Minimum of what the rock's max speed could be, inclusive.
-	rockArray[i].setPhysics(50, (Math.random() * (maxMaxSpeed - minMaxSpeed + 1) + minMaxSpeed), 50);
+ 	
+ 	let maxSpeed = randomFloatRange(25, 50);
+	rockSprite.setPhysics(50, maxSpeed, 0);
 
-	rockArray[i].physics.setMotionAngle(Math.random() * 360);	
+	rockSprite.physics.setSpeed(1);
 
-	rockArray[i].setWrap(512, 512);														
+	rockSprite.physics.setMotionAngle(Math.random() * 360);	
+
+	rockSprite.setWrap(512, 512);
+	rockArray.push(rockSprite)														
 }
 
 // Create a new counter that signifies the number of rocks left in rockArray, and also create a label that
@@ -97,12 +106,14 @@ winState = false;
 loseState = false;
 
 
+let laserTexture = new Texture("images/space-rocks/laser-green.png");
+
 function update()
 {
 	// Below is the code that account for the player sprite moving. (shipSprite)
 	if (input.isKeyPressed("ArrowUp"))
 	{
-		shipSprite.physics.accelerateAtAngle(shipSprite.physics.getMotionAngle());
+		shipSprite.physics.accelerateAtAngle(shipSprite.angle);
 	}
 
 	// Code for turning right.
@@ -111,7 +122,7 @@ function update()
 		// Use shipSprite.angle for the actual turning of the Sprite, and
 		// then set shipSprite's motionAngle to its Sprite angle.
 		shipSprite.angle += 2;
-		shipSprite.physics.setMotionAngle(shipSprite.angle);
+		//shipSprite.physics.setMotionAngle(shipSprite.angle);
 	}
 
 	// Code for turning left.
@@ -120,36 +131,38 @@ function update()
 		// Once again, use shipSprite.angle for the actual turning of the Sprite, and
 		// then set shipSprite's motionAngle to its Sprite angle.
 		shipSprite.angle -= 2;
-		shipSprite.physics.setMotionAngle(shipSprite.angle);
+		//shipSprite.physics.setMotionAngle(shipSprite.angle);
 	}
-
-	// If the shipSprite's speed is greater than 0...
-	if (shipSprite.physics.getSpeed() > 0)
-		// Make sure that the shipSprite's motionAngle is being set to the Sprite angle.
-		shipSprite.physics.setMotionAngle(shipSprite.angle);
 
 	// Code to fire the laser.
 	// Name for space bar is an actual space.
 	if (input.isKeyDown(" "))
 	{
-		laserArray.push(new Sprite(shipSprite.x, shipSprite.y))
+		let laserSprite = new Sprite(shipSprite.x, shipSprite.y);
 
-			// The newly created laser is pushed to the end of the array, so it's located at laserArray.length - 1.
-			laserArray[laserArray.length - 1].setTexture( 						
-				new Texture("images/space-rocks/laser-green.png") );
-			laserArray[laserArray.length - 1].setSize(10, 10);
-			laserArray[laserArray.length - 1].setWrap(512, 512);
-			laserArray[laserArray.length - 1].setPhysics(50, 200, 50);
+		// The newly created laser is pushed to the end of the array, so it's located at laserArray.length - 1.
+		laserSprite.setTexture(laserTexture);
+		laserSprite.setSize(10, 10);
+		laserSprite.setWrap(512, 512);
+		laserSprite.setPhysics(0, 200, 0);
 
-			// Set the motion angle of the current laser to the Sprite angle of shipSprite as of the moment it was shot.
-			laserArray[laserArray.length - 1].physics.setMotionAngle(shipSprite.physics.getMotionAngle());
+		laserSprite.physics.setSpeed(200);
+		// Set the motion angle of the current laser to the Sprite angle of shipSprite as of the moment it was shot.
+		laserSprite.physics.setMotionAngle(shipSprite.angle);
+		laserSprite.timer = 120;
+		laserArray.push(laserSprite);
+
 	}
 
 	// Moves and updates each laser.
 	for(i = 0; i < laserArray.length; i++)
-		{			
-			laserArray[i].physics.accelerateAtAngle(laserArray[i].physics.getMotionAngle());	
+		{				
+			(laserArray[i].timer)--;
 			laserArray[i].update();
+			if(laserArray[i].timer < 1)
+			{
+				laserArray.splice(i, 1);
+			}
 		}
 
 	// Check if a laser Sprite and rock Sprite are overlapping, and if so, removes both of them from
