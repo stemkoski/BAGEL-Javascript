@@ -40,15 +40,12 @@ let playerSprite = new Sprite(128, 256);
 playerSprite.setTexture( 
 	new Texture("images/plane-dodger/planeGreen0.png")); 
 playerSprite.setSize(50, 50);
-playerSprite.setWrap(512, 512);
 playerSprite.setPhysics(150, 300, 10);
 playerSprite.physics.setMotionAngle(90);
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
 let spriteArray = [];
 spriteArray.push(backSprite, playerSprite);
-
-
 
 // Creates enemyArray to hold any enemies on screen
 let enemyArray = [];
@@ -59,13 +56,12 @@ let enemyTexture = new Texture("images/plane-dodger/planeRed0.png");
 // velocity, and their wrapping.
 for(i = 0; i < 3; i++)
 {
-	let tempAngle = Math.random() * (2 * Math.PI);
-	let tempX = Math.cos(tempAngle) * 200 + 256;
-	let tempY = Math.sin(tempAngle) * 200 + 256;
+	let tempX = 500;	// Set to 500 so that when the game first starts, enemyPlanes spawn outside the right edge of the screen.
+	let tempY = randomFloatRange(50, 475);
 
 	let enemySprite = new Sprite(tempX, tempY);	
 	enemySprite.setTexture(enemyTexture);
-	enemySprite.setSize(50, 50);				
+	enemySprite.setSize(50, 50);		
 
 	// Set the current enemy Sprite's physics, using maxVel and minVel to generate a random velocity between a range, and
 	// manually setting the acceleration and deceleration.  
@@ -75,7 +71,7 @@ for(i = 0; i < 3; i++)
 
 	enemySprite.physics.setSpeed(1);
 
-	enemySprite.physics.setMotionAngle(Math.random() * 360);	
+	enemySprite.physics.setMotionAngle(180);	
 
 	enemySprite.setWrap(512, 512);
 	enemyArray.push(enemySprite);														
@@ -112,7 +108,7 @@ function update()
 	// Name for space bar is an actual space.
 	if (input.isKeyDown(" "))
 	{
-		//Sets a specific upward speed for the plane
+		// Sets a specific upward speed for the plane
 		playerSprite.physics.setSpeed(150);
 		playerSprite.physics.setMotionAngle(270);
 	}
@@ -133,7 +129,17 @@ function update()
 		enemyArray[i].physics.accelerateAtAngle(enemyArray[i].physics.getMotionAngle());
 		enemyArray[i].update();
 	}
-	
+
+	// If enemies exit the screen via the left edge, their y positions are changed to a new 
+	// random before they reappear from the right edge.
+	// NOTE - Code does not currently work properly, as wrap function in sprite.js is called before this 
+	// for-loop can successfully randomize the y positon.
+	for (let i = 0; i < enemyArray.length; i++)
+	{
+		if (enemyArray[i].x + enemyArray[i].w/2 < 0)
+			enemyArray[i].y = randomFloatRange(50, 475);
+	}
+
 	// Call update on the input function.
 	input.update();
 
@@ -144,12 +150,6 @@ function update()
 		{
 			loseState = true;
 		}
-	}
-
-	// Checks if there are any enemies left, and causes a win if not. 
-	if(enemyArray.length == 0)
-	{
-		winState = true;
 	}
 }
 
