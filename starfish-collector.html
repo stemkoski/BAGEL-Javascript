@@ -14,6 +14,9 @@
 <script src="js/input.js"></script>
 <script src="js/label.js"></script>
 
+<script src="js/action.js"></script>
+<script src="js/actionFactory.js"></script>
+
 <canvas width=512 height=512 id="canvas"></canvas>
 
 <script>
@@ -49,11 +52,25 @@ turtleSprite.setPhysics(50, 200, 50);
 let starArray = [];
 let starTexture = new Texture("images/starfish-collector/starfish.png");
 
+
 for(i = 0; i < 10; i++)
 {
 	let starfish = new Sprite(450 * Math.random(), 450 * Math.random());
 	starfish.setTexture( starTexture );
+	starfish.opacity = 0.5;
+
+
+	//starfish.addAction( ActionFactory.moveBy(100,50, 4) );
+	// starfish.addAction( ActionFactory.rotateBy(720,  6) );
+
+	starfish.addAction(
+		ActionFactory.forever( 
+			ActionFactory.rotateBy(360,1)
+		)
+	);
+	
 	starArray.push( starfish );
+	console.log(starfish);
 }
 
 let score = 0;
@@ -102,6 +119,9 @@ function update()
 	// Removes a star the turtle touches... is what I'd say if it worked yet.
 	for (let i = 0; i < starArray.length; i++)
 	{
+		// update stars, since they now do stuff
+		starArray[i].update();
+
 		if(starArray[i].overlaps(turtleSprite))
 		{
 			starArray.splice(i, 1);

@@ -16,6 +16,9 @@ class Sprite
 		this.w = 32;
 		this.h = 32;
 
+		// opacity level: 0.0 = transparent, 1.0 = opaque
+		this.opacity = 1.0;
+
 		// physics data
 		this.physics = null;
 
@@ -29,6 +32,9 @@ class Sprite
 		// These variables store the worldSize for later use.
 		this.worldWidth = 512;
 		this.worldHeight = 512;
+
+		// list of actions: functions applied to this Sprite over time
+		this.actionList = [];
 	}
 
 	setTexture(tex)
@@ -72,6 +78,12 @@ class Sprite
 		this.doesBounce = false;
 		this.doesWrap = false;
 		this.doesBound = true;
+	}
+
+	addAction(a)
+	{
+		this.actionList.push(a);
+		
 	}
 
 	/*
@@ -188,6 +200,15 @@ class Sprite
 		// If doesBound is true for this Sprite...Sprite will treat the side of the canvas like a solid wall.
 		if (this.doesBound)
 			this.bound();
+
+		// process any actions in the actionList
+		for (let i = 0; i < this.actionList.length; i++)
+		{
+			let action = this.actionList[i];
+			let finished = action.apply( this, 1/60 );
+			if (finished)
+				this.actionList.splice(i, 1);	
+		}
 		
 	}
 
@@ -202,6 +223,8 @@ class Sprite
 		// transform the drawing area
 		context.setTransform( cosA,sinA, -sinA,cosA, this.x, this.y );
 
+		context.globalAlpha = this.opacity;
+
 		// image, source location/size, destination location/size
 		//context.drawImage(this.image, this.x, this.y, this.w, this.h)
 		context.drawImage(this.texture.image, 
@@ -209,5 +232,7 @@ class Sprite
 			        0,         0, this.texture.width, this.texture.height,  
 			// size we want the image to be
 			-this.w/2, -this.h/2, this.w, this.h); 
+
+		context.globalAlpha = 1.0;
 	}
 }
