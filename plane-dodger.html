@@ -132,11 +132,10 @@ function update()
 
 	// If enemies exit the screen via the left edge, their y positions are changed to a new 
 	// random before they reappear from the right edge.
-	// NOTE - Code does not currently work properly, as wrap function in sprite.js is called before this 
 	// for-loop can successfully randomize the y positon.
 	for (let i = 0; i < enemyArray.length; i++)
 	{
-		if (enemyArray[i].x + enemyArray[i].w/2 < 0)
+		if (enemyArray[i].x - enemyArray[i].w/2 > canvas.width)
 			enemyArray[i].y = randomFloatRange(50, 475);
 	}
 
