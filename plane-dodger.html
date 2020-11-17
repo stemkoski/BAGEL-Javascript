@@ -78,7 +78,7 @@ for (i = 0; i < 3; i++)
 
 	enemySprite.physics.setMotionAngle(180);	
 
-	enemySprite.setWrap(512, 512);
+	enemySprite.setWrap(512, 600);
 	enemyArray.push(enemySprite);														
 }
 
@@ -86,8 +86,8 @@ for (i = 0; i < 3; i++)
 let starArray = [];
 let starTexture = new Texture("images/plane-dodger/star.png"); 
 
-// Fills starArray with 3 stars to start, setting their starting position, their texture, their size, and their velocity.
-for (i = 0; i < 3; i++)
+// Creates a new star and adds it to starArray, setting their starting position, their texture, their size, and their velocity.
+function makeStar()
 {
 	let starTempX = 500;
 	let starTempY = randomFloatRange(50, 475);
@@ -111,8 +111,15 @@ for (i = 0; i < 3; i++)
 		)
 	);
 
-	//starSprite.setWrap(512, 512)
+	starSprite.setWrap(512, 600)
 	starArray.push(starSprite);
+
+}
+
+// Fills starArray with 3 stars to start
+for (i = 0; i < 3; i++)
+{
+	makeStar();
 }
 
 // Create a new counter that signifies our player's score. The score increases every time
@@ -160,17 +167,14 @@ function update()
 		enemyArray[i].update();
 	}
 
-	/* Checks whether or not there are less than three stars on the screen at once.
-	// If there are less than three...add as many as needed to get back to three.
+	 //Checks whether or not there are less than three stars on the screen at once.
+	// If there are less than three, add one more- it will run next frame if more are needed.
 	if (starArray.length < 3)
 	{
-		for (i = 0; i < starArray.length; i++)
-		{
-			
-		}
-	}*/
+		makeStar();
+	}
 
-	// Instantiates each star in starArray.
+	// Updates each star in starArray.
 	for (let i = 0; i < starArray.length; i++)
 	{
 		// Moves the star before updating it.
@@ -183,7 +187,9 @@ function update()
 	for (let i = 0; i < enemyArray.length; i++)
 	{
 		if (enemyArray[i].x - enemyArray[i].w/2 > canvas.width)
+		{
 			enemyArray[i].y = randomFloatRange(50, 475);
+		}
 	}
 
 	// Call update on the input function.
