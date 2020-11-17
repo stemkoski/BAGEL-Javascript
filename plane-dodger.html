@@ -8,10 +8,16 @@
 <script src="js/physics.js"></script>
 
 <script src="js/sprite.js"></script>
-<script src="js/input.js"></script>
+
 <script src="js/texture.js"></script>
+
+<script src="js/input.js"></script>
 <script src="js/label.js"></script>
+
 <script src="js/utilities.js"></script>
+
+<script src="js/action.js"></script>
+<script src="js/actionFactory.js"></script>
 
 <canvas width=450 height=600 id="canvas"></canvas>
 
@@ -47,27 +53,26 @@ playerSprite.physics.setMotionAngle(90);
 let spriteArray = [];
 spriteArray.push(backSprite, playerSprite);
 
-// Creates enemyArray to hold any enemies on screen
+// Creates enemyArray to hold any enemies on screen, and create a new Texture for our enemies.
 let enemyArray = [];
-
 let enemyTexture = new Texture("images/plane-dodger/planeRed0.png");
 
 // Fills enemyArray with enemies, sets their starting position, their texture, their size, their
 // velocity, and their wrapping.
-for(i = 0; i < 3; i++)
+for (i = 0; i < 3; i++)
 {
-	let tempX = 500;	// Set to 500 so that when the game first starts, enemyPlanes spawn outside the right edge of the screen.
-	let tempY = randomFloatRange(50, 475);
+	let enemyTempX = 500;	// Set to 500 so that when the game first starts, enemyPlanes spawn outside the right edge of the screen.
+	let enemyTempY = randomFloatRange(50, 475);
 
-	let enemySprite = new Sprite(tempX, tempY);	
+	let enemySprite = new Sprite(enemyTempX, enemyTempY);	
 	enemySprite.setTexture(enemyTexture);
 	enemySprite.setSize(50, 50);		
 
-	// Set the current enemy Sprite's physics, using maxVel and minVel to generate a random velocity between a range, and
+	// Set the current enemySprite's physics, using maxVel and minVel to generate a random velocity between a range, and
 	// manually setting the acceleration and deceleration.  
  	
- 	let maxSpeed = randomFloatRange(25, 50);
-	enemySprite.setPhysics(50, maxSpeed, 0);
+ 	let enemyMaxSpeed = randomFloatRange(25, 50);
+	enemySprite.setPhysics(50, enemyMaxSpeed, 0);
 
 	enemySprite.physics.setSpeed(1);
 
@@ -77,13 +82,46 @@ for(i = 0; i < 3; i++)
 	enemyArray.push(enemySprite);														
 }
 
-// Create a new counter that signifies the number of enemiess left in enemyArray, and also create a label that
-// displays the counter.
-let enemyCount = enemyArray.length;
-let enemyLabel = new Label(100,50);
-enemyLabel.setText("Enemies Left: " + enemyCount);
-enemyLabel.setFont("Arial Black", 36, "yellow");
-enemyLabel.setBorder(2, "black");
+// Creates starArray to hold any of the stars on screen, and create a new Texture for our stars.
+let starArray = [];
+let starTexture = new Texture("images/plane-dodger/star.png"); 
+
+// Fills starArray with 3 stars to start, setting their starting position, their texture, their size, and their velocity.
+for (i = 0; i < 3; i++)
+{
+	let starTempX = 500;
+	let starTempY = randomFloatRange(50, 475);
+
+	let starSprite = new Sprite(starTempX, starTempY);
+	starSprite.setTexture(starTexture);
+	starSprite.setSize(25, 25);
+
+	// Set the current starSprite's physics and actions.
+	let starMaxSpeed = randomFloatRange(30, 40);
+	starSprite.setPhysics(50, starMaxSpeed, 0);
+
+	starSprite.physics.setSpeed(1);
+
+	starSprite.physics.setMotionAngle(180);
+
+	// Create an action that will have each star rotate forever.
+	starSprite.addAction(
+		ActionFactory.forever( 
+			ActionFactory.rotateBy(360,1)
+		)
+	);
+
+	//starSprite.setWrap(512, 512)
+	starArray.push(starSprite);
+}
+
+// Create a new counter that signifies our player's score. The score increases every time
+// the player collides with a star.
+let scoreCount = 0;
+let scoreLabel = new Label(100,50);
+scoreLabel.setText("Score: " + scoreCount);
+scoreLabel.setFont("Arial Black", 36, "yellow");
+scoreLabel.setBorder(2, "black");
 
 // Create a new label to display a game over.
 let loseLabel = new Label(150,250);
@@ -91,20 +129,12 @@ loseLabel.setText("Game Over!");
 loseLabel.setFont("Arial Black", 36, "red");
 loseLabel.setBorder(2, "black");
 
-// Create a new label to display a win. 
-let winLabel = new Label(150,250);
-winLabel.setText("You Win!");
-winLabel.setFont("Arial Black", 36, "green");
-winLabel.setBorder(2, "black");
-
-// Two new varaibles to check whether the game is over, and how.
-winState = false;
+// A variable to check whether the game is over.
 loseState = false;
-
 
 function update()
 {
-	// Code to make the plane jump
+	// Code to make the plane jump.
 	// Name for space bar is an actual space.
 	if (input.isKeyDown(" "))
 	{
@@ -130,9 +160,26 @@ function update()
 		enemyArray[i].update();
 	}
 
-	// If enemies exit the screen via the left edge, their y positions are changed to a new 
-	// random before they reappear from the right edge.
-	// for-loop can successfully randomize the y positon.
+	/* Checks whether or not there are less than three stars on the screen at once.
+	// If there are less than three...add as many as needed to get back to three.
+	if (starArray.length < 3)
+	{
+		for (i = 0; i < starArray.length; i++)
+		{
+			
+		}
+	}*/
+
+	// Instantiates each star in starArray.
+	for (let i = 0; i < starArray.length; i++)
+	{
+		// Moves the star before updating it.
+		starArray[i].physics.accelerateAtAngle(starArray[i].physics.getMotionAngle());
+		starArray[i].update();
+	}
+
+	// If enemies exit the screen via the left edge and appear off the screen on the right edge, their y positions
+	// are changed to a new random before they reappear on the right side of the canvas.
 	for (let i = 0; i < enemyArray.length; i++)
 	{
 		if (enemyArray[i].x - enemyArray[i].w/2 > canvas.width)
@@ -141,6 +188,26 @@ function update()
 
 	// Call update on the input function.
 	input.update();
+
+	// Go through the starArray...
+	for (let i = 0; i < starArray.length; i++)
+	{
+		// Check if the player overlaps any of the stars, and both removes the star and increases the score if so.
+		if (playerSprite.overlaps(starArray[i]))
+		{
+			// Remove the current star from starArray.
+			starArray.splice(i, 1);
+
+			scoreCount += 20;
+			scoreLabel.setText("Score: " + scoreCount);
+			break;
+		}
+
+		// If one of the stars goes off the left side of the screen...destroy it.
+		if (starArray[i].x + starArray[i].w/2 < 0)
+			starArray.splice(i, 1);
+
+	}
 
 	// Checks if the enemies overlap the player, and causes a loss if so.
 	for (let i = 0; i < enemyArray.length; i++)
@@ -174,14 +241,14 @@ function render()
 		enemyArray[i].render(context);
 	}
 
-	// Render enemyLabel to the screen.
-	enemyLabel.render(context);
-
-	// Renders the winLabel if the game is won.
-	if(winState)
+	// Renders each star.
+	for (let i = 0; i < starArray.length; i++)
 	{
-		winLabel.render(context);
+		starArray[i].render(context);
 	}
+
+	// Render scoreLabel to the screen.
+	scoreLabel.render(context);
 
 	// Renders the loseLabel if the game is lost.
 	if(loseState)
@@ -195,7 +262,7 @@ function loop()
 	// Call all of our functions in order, then recall this function again.
 	update();
 	render();
-	if(!winState && !loseState)
+	if(!loseState)
 	{
 		requestAnimationFrame(loop);
 	}
