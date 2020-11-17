@@ -35,10 +35,40 @@ let canvas = document.getElementById("canvas");
 let context = canvas.getContext("2d");
 
 // Create the background image and size it to the canvas size.
-let backSprite = new Sprite(225, 300);
-backSprite.setTexture( 
-	new Texture("images/plane-dodger/sky.png")); 
-backSprite.setSize(450, 600);
+let backArray = [];
+backTexture = new Texture("images/plane-dodger/sky.png"); 
+
+
+for (i = 0; i < 2; i++)
+{
+
+	backTempY = 300;
+
+	if (i == 0)
+	{
+		backTempX = 225;
+	}
+	else
+	{
+		backTempX = 675;
+	}
+
+	backSprite = new Sprite(backTempX, backTempY);	
+	backSprite.setTexture(backTexture);
+	backSprite.setSize(450, 600);		
+
+	// Set the current backSprite's physics, using maxVel and minVel to generate a random velocity between a range, and
+	// manually setting the acceleration and deceleration.  
+ 	
+ 	let backMaxSpeed = randomFloatRange(25, 50);
+	backSprite.setPhysics(0, 20, 0);
+
+	backSprite.physics.setSpeed(20);
+
+	backSprite.physics.setMotionAngle(180);	
+
+	backArray.push(backSprite);														
+}
 
 // Create playerSprite, the sprite that the player will control, and set its starting
 // position, texture, size, and wrapping. Velocity is set within update(), in moveDistanceAtAngle() function call.
@@ -51,7 +81,7 @@ playerSprite.physics.setMotionAngle(90);
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
 let spriteArray = [];
-spriteArray.push(backSprite, playerSprite);
+spriteArray.push(playerSprite);
 
 // Creates enemyArray to hold any enemies on screen, and create a new Texture for our enemies.
 let enemyArray = [];
@@ -167,6 +197,23 @@ function update()
 		enemyArray[i].update();
 	}
 
+	for (let i = 0; i < backArray.length; i++)
+	{
+		// Moves the enemy before updating it.
+		backArray[i].physics.accelerateAtAngle(backArray[i].physics.getMotionAngle());
+		backArray[i].update();
+	}
+
+	// Makes the backgrounds wrap around
+	// This has no right to work, but it does???
+	for (let i = 0; i < backArray.length; i++)
+	{
+		if (backArray[i].x + backArray[i].w/2 < 0)
+		{
+			backArray[i].x = 675;
+		}
+	}
+
 	 //Checks whether or not there are less than three stars on the screen at once.
 	// If there are less than three, add one more- it will run next frame if more are needed.
 	if (starArray.length < 3)
@@ -223,6 +270,10 @@ function update()
 			loseState = true;
 		}
 	}
+
+	// Checks if the player is below the screen, and causes a loss if so.
+	if(playerSprite.y > 625)
+		loseState = true;
 }
 
 function render()
@@ -235,7 +286,13 @@ function render()
 	context.fillRect(0,0, 512,512);
 	context.strokeRect(0, 0, 512, 512);
 
-	// Draws everything in the spriteArray to the screen. (Background and playerSprite)
+	// Renders each background sprite.
+	for (let i = 0; i < backArray.length; i++)
+	{
+		backArray[i].render(context);
+	}
+
+	// Draws everything in the spriteArray to the screen. (just playerSprite)
 	for (let i = 0; i < spriteArray.length; i++)
 	{
 		spriteArray[i].render(context);
