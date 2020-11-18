@@ -26,14 +26,15 @@ class ActionFactory
 		);
 	}
 
-	// TODO: this.
+	// TODO: Better describe this.
 	static fadeOut(duration)
 	{
 		return new Action(
 			function(target, deltaTime, totalTime)
 			{
-				target
-				return
+				// We set the opacity to itself minus 1/60 (fps) times our action duration.
+				target.opacity -= (1/(60 * duration));
+				return target.opacity <= 0;
 			}
 		);
 	}
