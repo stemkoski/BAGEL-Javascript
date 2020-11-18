@@ -25,7 +25,7 @@
 
 // =================================================
 
-let running = true;
+let starTimer = 120;
 
 // Create a new variable, "input", that is set as an Object of the input.js class.
 let input = new Input();
@@ -59,10 +59,9 @@ for (i = 0; i < 2; i++)
 	// Set the current backSprite's physics, using maxVel and minVel to generate a random velocity between a range, and
 	// manually setting the acceleration and deceleration.  
  	
- 	let backMaxSpeed = randomFloatRange(25, 50);
-	backSprite.setPhysics(0, 20, 0);
+	backSprite.setPhysics(0, 90, 0);
 
-	backSprite.physics.setSpeed(20);
+	backSprite.physics.setSpeed(90);
 
 	backSprite.physics.setMotionAngle(180);	
 
@@ -86,9 +85,11 @@ spriteArray.push(playerSprite);
 let enemyArray = [];
 let enemyTexture = new Texture("images/plane-dodger/planeRed0.png");
 
-// Fills enemyArray with enemies, sets their starting position, their texture, their size, their
-// velocity, and their wrapping.
-for (i = 0; i < 3; i++)
+// Creates starArray to hold any of the stars on screen, and create a new Texture for our stars.
+let starArray = [];
+let starTexture = new Texture("images/plane-dodger/star.png"); 
+
+function makeEnemy()
 {
 	let enemyTempX = 500;	// Set to 500 so that when the game first starts, enemyPlanes spawn outside the right edge of the screen.
 	let enemyTempY = randomFloatRange(50, 475);
@@ -100,20 +101,15 @@ for (i = 0; i < 3; i++)
 	// Set the current enemySprite's physics, using maxVel and minVel to generate a random velocity between a range, and
 	// manually setting the acceleration and deceleration.  
  	
- 	let enemyMaxSpeed = randomFloatRange(25, 50);
+ 	let enemyMaxSpeed = randomFloatRange(75, 150);
 	enemySprite.setPhysics(50, enemyMaxSpeed, 0);
 
 	enemySprite.physics.setSpeed(1);
 
 	enemySprite.physics.setMotionAngle(180);	
 
-	enemySprite.setWrap(512, 600);
-	enemyArray.push(enemySprite);														
+	enemyArray.push(enemySprite);					
 }
-
-// Creates starArray to hold any of the stars on screen, and create a new Texture for our stars.
-let starArray = [];
-let starTexture = new Texture("images/plane-dodger/star.png"); 
 
 // Creates a new star and adds it to starArray, setting their starting position, their texture, their size, and their velocity.
 function makeStar()
@@ -140,15 +136,15 @@ function makeStar()
 		)
 	);
 
-	starSprite.setWrap(512, 600)
 	starArray.push(starSprite);
 
 }
 
-// Fills starArray with 3 stars to start
+// Fills enemyArray with enemies, sets their starting position, their texture, their size, their
+// velocity, and their wrapping.
 for (i = 0; i < 3; i++)
 {
-	makeStar();
+	makeEnemy();					
 }
 
 // Create a new counter that signifies our player's score. The score increases every time
@@ -170,6 +166,23 @@ loseState = false;
 
 function update()
 {
+	// Continue subtracting 1 tick from starTimer.
+	starTimer--;
+
+	// If starTimer is equal to 0.
+	if (starTimer == 0)
+	{
+		// Make a new star, and reset starTImer.
+		makeStar();
+		starTimer = 120;
+	}
+
+	// If there are less than 3 enemies in enemyArray, respawn as many as needed.
+	if (enemyArray.length < 3)
+	{
+		makeEnemy();
+	}
+
 	// Code to make the plane jump.
 	// Name for space bar is an actual space.
 	if (input.isKeyDown(" "))
@@ -209,15 +222,8 @@ function update()
 	{
 		if (backArray[i].x + backArray[i].w/2 < 0)
 		{
-			backArray[i].x = 675;
+			backArray[i].x += 900;
 		}
-	}
-
-	// Checks whether or not there are less than three stars on the screen at once.
-	// If there are less than three, add one more- it will run next frame if more are needed.
-	if (starArray.length < 3)
-	{
-		makeStar();
 	}
 
 	// Updates each star in starArray.
@@ -226,16 +232,6 @@ function update()
 		// Moves the star before updating it.
 		starArray[i].physics.accelerateAtAngle(starArray[i].physics.getMotionAngle());
 		starArray[i].update();
-	}
-
-	// If enemies exit the screen via the left edge and appear off the screen on the right edge, their y positions
-	// are changed to a new random before they reappear on the right side of the canvas.
-	for (let i = 0; i < enemyArray.length; i++)
-	{
-		if (enemyArray[i].x - enemyArray[i].w/2 > canvas.width)
-		{
-			enemyArray[i].y = randomFloatRange(50, 475);
-		}
 	}
 
 	// Call update on the input function.
@@ -261,13 +257,19 @@ function update()
 
 	}
 
-	// Checks if the enemies overlap the player, and causes a loss if so.
+	// Go through the enemyArray...
 	for (let i = 0; i < enemyArray.length; i++)
 	{
+		// Check if the enemies overlap the player, and causes a loss if so.
 		if(enemyArray[i].overlaps(playerSprite))
 		{
 			loseState = true;
+			break;
 		}
+
+		// If one of the enemies go off the left side of the screen...destroy it.
+		if (enemyArray[i].x + enemyArray[i].w/2 < 0)
+			enemyArray.splice(i, 1);
 	}
 
 	// Checks if the player is below the screen, and causes a loss if so.
