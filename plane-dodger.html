@@ -38,7 +38,6 @@ let context = canvas.getContext("2d");
 let backArray = [];
 backTexture = new Texture("images/plane-dodger/sky.png"); 
 
-
 for (i = 0; i < 2; i++)
 {
 
@@ -214,7 +213,7 @@ function update()
 		}
 	}
 
-	 //Checks whether or not there are less than three stars on the screen at once.
+	// Checks whether or not there are less than three stars on the screen at once.
 	// If there are less than three, add one more- it will run next frame if more are needed.
 	if (starArray.length < 3)
 	{
