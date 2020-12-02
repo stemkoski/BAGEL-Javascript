@@ -26,6 +26,7 @@
 // =================================================
 
 let starTimer = 120;
+let enemyTimer = 120;
 
 // Create a new variable, "input", that is set as an Object of the input.js class.
 let input = new Input();
@@ -101,8 +102,11 @@ function makeEnemy()
 	// Set the current enemySprite's physics, using maxVel and minVel to generate a random velocity between a range, and
 	// manually setting the acceleration and deceleration.  
  	
- 	let enemyMaxSpeed = randomFloatRange(75, 150);
-	enemySprite.setPhysics(50, enemyMaxSpeed, 0);
+ 	let enemyMaxSpeed = randomFloatRange(75, 125);
+
+ 	// Experimentally not capping plane speed- old code preseved
+	//enemySprite.setPhysics(enemyMaxSpeed/2, enemyMaxSpeed, 0);
+	enemySprite.setPhysics(enemyMaxSpeed/2, 999, 0);
 
 	enemySprite.physics.setSpeed(1);
 
@@ -122,8 +126,8 @@ function makeStar()
 	starSprite.setSize(25, 25);
 
 	// Set the current starSprite's physics and actions.
-	let starMaxSpeed = randomFloatRange(30, 40);
-	starSprite.setPhysics(50, starMaxSpeed, 0);
+	let starMaxSpeed = randomFloatRange(60, 70);
+	starSprite.setPhysics(70, starMaxSpeed, 0);
 
 	starSprite.physics.setSpeed(1);
 
@@ -167,19 +171,22 @@ function update()
 {
 	// Continue subtracting 1 tick from starTimer.
 	starTimer--;
+	enemyTimer--;
 
 	// If starTimer is equal to 0.
 	if (starTimer == 0)
 	{
 		// Make a new star, and reset starTImer.
 		makeStar();
-		starTimer = 120;
+		starTimer = 240;
 	}
 
-	// If there are less than 3 enemies in enemyArray, respawn as many as needed.
-	if (enemyArray.length < 3)
+	// If enemyTimer is equal to 0.
+	if (enemyTimer == 0)
 	{
+		// Make a new enemy, and reset enemyTimer.
 		makeEnemy();
+		enemyTimer = 120;
 	}
 
 	// Code to make the plane jump.
@@ -270,6 +277,13 @@ function update()
 		if (enemyArray[i].x + enemyArray[i].w/2 < 0)
 			enemyArray.splice(i, 1);
 	}
+
+	// Bounds the player to the top of the screen only
+		if ((playerSprite.y - playerSprite.h/2) < 0)
+		{
+			playerSprite.y = playerSprite.h/2;
+			playerSprite.physics.setSpeed(0);
+		}
 
 	// Checks if the player is below the screen, and causes a loss if so.
 	if(playerSprite.y > 625)
