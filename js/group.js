@@ -8,6 +8,7 @@ class Group
 	add(sprite)
 	{
 		this.list.push(sprite);
+		sprite.parent = this;
 	}
 
 	remove(sprite)
@@ -17,6 +18,26 @@ class Group
 		if (index != -1)
 		{
 			this.list.splice(index, 1);
+		}
+
+		sprite.parent = null;
+	}
+
+	getSize()
+	{
+		return this.list.length;
+	}
+
+	getList()
+	{
+		return this.list;
+	}
+
+	update()
+	{
+		for (let i = 0; i < this.list.length; i++)
+		{
+			this.list[i].update();
 		}
 	}
 

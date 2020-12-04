@@ -35,6 +35,9 @@ class Sprite
 
 		// list of actions: functions applied to this Sprite over time
 		this.actionList = [];
+
+		// the group containing this object
+		this.parent = null;
 	}
 
 	setTexture(tex)
@@ -86,6 +89,11 @@ class Sprite
 		
 	}
 
+	remove()
+	{
+		this.parent.remove(this);
+	}
+
 	/*
 	moveDistanceAtAngle(distance, angle)
 	{
@@ -131,6 +139,7 @@ class Sprite
 		if (this.y - this.h/2 > this.worldHeight)
 			this.y = this.y - (this.worldHeight + this.h);
 	}
+
 
 	bound()
 	{

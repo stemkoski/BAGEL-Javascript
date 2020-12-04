@@ -4,9 +4,11 @@
 </head>
 <body>
 
+<script src="js/action.js"></script>
+<script src="js/actionFactory.js"></script>
+<script src="js/group.js"></script>
 <script src="js/vector2.js"></script>
 <script src="js/physics.js"></script>
-
 <script src="js/sprite.js"></script>
 <script src="js/input.js"></script>
 <script src="js/texture.js"></script>
@@ -44,14 +46,13 @@ shipSprite.setWrap(512, 512);
 shipSprite.setPhysics(50, 200, 10);
 
 // Create the array spriteArray, and push each Sprite into the array to be instantiated.
-let spriteArray = [];
-spriteArray.push(backSprite, shipSprite);
+let spriteGroup = new Group();
+spriteGroup.add(backSprite);
+spriteGroup.add(shipSprite);
 
-// Creates laserArray to hold any of the lasers that are spawned by shipSprite.
-let laserArray = [];
 
-// Creates rockArray to hold any rocks on screen
-let rockArray = [];
+let laserGroup = new Group();
+let rockGroup  = new Group();
 
 let rockTexture = new Texture("images/space-rocks/rock.png");
 
@@ -73,17 +74,16 @@ for(i = 0; i < 3; i++)
  	let maxSpeed = randomFloatRange(25, 50);
 	rockSprite.setPhysics(50, maxSpeed, 0);
 
-	rockSprite.physics.setSpeed(1);
-
+	rockSprite.physics.setSpeed(50);
 	rockSprite.physics.setMotionAngle(Math.random() * 360);	
 
 	rockSprite.setWrap(512, 512);
-	rockArray.push(rockSprite)														
+	rockGroup.add(rockSprite);														
 }
 
 // Create a new counter that signifies the number of rocks left in rockArray, and also create a label that
 // displays the counter.
-let rockCount = rockArray.length;
+let rockCount = rockGroup.getSize();
 let rockLabel = new Label(100,50);
 rockLabel.setText("Rocks Left: " + rockCount);
 rockLabel.setFont("Arial Black", 36, "yellow");
@@ -139,7 +139,6 @@ function update()
 	{
 		let laserSprite = new Sprite(shipSprite.x, shipSprite.y);
 
-		// The newly created laser is pushed to the end of the array, so it's located at laserArray.length - 1.
 		laserSprite.setTexture(laserTexture);
 		laserSprite.setSize(10, 10);
 		laserSprite.setWrap(512, 512);
@@ -148,75 +147,56 @@ function update()
 		laserSprite.physics.setSpeed(200);
 		// Set the motion angle of the current laser to the Sprite angle of shipSprite as of the moment it was shot.
 		laserSprite.physics.setMotionAngle(shipSprite.angle);
-		laserSprite.timer = 120;
-		laserArray.push(laserSprite);
+		
+		laserSprite.addAction(
+			ActionFactory.sequence(
+				[ActionFactory.delay(2), ActionFactory.remove()]
+			)
+		);
 
+		laserGroup.add(laserSprite);
 	}
 
-	// Moves and updates each laser.
-	for(i = 0; i < laserArray.length; i++)
-		{				
-			(laserArray[i].timer)--;
-			laserArray[i].update();
-			if(laserArray[i].timer < 1)
-			{
-				laserArray.splice(i, 1);
-			}
-		}
+	
+	// update everything
+	spriteGroup.update();
+	rockGroup.update();
+	laserGroup.update();
+	input.update();
 
-	// Check if a laser Sprite and rock Sprite are overlapping, and if so, removes both of them from
-	// their respective arrays.
-	for (let i = 0; i < rockArray.length; i++)
+	// interactions between objects
+	for ( let rock of rockGroup.getList() )
 	{
-		for (let j = 0; j < laserArray.length; j++)
+		for ( let laser of laserGroup.getList() )
 		{
-			if(rockArray[i].overlaps(laserArray[j]))
+			if ( rock.overlaps(laser) )
 			{
-				// Remove both rock and laser from their respective arrays.
-				rockArray.splice(i, 1);
-				laserArray.splice(j, 1);
-
-				// Set rockCount to rockCount - 1, signifying that one of the rocks has been destroyed.
-				// Then change the label accordingly.
-				rockCount -= 1;
-				rockLabel.setText("Rocks Left: " + rockCount);
+				// remove both rock and laser from their groups
+				rock.remove();
+				laser.remove();
 				break;
 			}
 		}
 	}
 	
-	
-	// Instantiate each Sprite in spriteArray.
-	for (let i = 0; i < spriteArray.length; i++)
-	{
-		spriteArray[i].update();
-	}
-
-	// Instantiate each Rock in rockArray.
-	for (let i = 0; i < rockArray.length; i++)
-	{
-		// Moves the rock before updating it.
-		rockArray[i].physics.accelerateAtAngle(rockArray[i].physics.getMotionAngle());
-		rockArray[i].update();
-	}
-	
-	// Call update on the input function.
-	input.update();
-
 	// Checks if the rocks overlap the ship, and causes a loss if so.
-	for (let i = 0; i < rockArray.length; i++)
+	for ( let rock of rockGroup.getList() )
 	{
-		if(rockArray[i].overlaps(shipSprite))
+		if( rock.overlaps(shipSprite) )
 		{
 			loseState = true;
 		}
 	}
 
+	let rockCount = rockGroup.getSize();
+	rockLabel.setText("Rocks Left: " + rockCount);
+	
 	// Checks if there are any rocks left, and causes a win if not. 
-	if(rockArray.length == 0)
+	if (rockGroup.getSize() == 0)
 	{
 		winState = true;
 	}
+	
 }
 
 function render()
@@ -229,25 +209,10 @@ function render()
 	context.fillRect(0,0, 512,512);
 	context.strokeRect(0, 0, 512, 512);
 
-	// Draws everything in the spriteArray to the screen. (Background and shipSprite)
-	for (let i = 0; i < spriteArray.length; i++)
-	{
-		spriteArray[i].render(context);
-	}
-
-	// Renders each rock.
-	for (let i = 0; i < rockArray.length; i++)
-	{
-		rockArray[i].render(context);
-	}
-
-	// Renders each laser.
-	for (let i = 0; i < laserArray.length; i++)
-	{
-		laserArray[i].render(context);
-	}
-
-	// Render rockLabel to the screen.
+	// render everything 
+	spriteGroup.render(context);
+	rockGroup.render(context);
+	laserGroup.render(context);
 	rockLabel.render(context);
 
 	// Renders the winLabel if the game is won.

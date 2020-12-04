@@ -274,6 +274,14 @@ function update()
 		}
 
 		// If one of the enemies go off the left side of the screen...destroy it.
+		/*
+
+		DEATH SQUARE OF DOOM AND GLOOM AND DESTRUCTION!!!
+		if ( enemy.overlaps(deathRectangle) )
+			enemy.remove();
+
+		*/
+
 		if (enemyArray[i].x + enemyArray[i].w/2 < 0)
 			enemyArray.splice(i, 1);
 	}

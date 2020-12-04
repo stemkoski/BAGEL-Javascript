@@ -52,4 +52,48 @@ class ActionFactory
 			}
 		);
 	}
+
+	// action that finishes after a certain amount of time passes
+	static delay(duration)
+	{
+		return new Action(
+			function(target, deltaTime, totalTime)
+			{
+				return totalTime >= duration;
+			}
+		);
+	}
+
+	// action to remove an object from its containing Group
+	static remove()
+	{
+		return new Action(
+			function(target, deltaTime, totalTime)
+			{
+				// request parent group to remove this sprite from it
+				target.remove();
+			}
+		);
+	}
+
+	// this forces actions to be run one after the other
+	//  not all at the same time, which is the default.
+	static sequence(actionArray)
+	{
+		return new Action(
+			function(target, deltaTime, totalTime)
+			{
+				// retrieve first action in array
+				let act = actionArray[0];
+				// run action on target
+				let finished = act.apply(target, deltaTime);
+				// if that action is finished, remove it from the array
+				if (finished)
+					actionArray.shift();
+				// if array is empty, this (sequence) action is finished
+				return (actionArray.length == 0);
+			}
+		);
+	}
+
 }
