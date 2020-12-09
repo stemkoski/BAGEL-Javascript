@@ -8,8 +8,8 @@
 <script src="js/physics.js"></script>
 
 <script src="js/sprite.js"></script>
-
 <script src="js/texture.js"></script>
+<script src="js/group.js"></script>
 
 <script src="js/input.js"></script>
 <script src="js/label.js"></script>
@@ -35,8 +35,8 @@ let input = new Input();
 let canvas = document.getElementById("canvas");
 let context = canvas.getContext("2d");
 
-// Create the background image and size it to the canvas size.
-let backArray = [];
+// Create a Group called backGroup, which will store both of our two background images for scrolling.
+let backGroup = new Group();
 backTexture = new Texture("images/plane-dodger/sky.png"); 
 
 for (i = 0; i < 2; i++)
@@ -66,7 +66,8 @@ for (i = 0; i < 2; i++)
 
 	backSprite.physics.setMotionAngle(180);	
 
-	backArray.push(backSprite);														
+	// Add each background image to backGroup.
+	backGroup.add(backSprite);														
 }
 
 // Create playerSprite, the sprite that the player will control, and set its starting
@@ -78,18 +79,19 @@ playerSprite.setSize(50, 50);
 playerSprite.setPhysics(150, 300, 10);
 playerSprite.physics.setMotionAngle(90);
 
-// Create the array spriteArray, and push each Sprite into the array to be instantiated.
-let spriteArray = [];
-spriteArray.push(playerSprite);
+// Create the Group spriteGroup, and add each Sprite into the Group to be instantiated. (Just playerSprite right now.)
+let spriteGroup = new Group();
+spriteGroup.add(playerSprite);
 
-// Creates enemyArray to hold any enemies on screen, and create a new Texture for our enemies.
-let enemyArray = [];
+// Creates enemyGroup to hold any enemies on screen, and create a new Texture for our enemies.
+let enemyGroup = new Group();
 let enemyTexture = new Texture("images/plane-dodger/planeRed0.png");
 
-// Creates starArray to hold any of the stars on screen, and create a new Texture for our stars.
-let starArray = [];
+// Creates starGroup to hold any of the stars on screen, and create a new Texture for our stars.
+let starGroup = new Group();
 let starTexture = new Texture("images/plane-dodger/star.png"); 
 
+// Creates a new enemy and adds it to enemyGroup, setting their various values and properties.
 function makeEnemy()
 {
 	let enemyTempX = 500;	// Set to 500 so that when the game first starts, enemyPlanes spawn outside the right edge of the screen.
@@ -105,17 +107,18 @@ function makeEnemy()
  	let enemyMaxSpeed = randomFloatRange(75, 125);
 
  	// Experimentally not capping plane speed- old code preseved
-	//enemySprite.setPhysics(enemyMaxSpeed/2, enemyMaxSpeed, 0);
-	enemySprite.setPhysics(enemyMaxSpeed/2, 999, 0);
+	// enemySprite.setPhysics(enemyMaxSpeed/2, enemyMaxSpeed, 0);
+	enemySprite.setPhysics(enemyMaxSpeed / 2, 999, 0);
 
 	enemySprite.physics.setSpeed(1);
 
 	enemySprite.physics.setMotionAngle(180);	
 
-	enemyArray.push(enemySprite);					
+	// Add each enemy to enemyGroup.
+	enemyGroup.add(enemySprite);					
 }
 
-// Creates a new star and adds it to starArray, setting their starting position, their texture, their size, and their velocity.
+// Creates a new star and adds it to starGroup, setting their starting position, their texture, their size, and their velocity.
 function makeStar()
 {
 	let starTempX = 500;
@@ -140,10 +143,11 @@ function makeStar()
 		)
 	);
 
-	starArray.push(starSprite);
+	// Add each star to starGroup.
+	starGroup.add(starSprite);
 }
 
-// Fills enemyArray with enemies, sets their starting position, their texture, their size, their
+// Fills enemyGroup with enemies, sets their starting position, their texture, their size, their
 // velocity, and their wrapping.
 for (i = 0; i < 3; i++)
 {
@@ -201,56 +205,48 @@ function update()
 	// Accelerates the plane towards the ground every frame
 	playerSprite.physics.accelerateAtAngle(90);
 	
-	// Instantiate each Sprite in spriteArray.
-	for (let i = 0; i < spriteArray.length; i++)
+	// --Update everything.--
+	spriteGroup.update();
+	input.update();
+
+	for (let enemy of enemyGroup.getList())
 	{
-		spriteArray[i].update();
+		// Moves the enemy before updating the entire enemyGroup.
+		enemy.physics.accelerateAtAngle(enemy.physics.getMotionAngle());
+		enemyGroup.update();
 	}
 
-	// Instantiate each enemy in enemyArray.
-	for (let i = 0; i < enemyArray.length; i++)
+	for (let background of backGroup.getList())
 	{
-		// Moves the enemy before updating it.
-		enemyArray[i].physics.accelerateAtAngle(enemyArray[i].physics.getMotionAngle());
-		enemyArray[i].update();
+		// Moves the background before updating the entire backGroup.
+		background.physics.accelerateAtAngle(background.physics.getMotionAngle());
+		backGroup.update();
 	}
 
-	for (let i = 0; i < backArray.length; i++)
+	for (let star of starGroup.getList())
 	{
-		// Moves the enemy before updating it.
-		backArray[i].physics.accelerateAtAngle(backArray[i].physics.getMotionAngle());
-		backArray[i].update();
+		// Moves the star before updating the entire starGroup.
+		star.physics.accelerateAtAngle(star.physics.getMotionAngle());
+		starGroup.update();
 	}
 
-	// Makes the backgrounds wrap around
-	// This has no right to work, but it does???
-	for (let i = 0; i < backArray.length; i++)
+	// Makes the backgrounds wrap around.
+	for (let background of backGroup.getList())
 	{
-		if (backArray[i].x + backArray[i].w/2 < 0)
+		if (background.x + background.w/2 < 0)
 		{
-			backArray[i].x += 900;
+			background.x += 900;
 		}
 	}
 
-	// Updates each star in starArray.
-	for (let i = 0; i < starArray.length; i++)
-	{
-		// Moves the star before updating it.
-		starArray[i].physics.accelerateAtAngle(starArray[i].physics.getMotionAngle());
-		starArray[i].update();
-	}
-
-	// Call update on the input function.
-	input.update();
-
-	// Go through the starArray...
-	for (let i = 0; i < starArray.length; i++)
+	// Go through the starGroup...
+	for (let star of starGroup.getList())
 	{
 		// Check if the player overlaps any of the stars, and both removes the star and increases the score if so.
-		if (playerSprite.overlaps(starArray[i]))
+		if (playerSprite.overlaps(star))
 		{
-			// Remove the current star from starArray.
-			starArray.splice(i, 1);
+			// Remove the current star from starGroup.
+			star.remove();
 
 			scoreCount += 20;
 			scoreLabel.setText("Score: " + scoreCount);
@@ -258,16 +254,16 @@ function update()
 		}
 
 		// If one of the stars goes off the left side of the screen...destroy it.
-		if (starArray[i].x + starArray[i].w/2 < 0)
-			starArray.splice(i, 1);
+		if (star.x + star.w/2 < 0)
+			star.remove();
 
 	}
 
-	// Go through the enemyArray...
-	for (let i = 0; i < enemyArray.length; i++)
+	// Go through the enemyGroup...
+	for (let enemy of enemyGroup.getList())
 	{
 		// Check if the enemies overlap the player, and causes a loss if so.
-		if(enemyArray[i].overlaps(playerSprite))
+		if(enemy.overlaps(playerSprite))
 		{
 			loseState = true;
 			break;
@@ -282,16 +278,16 @@ function update()
 
 		*/
 
-		if (enemyArray[i].x + enemyArray[i].w/2 < 0)
-			enemyArray.splice(i, 1);
+		if (enemy.x + enemy.w/2 < 0)
+			enemy.remove();
 	}
 
 	// Bounds the player to the top of the screen only
-		if ((playerSprite.y - playerSprite.h/2) < 0)
-		{
-			playerSprite.y = playerSprite.h/2;
-			playerSprite.physics.setSpeed(0);
-		}
+	if ((playerSprite.y - playerSprite.h/2) < 0)
+	{
+		playerSprite.y = playerSprite.h/2;
+		playerSprite.physics.setSpeed(0);
+	}
 
 	// Checks if the player is below the screen, and causes a loss if so.
 	if(playerSprite.y > 625)
@@ -309,27 +305,27 @@ function render()
 	context.strokeRect(0, 0, 512, 512);
 
 	// Renders each background sprite.
-	for (let i = 0; i < backArray.length; i++)
+	for (let background of backGroup.getList())
 	{
-		backArray[i].render(context);
+		background.render(context);
 	}
 
-	// Draws everything in the spriteArray to the screen. (just playerSprite)
-	for (let i = 0; i < spriteArray.length; i++)
+	// Draws everything in the spriteGroup to the screen. (Just playerSprite.)
+	for (let sprite of spriteGroup.getList())
 	{
-		spriteArray[i].render(context);
+		sprite.render(context);
 	}
 
 	// Renders each enemy.
-	for (let i = 0; i < enemyArray.length; i++)
+	for (let enemy of enemyGroup.getList())
 	{
-		enemyArray[i].render(context);
+		enemy.render(context);
 	}
 
 	// Renders each star.
-	for (let i = 0; i < starArray.length; i++)
+	for (let star of starGroup.getList())
 	{
-		starArray[i].render(context);
+		star.render(context);
 	}
 
 	// Render scoreLabel to the screen.
