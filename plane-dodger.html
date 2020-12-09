@@ -35,6 +35,12 @@ let input = new Input();
 let canvas = document.getElementById("canvas");
 let context = canvas.getContext("2d");
 
+// Creats the DEATH SQUARE offscreen, with a horrifying (yet unseen) visual to match
+let deathSquare = new Sprite(-375, 300);
+deathSquare.setTexture( 
+	new Texture("images/plane-dodger/deathSquare.png")); 
+deathSquare.setSize(600, 600);
+
 // Create a Group called backGroup, which will store both of our two background images for scrolling.
 let backGroup = new Group();
 backTexture = new Texture("images/plane-dodger/sky.png"); 
@@ -270,15 +276,10 @@ function update()
 		}
 
 		// If one of the enemies go off the left side of the screen...destroy it.
-		/*
+		
 
-		DEATH SQUARE OF DOOM AND GLOOM AND DESTRUCTION!!!
-		if ( enemy.overlaps(deathRectangle) )
-			enemy.remove();
-
-		*/
-
-		if (enemy.x + enemy.w/2 < 0)
+		//DEATH SQUARE OF DOOM AND GLOOM AND DESTRUCTION!!!
+		if ( enemy.overlaps(deathSquare) )
 			enemy.remove();
 	}
 
@@ -309,6 +310,8 @@ function render()
 	{
 		background.render(context);
 	}
+
+	deathSquare.render(context);
 
 	// Draws everything in the spriteGroup to the screen. (Just playerSprite.)
 	for (let sprite of spriteGroup.getList())
