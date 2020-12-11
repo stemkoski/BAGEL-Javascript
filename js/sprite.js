@@ -174,16 +174,75 @@ class Sprite
 	// The following method, essentially, checks if one sprite is overlapping another by
 	// checking the space between one sprite and another sprite, and seeing if there is an "invisible line"
 	// (or empty space) between the two in any linear direction.
-	overlaps(otherSprite)
+	overlaps(other)
 	{
-		let noOverlap = this.x > otherSprite.x + otherSprite.w/2 ||
-						this.x + this.w/2 < otherSprite.x ||
-						this.y > otherSprite.y + otherSprite.h/2 ||
-						this.y + this.h/2 < otherSprite.y;
+		this.left    = this.x - this.w/2;
+		this.right   = this.x + this.w/2;
+		this.top     = this.y - this.h/2;
+		this.bottom  = this.y + this.h/2;
+		other.left   = other.x - other.w/2;
+		other.right  = other.x + other.w/2;
+		other.top    = other.y - other.h/2;
+		other.bottom = other.y + other.h/2;
+
+		let noOverlap = this.left   > other.right  ||
+						this.right  < other.left   ||
+						this.top    > other.bottom ||
+						this.bottom < other.top;
 
 		// noOverlap is a boolean that stores whether or not the sprites are overlapping.
 		// Whether they are or not, it is always returned when the overlaps() function is called.
 		return !noOverlap;			
+	}
+
+	preventOverlap(other)
+	{
+		if (!this.overlaps(other))
+			return;
+
+		console.log("preventOverlap");
+
+		this.left    = this.x - this.w/2;
+		this.right   = this.x + this.w/2;
+		this.top     = this.y - this.h/2;
+		this.bottom  = this.y + this.h/2;
+		other.left   = other.x - other.w/2;
+		other.right  = other.x + other.w/2;
+		other.top    = other.y - other.h/2;
+		other.bottom = other.y + other.h/2;
+
+		let vectorA = [ this.left - other.right, 0 ];
+		let vectorB = [ other.left - this.right, 0 ];
+		let vectorC = [ 0, this.top - other.bottom ];
+		let vectorD = [ 0, other.top - this.bottom ];
+
+		function sortFunction( vector1, vector2 )
+		{
+			// if vector1 < vector2 return -1
+		    // if vector1 = vector2 return  0
+			// if vector1 > vector2 return +1
+			let length1 = Math.sqrt( vector1[0] * vector1[0] + vector1[1] * vector1[1] );
+			let length2 = Math.sqrt( vector2[0] * vector2[0] + vector2[1] * vector2[1] );
+			
+			if (length1 < length2)
+				return -1;
+			else if (length1 > length2)
+				return 1;
+			else
+				return 0;
+		}
+
+		let translations = [ vectorA, vectorB, vectorC, vectorD ];
+
+		console.log( translations );
+		
+		translations.sort( sortFunction );
+
+		let minTranslation = translations[0];
+		console.log( minTranslation );
+
+		this.x += minTranslation[0] * 1.1;
+		this.y += minTranslation[1] * 1.1;
 	}
 
 	update()

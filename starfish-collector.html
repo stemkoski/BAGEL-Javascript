@@ -45,7 +45,7 @@ let turtleSprite = new Sprite(50, 50);
 turtleSprite.setTexture( new Texture("images/starfish-collector/turtle.png"));
 turtleSprite.setSize(50, 50);
 turtleSprite.setBound(512, 512);
-turtleSprite.setPhysics(50, 200, 50);
+turtleSprite.setPhysics(200, 200, 200);
 
 // The following code first creates an array called starArray, which will take in a set number of starfish Sprites.
 // Then, we use a loop to go through the array and instantiate each starfish Sprite at a Random position on the canvas.
@@ -120,14 +120,23 @@ function update()
 	for (let i = 0; i < starArray.length; i++)
 	{
 		// update stars, since they now do stuff
-		starArray[i].update();
+		starSprite = starArray[i];
 
+		starSprite.update();
+
+		if ( turtleSprite.overlaps( starSprite ) )
+		{
+			starSprite.preventOverlap( turtleSprite );
+			// turtleSprite.physics.setSpeed(0);
+		}
+		/*
 		if(starArray[i].overlaps(turtleSprite))
 		{
 			starArray.splice(i, 1);
 			score += 1;
 			scoreLabel.setText("Score: " + score);
 		}
+		*/
 	}
 
 }
