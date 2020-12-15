@@ -53,16 +53,17 @@ let context = canvas.getContext("2d");
 // Create each respective Sprite at a random starting position, and set its size and
 // velocity. (Except the background image, which remains static.)
 
-let backSprite = new Sprite(0, 0, "background", false, false);
+let backSprite = new Sprite(256, 256, "background", false, false);
 backSprite.setTexture( new Texture("images/test-1/pokemon-background.png"));
 backSprite.setSize(512, 512);
 
 let ballSprite = new Sprite(450 * Math.random(), 450 * Math.random());
 ballSprite.setTexture( new Texture("images/test-1/ball.png"));
 ballSprite.setSize(50,50);
-ballSprite.setPhysics(120, 120, 120);
-ballSprite.physics.setSpeed(50);
+ballSprite.setPhysics(120, 120, 0);
+ballSprite.physics.setSpeed(120);
 ballSprite.physics.setMotionAngle(Math.random() * 360);
+ballSprite.setBounce();
 
 /*
 let discSprite = new Sprite(450 * Math.random(), 450 * Math.random(), "discord");
@@ -121,12 +122,14 @@ function update()
 
 function render()
 {
+	context.setTransform( 1,0,0,1, 0,0 );
+
 	// Clear the screen with the following color, and create a stroke around the canvas. 
-	context.fillStyle = "#ADD8E6"
+	context.fillStyle = "#444A4E"
 	context.fillRect(0,0, 512,512);
 	context.strokeRect(0, 0, 512, 512);
 
-	backSprite.render(context);
+	//backSprite.render(context);
 
 	for (let i = 0; i < spriteArray.length; i++)
 	{
