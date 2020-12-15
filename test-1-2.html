@@ -1,0 +1,152 @@
+<html>
+<head>
+	<title>Test Project</title>
+</head>
+<body>
+
+<script src="js/vector2.js"></script>
+<script src="js/physics.js"></script>
+
+<script src="js/sprite.js"></script>
+<script src="js/texture.js"></script>
+<script src="js/group.js"></script>
+
+<script src="js/input.js"></script>
+<script src="js/label.js"></script>
+
+<script src="js/utilities.js"></script>
+
+<script src="js/action.js"></script>
+<script src="js/actionFactory.js"></script>
+
+<canvas width=512 height=512 id="canvas"></canvas>
+
+<img src = "images/test-1/pokemon-background.png" id = "background" hidden>
+<img src = "images/test-1/ball.png" id = "ball" hidden>
+<img src = "images/test-1/discord.png" id = "discord" hidden>
+<img src = "images/test-1/dreamshield.png" id = "dream" hidden>
+<img src = "images/test-1/kirball.png" id = "kirball" hidden>
+<img src = "images/test-1/metroid.png" id = "metroid" hidden>
+<img src = "images/test-1/one-up.png" id = "one-up" hidden>
+<img src = "images/test-1/pokeball.png" id = "pokeball" hidden>
+<img src = "images/test-1/sans.png" id = "sans" hidden>
+<img src = "images/test-1/slime.png" id = "slime" hidden>
+<img src = "images/test-1/sonic.png" id = "sonic" hidden>
+
+<script>
+
+
+// =================================================
+
+function onKeyDown(eventData)
+{
+	console.log("You pressed: " + eventData.key );
+}
+
+document.addEventListener("keydown", onKeyDown);
+
+// Set up our canvas and Graphics Context.
+let canvas = document.getElementById("canvas");
+let context = canvas.getContext("2d");
+
+// Math.random() -- random decimal number between 0.0 and 1.0
+// Create each respective Sprite at a random starting position, and set its size and
+// velocity. (Except the background image, which remains static.)
+
+let backSprite = new Sprite(0, 0, "background", false, false);
+backSprite.setTexture( new Texture("images/test-1/pokemon-background.png"));
+backSprite.setSize(512, 512);
+
+let ballSprite = new Sprite(450 * Math.random(), 450 * Math.random());
+ballSprite.setTexture( new Texture("images/test-1/ball.png"));
+ballSprite.setSize(50,50);
+ballSprite.setPhysics(120, 120, 120);
+ballSprite.physics.setSpeed(50);
+ballSprite.physics.setMotionAngle(Math.random() * 360);
+
+/*
+let discSprite = new Sprite(450 * Math.random(), 450 * Math.random(), "discord");
+discSprite.setSize(60,60);
+discSprite.setVelocity(1,3);
+
+let dreamSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "dream");
+dreamSprite.setSize(50,50);
+dreamSprite.setVelocity(1,2);
+
+let kirbSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "kirball");
+kirbSprite.setSize(50,50);
+kirbSprite.setVelocity(3,2);
+
+let metSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "metroid");
+metSprite.setSize(50,50);
+metSprite.setVelocity(1,1);
+
+let mushSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "one-up");
+mushSprite.setSize(50,50);
+mushSprite.setVelocity(2,2);
+
+let pokeSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "pokeball");
+pokeSprite.setSize(50,50);
+pokeSprite.setVelocity(3,1);
+
+let sansSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "sans");
+sansSprite.setSize(50,50);
+sansSprite.setVelocity(3,5);
+
+let slimeSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "slime");
+slimeSprite.setSize(50,50);
+slimeSprite.setVelocity(1,1);
+
+let sonicSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "sonic");
+sonicSprite.setSize(60,60);
+sonicSprite.setVelocity(6,5);
+
+// Create the array spriteArray, and push each Sprite into the array to be instantiated.
+let spriteArray = [];
+spriteArray.push(backSprite, ballSprite, discSprite, dreamSprite, kirbSprite, metSprite, mushSprite, pokeSprite, sansSprite, slimeSprite, sonicSprite); */
+
+let spriteArray = [];
+spriteArray.push(ballSprite);
+
+function update()
+{
+	backSprite.update();
+
+	for (let i = 0; i < spriteArray.length; i++)
+	{
+		spriteArray[i].update();
+	}
+
+}
+
+function render()
+{
+	// Clear the screen with the following color, and create a stroke around the canvas. 
+	context.fillStyle = "#ADD8E6"
+	context.fillRect(0,0, 512,512);
+	context.strokeRect(0, 0, 512, 512);
+
+	backSprite.render(context);
+
+	for (let i = 0; i < spriteArray.length; i++)
+	{
+		spriteArray[i].render(context);
+	}
+	
+}
+
+function loop()
+{
+	// Call all of our functions in order, then recall this function again.
+	update();
+	render();
+	requestAnimationFrame(loop);
+}
+
+// Start the program.
+loop();
+
+</script>
+
+</body>
+</html>

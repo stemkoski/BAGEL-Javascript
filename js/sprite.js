@@ -108,10 +108,10 @@ class Sprite
 	{
 		// The following code accounts for Sprites bouncing against the canvas walls.
 		if (this.x + this.w/2 > this.worldWidth || this.x - this.w/2 < 0)
-			this.dx = -1 * this.dx;
+			this.physics.velocityVector.x = -1 * this.physics.velocityVector.x;
 
 		if (this.y + this.h/2 > this.worldHeight || this.y - this.h/2 < 0)
-			this.dy = -1 * this.dy;
+			this.physics.velocityVector.y = -1 * this.physics.velocityVector.y;
 	}
 
 	wrap()
