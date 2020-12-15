@@ -57,8 +57,8 @@ let backSprite = new Sprite(256, 256, "background", false, false);
 backSprite.setTexture( new Texture("images/test-1/pokemon-background.png"));
 backSprite.setSize(512, 512);
 
-let ballSprite = new Sprite(450 * Math.random(), 450 * Math.random());
-ballSprite.setTexture( new Texture("images/test-1/ball.png"));
+let ballSprite = new Sprite(450 * Math.random() + 25, 450 * Math.random() + 25);
+ballSprite.setTexture( new Texture("images/test-1/ghost_box_1.png"));
 ballSprite.setSize(50,50);
 ballSprite.setPhysics(120, 120, 0);
 ballSprite.physics.setSpeed(120);
