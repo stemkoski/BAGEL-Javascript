@@ -107,9 +107,11 @@ class Sprite
 	bounce()
 	{
 		// The following code accounts for Sprites bouncing against the canvas walls.
+		// This if-statement handles bouncing off of the right wall, and the left wall.
 		if (this.x + this.w/2 > this.worldWidth || this.x - this.w/2 < 0)
 			this.physics.velocityVector.x = -1 * this.physics.velocityVector.x;
 
+		// This if statement handles bouncing off of the bottom wall, and the top wall.
 		if (this.y + this.h/2 > this.worldHeight || this.y - this.h/2 < 0)
 			this.physics.velocityVector.y = -1 * this.physics.velocityVector.y;
 	}
