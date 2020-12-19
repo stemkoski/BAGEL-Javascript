@@ -38,12 +38,8 @@
 
 // =================================================
 
-function onKeyDown(eventData)
-{
-	console.log("You pressed: " + eventData.key );
-}
-
-document.addEventListener("keydown", onKeyDown);
+// Create a new variable, "input", that is set as an Object of the input.js class.
+let input = new Input();
 
 // Set up our canvas and Graphics Context.
 let canvas = document.getElementById("canvas");
@@ -60,51 +56,17 @@ backSprite.setSize(512, 512);
 let ballSprite = new Sprite(450 * Math.random() + 25, 450 * Math.random() + 25);
 ballSprite.setTexture( new Texture("images/test-1/ghost_box_1.png"));
 ballSprite.setSize(50,50);
-ballSprite.setPhysics(120, 120, 0);
-ballSprite.physics.setSpeed(120);
+ballSprite.setPhysics(0, 120, 0);
+ballSprite.physics.setSpeed(90);
 ballSprite.physics.setMotionAngle(Math.random() * 360);
 ballSprite.setBounce();
 
-/*
-let discSprite = new Sprite(450 * Math.random(), 450 * Math.random(), "discord");
-discSprite.setSize(60,60);
-discSprite.setVelocity(1,3);
 
-let dreamSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "dream");
-dreamSprite.setSize(50,50);
-dreamSprite.setVelocity(1,2);
-
-let kirbSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "kirball");
+let kirbSprite  = new Sprite(450 * Math.random(), 450 * Math.random());
+kirbSprite.setTexture( new Texture("images/test-1/kirball.png"))
 kirbSprite.setSize(50,50);
-kirbSprite.setVelocity(3,2);
 
-let metSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "metroid");
-metSprite.setSize(50,50);
-metSprite.setVelocity(1,1);
 
-let mushSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "one-up");
-mushSprite.setSize(50,50);
-mushSprite.setVelocity(2,2);
-
-let pokeSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "pokeball");
-pokeSprite.setSize(50,50);
-pokeSprite.setVelocity(3,1);
-
-let sansSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "sans");
-sansSprite.setSize(50,50);
-sansSprite.setVelocity(3,5);
-
-let slimeSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "slime");
-slimeSprite.setSize(50,50);
-slimeSprite.setVelocity(1,1);
-
-let sonicSprite  = new Sprite(450 * Math.random(), 450 * Math.random(), "sonic");
-sonicSprite.setSize(60,60);
-sonicSprite.setVelocity(6,5);
-
-// Create the array spriteArray, and push each Sprite into the array to be instantiated.
-let spriteArray = [];
-spriteArray.push(backSprite, ballSprite, discSprite, dreamSprite, kirbSprite, metSprite, mushSprite, pokeSprite, sansSprite, slimeSprite, sonicSprite); */
 
 let spriteArray = [];
 spriteArray.push(ballSprite);
@@ -113,10 +75,32 @@ function update()
 {
 	backSprite.update();
 
+
 	for (let i = 0; i < spriteArray.length; i++)
 	{
 		spriteArray[i].update();
 	}
+
+	kirbSprite.update();
+
+	if ( input.isKeyPressed("ArrowUp") )
+	{
+		kirbSprite.y -= 1;
+	}
+	if ( input.isKeyPressed("ArrowDown") )
+	{
+		kirbSprite.y += 1;
+	}
+	if ( input.isKeyPressed("ArrowRight") )
+	{
+		kirbSprite.x += 1;
+	}
+	if ( input.isKeyPressed("ArrowLeft") )
+	{
+		kirbSprite.x -= 1;
+	}
+
+	kirbSprite.preventOverlap( ballSprite );
 
 }
 
@@ -135,6 +119,8 @@ function render()
 	{
 		spriteArray[i].render(context);
 	}
+
+	kirbSprite.render(context);
 	
 }
 
