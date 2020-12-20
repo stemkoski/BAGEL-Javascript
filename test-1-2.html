@@ -90,7 +90,17 @@ function makeGhost()
 	ghostGroup.add(ghostSprite);					
 }
 
+// Makes one ghost initially
 makeGhost();
+
+// Create a new label to display a game over.
+let loseLabel = new Label(150,250);
+loseLabel.setText("Game Over!");
+loseLabel.setFont("Arial Black", 36, "red");
+loseLabel.setBorder(2, "black");
+
+// A variable to check whether the game is over.
+loseState = false;
 
 
 function update()
@@ -138,6 +148,13 @@ function update()
 		kirbSprite.preventOverlap( ghostList[i] );
 	}
 
+	for (let i = 0; i < ghostList.length; i++)
+	{
+		if( kirbSprite.overlaps( ghostList[i] )){
+			loseState = true;
+		}
+	}
+
 }
 
 function render()
@@ -159,6 +176,12 @@ function render()
 	ghostGroup.render(context);
 
 	kirbSprite.render(context);
+
+	// Renders the loseLabel if the game is lost.
+	if(loseState)
+	{
+		loseLabel.render(context);
+	}
 	
 }
 
@@ -167,7 +190,10 @@ function loop()
 	// Call all of our functions in order, then recall this function again.
 	update();
 	render();
-	requestAnimationFrame(loop);
+	if(!loseState)
+	{
+		requestAnimationFrame(loop);
+	}
 }
 
 // Start the program.
