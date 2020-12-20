@@ -22,16 +22,7 @@
 <canvas width=512 height=512 id="canvas"></canvas>
 
 <img src = "images/test-1/pokemon-background.png" id = "background" hidden>
-<img src = "images/test-1/ball.png" id = "ball" hidden>
-<img src = "images/test-1/discord.png" id = "discord" hidden>
-<img src = "images/test-1/dreamshield.png" id = "dream" hidden>
 <img src = "images/test-1/kirball.png" id = "kirball" hidden>
-<img src = "images/test-1/metroid.png" id = "metroid" hidden>
-<img src = "images/test-1/one-up.png" id = "one-up" hidden>
-<img src = "images/test-1/pokeball.png" id = "pokeball" hidden>
-<img src = "images/test-1/sans.png" id = "sans" hidden>
-<img src = "images/test-1/slime.png" id = "slime" hidden>
-<img src = "images/test-1/sonic.png" id = "sonic" hidden>
 
 <script>
 
@@ -55,14 +46,15 @@ let backSprite = new Sprite(256, 256, "background", false, false);
 backSprite.setTexture( new Texture("images/test-1/pokemon-background.png"));
 backSprite.setSize(512, 512);
 
-// Creates a group and a texture for ghosts
+// Creates a group and a texture for ghosts.
 let ghostGroup = new Group();
 let ghostTexture = new Texture("images/test-1/ghost_box_1.png");
 
-
+// Creates our player sprite, and calls setBound(), causing it to be bound to the canvas.
 let kirbSprite  = new Sprite(450 * Math.random(), 450 * Math.random());
 kirbSprite.setTexture( new Texture("images/test-1/kirball.png"))
 kirbSprite.setSize(50,50);
+kirbSprite.setBound(512, 512);
 
 let spriteArray = [];
 //spriteArray.push();
@@ -84,7 +76,7 @@ function makeGhost()
 
 	ghostSprite.physics.setMotionAngle(Math.random() * 360);
 
-	ghostSprite.setBounce();	
+	ghostSprite.setBounce(512, 512);	
 
 	// Add each ghost to ghostGroup.
 	ghostGroup.add(ghostSprite);					
