@@ -213,9 +213,9 @@ class Sprite
 		other.top    = other.y - other.h/2;
 		other.bottom = other.y + other.h/2;
 
-		let vectorA = [ this.left - other.right, 0 ];
+		let vectorA = [ other.right - this.left, 0 ];
 		let vectorB = [ other.left - this.right, 0 ];
-		let vectorC = [ 0, this.top - other.bottom ];
+		let vectorC = [ 0, other.bottom - this.top];
 		let vectorD = [ 0, other.top - this.bottom ];
 
 		function sortFunction( vector1, vector2 )
@@ -236,12 +236,17 @@ class Sprite
 
 		let translations = [ vectorA, vectorB, vectorC, vectorD ];
 
-		console.log( translations );
+		/*
+		console.log( vectorA );
+		console.log( vectorB );
+		console.log( vectorC );
+		console.log( vectorD );
+		*/
 		
 		translations.sort( sortFunction );
 
 		let minTranslation = translations[0];
-		console.log( minTranslation );
+		//console.log( minTranslation );
 
 		this.x += minTranslation[0] * 1.1;
 		this.y += minTranslation[1] * 1.1;
