@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Test Project</title>
+	<title>Spectre Squashed</title>
 </head>
 <body>
 
@@ -21,11 +21,7 @@
 
 <canvas width=512 height=512 id="canvas"></canvas>
 
-<img src = "images/test-1/pokemon-background.png" id = "background" hidden>
-<img src = "images/test-1/kirball.png" id = "kirball" hidden>
-
 <script>
-
 
 // =================================================
 
@@ -38,27 +34,40 @@ let input = new Input();
 let canvas = document.getElementById("canvas");
 let context = canvas.getContext("2d");
 
-// Math.random() -- random decimal number between 0.0 and 1.0
-// Create each respective Sprite at a random starting position, and set its size and
-// velocity. (Except the background image, which remains static.)
+// Creates our player sprite.
+let playerSprite  = new Sprite(450 * Math.random(), 450 * Math.random());
+playerSprite.setTexture(new Texture("images/spectre-squashed/player-ball.png"))
+playerSprite.setSize(50,50);
 
-let backSprite = new Sprite(256, 256, "background", false, false);
-backSprite.setTexture( new Texture("images/test-1/pokemon-background.png"));
-backSprite.setSize(512, 512);
+// Create a group called edgeGroup, that will store four Sprites outside each edge of the screen to help with squashing.
+let edgeGroup = new Group();
+edgeTexture = new Texture("images/spectre-squashed/outside-wall.png"); 
 
-// Creates a group and a texture for ghosts.
+// Create each edge Sprite and add it to edgeGroup.
+let edge1 = new Sprite(256, -10);
+edge1.setTexture(edgeTexture);
+edge1.setSize(512, 20)
+
+let edge2 = new Sprite(522, 256)
+edge2.setTexture(edgeTexture);
+edge2.setSize(20, 512)
+
+let edge3 = new Sprite(256, 522)
+edge3.setTexture(edgeTexture);
+edge3.setSize(512, 20)
+
+let edge4 = new Sprite(-10, 256)
+edge4.setTexture(edgeTexture);
+edge4.setSize(20, 512)
+
+edgeGroup.add(edge1);
+edgeGroup.add(edge2);
+edgeGroup.add(edge3);
+edgeGroup.add(edge4);
+
+// Creates a group and a texture for our ghosts.
 let ghostGroup = new Group();
-let ghostTexture = new Texture("images/test-1/ghost_box_1.png");
-
-// Creates our player sprite, and calls setBound(), causing it to be bound to the canvas.
-let kirbSprite  = new Sprite(450 * Math.random(), 450 * Math.random());
-kirbSprite.setTexture( new Texture("images/test-1/kirball.png"))
-kirbSprite.setSize(50,50);
-kirbSprite.setBound(512, 512);
-
-let spriteArray = [];
-//spriteArray.push();
-
+let ghostTexture = new Texture("images/spectre-squashed/ghostbox-1.png");
 
 // Creates a new ghost and adds it to ghostGroup, setting their various values and properties.
 function makeGhost()
@@ -94,10 +103,8 @@ loseLabel.setBorder(2, "black");
 // A variable to check whether the game is over.
 loseState = false;
 
-
 function update()
 {
-
 	// Continue subtracting 1 tick from ghostTimer.
 	ghostTimer--;
 
@@ -109,40 +116,57 @@ function update()
 		ghostTimer = 120;
 	}
 
-
-	backSprite.update();
-
+	// Update each group and our playerSprite.
+	edgeGroup.update();
 	ghostGroup.update();
+	playerSprite.update();
 
-	kirbSprite.update();
-
-	if ( input.isKeyPressed("ArrowUp") )
+	if (input.isKeyPressed("ArrowUp"))
 	{
-		kirbSprite.y -= 2;
+		playerSprite.y -= 2;
 	}
-	if ( input.isKeyPressed("ArrowDown") )
+	if (input.isKeyPressed("ArrowDown"))
 	{
-		kirbSprite.y += 2;
+		playerSprite.y += 2;
 	}
-	if ( input.isKeyPressed("ArrowRight") )
+	if (input.isKeyPressed("ArrowRight"))
 	{
-		kirbSprite.x += 2;
+		playerSprite.x += 2;
 	}
-	if ( input.isKeyPressed("ArrowLeft") )
+	if (input.isKeyPressed("ArrowLeft"))
 	{
-		kirbSprite.x -= 2;
-	}
-
-	ghostList = ghostGroup.getList();
-
-	for (let i = 0; i < ghostList.length; i++)
-	{
-		kirbSprite.preventOverlap( ghostList[i] );
+		playerSprite.x -= 2;
 	}
 
-	for (let i = 0; i < ghostList.length; i++)
+	// Prevent normal overlap between the player and the canvas
+	// edges, essentially bounding them to the canvas.
+	for (let edge of edgeGroup.getList())
 	{
-		if( kirbSprite.overlaps( ghostList[i] )){
+		playerSprite.preventOverlap(edge);
+	}
+
+	// If the player is pushed into the edge and overlaps it,
+	// though, cause a loss state.
+	for (let edge of edgeGroup.getList())
+	{
+		if(playerSprite.overlaps(edge))
+		{
+			loseState = true;
+		}
+	}
+
+	// Prevent normal overlap between the player and the ghosts.
+	for (let ghost of ghostGroup.getList())
+	{
+		playerSprite.preventOverlap(ghost);
+	}
+
+	// If the player becomes stuck in between ghosts and overlaps
+	// any of them, though, cause a loss state.
+	for (let ghost of ghostGroup.getList())
+	{
+		if(playerSprite.overlaps(ghost))
+		{
 			loseState = true;
 		}
 	}
@@ -158,23 +182,16 @@ function render()
 	context.fillRect(0,0, 512,512);
 	context.strokeRect(0, 0, 512, 512);
 
-	//backSprite.render(context);
-
-	for (let i = 0; i < spriteArray.length; i++)
-	{
-		spriteArray[i].render(context);
-	}
-
+	// Render our edgeGroup, ghostGroup, and playerSprite to the canvas.
+	edgeGroup.render(context);
 	ghostGroup.render(context);
-
-	kirbSprite.render(context);
+	playerSprite.render(context);
 
 	// Renders the loseLabel if the game is lost.
 	if(loseState)
 	{
 		loseLabel.render(context);
 	}
-	
 }
 
 function loop()
