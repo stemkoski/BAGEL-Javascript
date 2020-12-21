@@ -82,7 +82,8 @@ function makeGhost()
 	let ghostSprite = new Sprite(ghostTempX, ghostTempY);	
 	ghostSprite.setTexture(faceArray[getRandomInt(7)]);
 	ghostSprite.setSize(50, 50);
-	ghostSprite.opacity = 0.75;		
+	// Spawns ghosts invisibly, so they fade in... like ghoooOOOooosts
+	ghostSprite.opacity = 0.0;		
 
 	ghostSprite.setPhysics(0, 90, 0);
 
@@ -148,8 +149,13 @@ function update()
 	}
 
 	// Prevent normal overlap between the player and the ghosts.
+	// Also makes the ghost more opaque if it hasn't finished fading in
+	// These two things have nothing in common, but the fade in is just hitching a ride on the loop
 	for (let ghost of ghostGroup.getList())
 	{
+		if (ghost.opacity < 0.75){
+			ghost.opacity += 0.01;
+		}
 		playerSprite.preventOverlap(ghost);
 	}
 
