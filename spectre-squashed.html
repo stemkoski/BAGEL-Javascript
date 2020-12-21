@@ -25,7 +25,7 @@
 
 // =================================================
 
-let ghostTimer = 120;
+let ghostTimer = 240;
 
 // Create a new variable, "input", that is set as an Object of the input.js class.
 let input = new Input();
@@ -65,9 +65,13 @@ edgeGroup.add(edge2);
 edgeGroup.add(edge3);
 edgeGroup.add(edge4);
 
-// Creates a group and a texture for our ghosts.
+// Creates a group for our ghosts.
 let ghostGroup = new Group();
 let ghostTexture = new Texture("images/spectre-squashed/ghostbox-1.png");
+// Creates a list of ghost textures. it's a big, ugly line, but it works.
+let faceArray = [];
+faceArray.push(new Texture("images/spectre-squashed/ghostbox-1.png"), new Texture("images/spectre-squashed/ghostbox-2.png"), new Texture("images/spectre-squashed/ghostbox-3.png"), new Texture("images/spectre-squashed/ghostbox-4.png"), new Texture("images/spectre-squashed/ghostbox-5.png"), new Texture("images/spectre-squashed/ghostbox-6.png"), new Texture("images/spectre-squashed/ghostbox-7.png"))
+
 
 // Creates a new ghost and adds it to ghostGroup, setting their various values and properties.
 function makeGhost()
@@ -76,8 +80,9 @@ function makeGhost()
 	let ghostTempY = 450 * Math.random() + 25;
 
 	let ghostSprite = new Sprite(ghostTempX, ghostTempY);	
-	ghostSprite.setTexture(ghostTexture);
-	ghostSprite.setSize(50, 50);		
+	ghostSprite.setTexture(faceArray[getRandomInt(7)]);
+	ghostSprite.setSize(50, 50);
+	ghostSprite.opacity = 0.75;		
 
 	ghostSprite.setPhysics(0, 90, 0);
 
@@ -90,9 +95,6 @@ function makeGhost()
 	// Add each ghost to ghostGroup.
 	ghostGroup.add(ghostSprite);					
 }
-
-// Makes one ghost initially
-makeGhost();
 
 // Create a new label to display a game over.
 let loseLabel = new Label(150,250);
@@ -113,7 +115,7 @@ function update()
 	{
 		// Make a new ghost, and reset ghostTimer.
 		makeGhost();
-		ghostTimer = 120;
+		ghostTimer = 240;
 	}
 
 	// Update each group and our playerSprite.
@@ -145,17 +147,15 @@ function update()
 		playerSprite.preventOverlap(edge);
 	}
 
-	// If the player is pushed into the edge and overlaps it,
-	// though, cause a loss state.
-	for (let edge of edgeGroup.getList())
+	// Prevent normal overlap between the player and the ghosts.
+	for (let ghost of ghostGroup.getList())
 	{
-		if(playerSprite.overlaps(edge))
-		{
-			loseState = true;
-		}
+		playerSprite.preventOverlap(ghost);
 	}
 
-	// Prevent normal overlap between the player and the ghosts.
+	// Prevent normal overlap between the player and the ghosts AGAIN!
+	// Doing this twice ensures the player isn't pushed into another ghost without that ghost having a chance to push back
+	// Well, it COULD still happen, but we can't push this guy back and forth all day.
 	for (let ghost of ghostGroup.getList())
 	{
 		playerSprite.preventOverlap(ghost);
@@ -166,6 +166,16 @@ function update()
 	for (let ghost of ghostGroup.getList())
 	{
 		if(playerSprite.overlaps(ghost))
+		{
+			loseState = true;
+		}
+	}
+
+	// If the player is pushed into the edge and overlaps it,
+	// though, cause a loss state.
+	for (let edge of edgeGroup.getList())
+	{
+		if(playerSprite.overlaps(edge))
 		{
 			loseState = true;
 		}
