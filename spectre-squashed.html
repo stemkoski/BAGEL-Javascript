@@ -76,8 +76,9 @@ faceArray.push(new Texture("images/spectre-squashed/ghostbox-1.png"), new Textur
 // Creates a new ghost and adds it to ghostGroup, setting their various values and properties.
 function makeGhost()
 {
-	let ghostTempX = 450 * Math.random() + 25;
-	let ghostTempY = 450 * Math.random() + 25;
+	// This math prevents ghosts from spawning on the player, but it may as well have come in a vision because I can't explain it. It adds a value to the player's position and modulos it, but, I can't even remember the specifics of why each number is what it is.
+	let ghostTempX = (playerSprite.x + 50 + getRandomInt(312)) % 462 + 25;
+	let ghostTempY = (playerSprite.y + 50 + getRandomInt(312)) % 462 + 25;
 
 	let ghostSprite = new Sprite(ghostTempX, ghostTempY);	
 	ghostSprite.setTexture(faceArray[getRandomInt(7)]);
