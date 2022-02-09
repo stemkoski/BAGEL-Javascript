@@ -2,14 +2,12 @@ import * as BAGEL from "./index.js";
 
 /**
  *  A Vector is a pair of values (x,y), useful for 
- *   representing position (see Sprite), 
- *   velocity and acceleration (see Physics), 
- *   and minimum translation vectors for collision resolution (see {@link Rectangle}).
+ *   representing position (see {@link Rectangle} and {@link Sprite}). 
  */
 class Vector
 {
 	/**
-	 * Set initial values for (x,y); defaults to (0,0).
+	 * Set initial values for (x, y); defaults to (0, 0).
 	 * @constructor
 	 * @param {number} x the x coordinate
 	 * @param {number} y the y coordinate
