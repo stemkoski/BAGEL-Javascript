@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Texture.js</title>
+    <title>JSDoc: Source: Group.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: Texture.js</h1>
+    <h1 class="page-title">Source: Group.js</h1>
 
     
 
@@ -29,36 +29,57 @@
             <pre class="prettyprint source linenums"><code>import * as BAGEL from "./index.js";
 
 /**
- * A Texture stores an Image and a {@link Rectangle}
- *  that indicates which region of the Image will be drawn.
+ *  A Group is a collection of {@link Entity} objects.
+ *  &lt;br/>
+ *  Both {@link Sprite} and {@link Group} objects may be added to a group. This enables nesting of groups,
+ *   and therefore all entities in a {@link Screen} may be organized in a single group.
+ *  
  */
-class Texture
+class Group extends BAGEL.Entity
 {
-	/**
-	 * Initialize empty Image and Rectangle objects;
-	 *  data set with the {@link Texture#load|load} method.
-	 * @constructor
-	 */
+
 	constructor()
 	{
-		this.image  = new Image();
-		this.region = new BAGEL.Rectangle();
+		super();
+		// using arrays rather than sets, because draw order is important.
+		this.entityList = [];
 	}
 	
-	/**
-	 * Load image file and set size of rectangle to image dimensions.
-	 * @param {string} filename the name (including path) of the image file  
-	 */
-	async load(filename)
+	add(entity)
 	{
-		this.image.src = filename;
-  		await this.image.decode();
-		this.region.setSize(this.image.width, this.image.height);
+		entity.container = this;
+		this.entityList.push(entity);
 	}
+	
+	remove(entity)
+	{
+		entity.container = null;
+		let index = this.entityList.indexOf(entity);
+		if (index > -1)
+			this.entityList.splice(index, 1);
+	}
+
+	list()
+	{
+		return this.entityList;
+	}
+	
+	size()
+	{
+		return this.entityList.length;
+	}
+
+	draw(context)
+	{
+		for (let element of this.entityList)
+			element.draw(context);
+	}
+
+
+
 }
 
-export { Texture };
-</code></pre>
+export { Group };</code></pre>
         </article>
     </section>
 

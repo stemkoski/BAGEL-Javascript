@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Texture.js</title>
+    <title>JSDoc: Source: Entity.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: Texture.js</h1>
+    <h1 class="page-title">Source: Entity.js</h1>
 
     
 
@@ -29,36 +29,26 @@
             <pre class="prettyprint source linenums"><code>import * as BAGEL from "./index.js";
 
 /**
- * A Texture stores an Image and a {@link Rectangle}
- *  that indicates which region of the Image will be drawn.
+ *  Entity is the super class for {@link Sprite} and {@link Group} objects.
  */
-class Texture
+class Entity
 {
-	/**
-	 * Initialize empty Image and Rectangle objects;
-	 *  data set with the {@link Texture#load|load} method.
-	 * @constructor
-	 */
+
 	constructor()
 	{
-		this.image  = new Image();
-		this.region = new BAGEL.Rectangle();
+		this.container = null;
 	}
-	
-	/**
-	 * Load image file and set size of rectangle to image dimensions.
-	 * @param {string} filename the name (including path) of the image file  
-	 */
-	async load(filename)
-	{
-		this.image.src = filename;
-  		await this.image.decode();
-		this.region.setSize(this.image.width, this.image.height);
+
+	// implement by extending classes
+	draw(context) 
+	{ 
+		throw new Error("draw method not implemented");
 	}
+
+
 }
 
-export { Texture };
-</code></pre>
+export { Entity };</code></pre>
         </article>
     </section>
 

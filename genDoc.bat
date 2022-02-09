@@ -1,1 +1,1 @@
-jsdoc bagel
+jsdoc bagel bagel/README.md

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: Texture.js</title>
+    <title>JSDoc: Source: Clock.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: Texture.js</h1>
+    <h1 class="page-title">Source: Clock.js</h1>
 
     
 
@@ -29,36 +29,57 @@
             <pre class="prettyprint source linenums"><code>import * as BAGEL from "./index.js";
 
 /**
- * A Texture stores an Image and a {@link Rectangle}
- *  that indicates which region of the Image will be drawn.
+ *  The Clock keeps track of time-related values for a {@link Game}:
+ *   elapsed time (total time since initialization)
+ *   and delta time (the change in time since last {@link Clock#update|update}).
  */
-class Texture
+class Clock
 {
 	/**
-	 * Initialize empty Image and Rectangle objects;
-	 *  data set with the {@link Texture#load|load} method.
-	 * @constructor
+	 * Initialize required variables and begin tracking time.
 	 */
 	constructor()
 	{
-		this.image  = new Image();
-		this.region = new BAGEL.Rectangle();
+		// performance.now
+		this.previousTime = Date.now();
+		this.currentTime = Date.now();
+		this.deltaTime = 0;
+		this.elapsedTime = 0;
 	}
-	
-	/**
-	 * Load image file and set size of rectangle to image dimensions.
-	 * @param {string} filename the name (including path) of the image file  
-	 */
-	async load(filename)
+
+    /**
+     * Return the time (seconds) since the last time the {@link Clock#update|update} method was called.
+     * @return {number} time (seconds) since last update
+     */
+	getDeltaTime()
 	{
-		this.image.src = filename;
-  		await this.image.decode();
-		this.region.setSize(this.image.width, this.image.height);
+		return this.deltaTime;
+	}
+
+    /**
+     * Return the time (seconds) since the last time the {@link Clock#update|update} method was called.
+     * @return {number} time (seconds) since clock was created
+     */
+	getElapsedTime()
+	{
+		return this.elapsedTime;
+	}
+
+    /**
+	 *  Update the values for delta time and elapsed time.
+	 *  &lt;br/>
+	 *  This method should be called once per frame by the {@link Game} class. 
+	 */
+	update()
+	{
+		this.currentTime = Date.now();
+		this.deltaTime = (this.currentTime - this.previousTime) / 1000;
+		this.elapsedTime += this.deltaTime;
+		this.previousTime = Date.now();
 	}
 }
 
-export { Texture };
-</code></pre>
+export { Clock };</code></pre>
         </article>
     </section>
 
