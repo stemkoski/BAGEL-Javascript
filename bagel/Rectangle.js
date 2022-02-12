@@ -23,7 +23,7 @@ class Rectangle
 	}
 	
 	/**
-	 * Set new center position (x, y) and size (width and height).
+	 * Set new center position (x, y) and new size (width and height).
 	 * @param {number} x - x coordinate of the top-left corner
 	 * @param {number} y - y coordinate of the top-left corner
 	 * @param {number} width - width: the length in the x-direction

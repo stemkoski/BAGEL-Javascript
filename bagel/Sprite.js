@@ -5,7 +5,7 @@ import * as BAGEL from "./index.js";
  * <br/>
  * Sprites have a {@link Vector} position, a {@link Rectangle} boundary, and a {@link Texture}.
  */
-class Sprite extends BAGEL.Entity
+class Sprite
 {
 	/**
 	 * Initialize all fields to default values.
@@ -13,7 +13,6 @@ class Sprite extends BAGEL.Entity
 	 */
 	constructor()
 	{
-		super();
 		this.position  = new BAGEL.Vector();
 		this.rectangle = new BAGEL.Rectangle();
 
@@ -23,6 +22,9 @@ class Sprite extends BAGEL.Entity
 
 		this.texture = null;
 		this.visible = true;
+
+		// the Group that contains this sprite
+		this.parentGroup = null;
 	}
 	
 	/**
@@ -92,7 +94,7 @@ class Sprite extends BAGEL.Entity
 	/**
 	 * Draw the sprite on a canvas, centered at the sprite's position, in an area corresponding to the sprite's size.
 	 * If visible is set to false, sprite will not be drawn.
-	 * @param context - the graphics context object associated to the canvas where the sprite image will be drawn
+     * @param context - the graphics context object associated to the game canvas
 	 */
 	draw(context)
 	{
@@ -107,6 +109,14 @@ class Sprite extends BAGEL.Entity
             this.texture.region.width, this.texture.region.height,
             -this.rectangle.width/2, -this.rectangle.height/2, 
              this.rectangle.width, this.rectangle.height);
+	}
+
+	/**
+	 * Remove this sprite from the group that contains it.
+	 */
+	destroy()
+	{
+		this.parentGroup.removeSprite(this);
 	}
 	
 }

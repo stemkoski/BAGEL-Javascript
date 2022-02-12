@@ -60,6 +60,7 @@ class Game
 
 	/**
 	 * Set the active {@link Screen} object for this game. 
+	 * <br/>
 	 * During each frame, the game calls the {@link Screen#update|Screen.update} method and
 	 *  renders the {@link Sprite|Sprites} in the {@link Group} of the active screen. 
 	 * @param {string} screenName - the name of the associated screen initially specified by the {@link Game#addScreen|addScreen} method
@@ -126,7 +127,7 @@ class Game
 		this.clearCanvas("#337");
 
 		// render active screen's sprite images to canvas
-		this.activeScreen.group.draw(this.context);
+		this.activeScreen.drawGroups(this.context);
 
 		// creates a loop that repeats at monitor refresh rate.
 		// bind(this) required so update function uses correct context for "this"

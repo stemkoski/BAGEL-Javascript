@@ -1,53 +1,71 @@
 import * as BAGEL from "./index.js";
 
 /**
- *  A Group is a collection of {@link Entity} objects.
- *  <br/>
- *  Both {@link Sprite} and {@link Group} objects may be added to a group. This enables nesting of groups,
- *   and therefore all entities in a {@link Screen} may be organized in a single group.
- *  
+ *  A Group stores a collection of {@link Sprite|Sprites}.
  */
-class Group extends BAGEL.Entity
+class Group
 {
-
+	/**
+	 *  Initializes a list to store Sprites.
+	 *  @constructor
+	 */
 	constructor()
 	{
-		super();
 		// using arrays rather than sets, because draw order is important.
-		this.entityList = [];
+		this.spriteList = [];
 	}
 	
-	add(entity)
+	/**
+	 * Add a sprite to this group.
+	 * @param {Sprite} sprite - a sprite to add to this group
+	 */ 
+	addSprite(sprite)
 	{
-		entity.container = this;
-		this.entityList.push(entity);
+		sprite.parentGroup = this;
+		this.spriteList.push(sprite);
 	}
 	
-	remove(entity)
+	/**
+	 * Remove a sprite from this group.
+	 * @param {Sprite} sprite - a sprite to remove from this group
+	 */ 
+	removeSprite(sprite)
 	{
-		entity.container = null;
-		let index = this.entityList.indexOf(entity);
+		sprite.parentGroup = null;
+		let index = this.spriteList.indexOf(sprite);
 		if (index > -1)
-			this.entityList.splice(index, 1);
+			this.spriteList.splice(index, 1);
 	}
 
-	list()
+	/**
+	 * Get the list of sprites stored in this group.
+	 * <br/>
+	 * Typically used in loops that involve all sprites in this group.
+	 * @return {List} the list of sprites in this group
+	 */ 
+	getSpriteList()
 	{
-		return this.entityList;
+		return this.spriteList;
 	}
 	
-	size()
+	/**
+	 * Get the number of sprites in this group.
+	 * @return {number} the number of sprites in this group
+	 */ 
+	getSpriteCount()
 	{
-		return this.entityList.length;
+		return this.spriteList.length;
 	}
 
-	draw(context)
+	/**
+	 * Draw the sprites in this group.
+     * @param context - the graphics context object associated to the game canvas
+	 */ 
+	drawSprites(context)
 	{
-		for (let element of this.entityList)
-			element.draw(context);
+		for (let sprite of this.spriteList)
+			sprite.draw(context);
 	}
-
-
 
 }
 

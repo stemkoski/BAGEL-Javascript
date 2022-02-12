@@ -2,8 +2,10 @@ import * as BAGEL from "./index.js";
 
 /**
  *  The Clock keeps track of time-related values for a {@link Game}:
- *   elapsed time (total time since initialization)
- *   and delta time (the change in time since last {@link Clock#update|update}).
+ *  <ul>
+ *   <li>elapsed time (total time since initialization)
+ *   <li>delta time (the change in time since last {@link Clock#update|update}).
+ *  </ul>
  */
 class Clock
 {

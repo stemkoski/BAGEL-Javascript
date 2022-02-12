@@ -23,14 +23,14 @@ class TitleScreen extends BAGEL.Screen
 		let title = new BAGEL.Sprite();
 		title.setTexture(titleTex);
 		title.setPosition(400,250);
-		this.group.add(title);		
+		this.addSpriteToGroup(title);		
 
 		let startTex = new BAGEL.Texture();
 		await startTex.load("assets/starfish-collector/start.png");
 		let start = new BAGEL.Sprite();
 		start.setTexture(startTex);
 		start.setPosition(400,450);
-		this.group.add(start);		
+		this.addSpriteToGroup(start);		
 	}
 
 	update()
@@ -51,7 +51,7 @@ class LevelScreen extends BAGEL.Screen
 		let water = new BAGEL.Sprite();
 		water.setTexture(waterTex);
 		water.setPosition(400,300);
-		this.group.add(water);
+		this.addSpriteToGroup(water);
 
 		let turtleTex = new BAGEL.Texture();
   		await turtleTex.load("assets/starfish-collector/turtle-down.png");
@@ -59,14 +59,13 @@ class LevelScreen extends BAGEL.Screen
 		this.turtle.setTexture(turtleTex);
   		this.turtle.setSize(64,64);
  		this.turtle.setPosition(400, 50);
- 		this.group.add(this.turtle);
+ 		this.addSpriteToGroup(this.turtle);
 
 		let starfishTex = new BAGEL.Texture();
   		await starfishTex.load("assets/starfish-collector/starfish.png");
   		
-  		this.starfishGroup = new BAGEL.Group();
-  		this.group.add( this.starfishGroup );
-  		let starfishCount = 30;
+  		this.createGroup("starfish");
+  		let starfishCount = 100;
   		for (let i = 0; i < starfishCount; i++)
   		{
   			let starfish = new BAGEL.Sprite();
@@ -75,7 +74,7 @@ class LevelScreen extends BAGEL.Screen
   			let x = 100 + Math.random() * 600;
   			let y = 200 + Math.random() * 300;
  			starfish.setPosition(x, y);
- 			this.starfishGroup.add(starfish);
+ 			this.addSpriteToGroup(starfish, "starfish");
  		}
 
 		let winTex = new BAGEL.Texture();
@@ -84,7 +83,7 @@ class LevelScreen extends BAGEL.Screen
 		this.win.setTexture(winTex);
  		this.win.setPosition(400, 300);
  		this.win.setVisible(false);
- 		this.group.add(this.win);
+ 		this.addSpriteToGroup(this.win);
 
 	}
 
@@ -103,13 +102,13 @@ class LevelScreen extends BAGEL.Screen
 		if ( this.game.input.keyPressing("ArrowDown") )
 			this.turtle.moveBy(0, distance);
 
-		for ( let starfish of this.starfishGroup.list() )
+		for ( let starfish of this.getGroupSpriteList("starfish") )
 		{
 			if ( this.turtle.overlaps(starfish) )
-				this.starfishGroup.remove(starfish);
+				starfish.destroy();
 		}
 
-		if ( this.starfishGroup.size() == 0 && !this.win.visible)
+		if ( this.getGroupSpriteCount("starfish") == 0 && !this.win.visible)
 			this.win.setVisible(true);
 	}
 }
