@@ -35,8 +35,17 @@ class TitleScreen extends BAGEL.Screen
 
 	update()
 	{
-		if ( this.game.input.keyPressed("S") )
-			this.game.setScreen("level");
+		// use gamepad axes/buttons for control, with keyboard fallback
+		if ( this.game.gamepad.active )
+		{
+			if ( this.game.gamepad.buttonPressed("Start") )
+			    this.game.setScreen("level");
+		}
+		else
+		{
+		    if ( this.game.input.keyPressed("S") )
+			    this.game.setScreen("level");
+		}
 	}
 }
 
@@ -92,15 +101,37 @@ class LevelScreen extends BAGEL.Screen
 		let speed = 100; // pixels per second
 		let distance = speed * this.game.clock.getDeltaTime();
 
-		// move turtle
-		if ( this.game.input.keyPressing("ArrowLeft") )
-			this.turtle.moveBy(-distance, 0);
-		if ( this.game.input.keyPressing("ArrowRight") )
-			this.turtle.moveBy(distance, 0);
-		if ( this.game.input.keyPressing("ArrowUp") )
-			this.turtle.moveBy(0, -distance);
-		if ( this.game.input.keyPressing("ArrowDown") )
-			this.turtle.moveBy(0, distance);
+		// use gamepad axes/buttons for control, with keyboard fallback
+		if ( this.game.gamepad.active )
+		{
+			/*
+			// use directional pad to move turtle
+			if ( this.game.gamepad.buttonPressing("Left") )
+				this.turtle.moveBy(-distance, 0);
+			if ( this.game.gamepad.buttonPressing("Right") )
+				this.turtle.moveBy(distance, 0);
+			if ( this.game.gamepad.buttonPressing("Up") )
+				this.turtle.moveBy(0, -distance);
+			if ( this.game.gamepad.buttonPressing("Down") )
+				this.turtle.moveBy(0, distance);
+			*/
+
+			// use axis 1 to move turtle
+			let dx = this.game.gamepad.getAxisValue("Axis1X");
+			let dy = this.game.gamepad.getAxisValue("Axis1Y");
+			this.turtle.moveBy(distance * dx, distance * dy);
+		}
+		else
+		{
+			if ( this.game.input.keyPressing("ArrowLeft") )
+				this.turtle.moveBy(-distance, 0);
+			if ( this.game.input.keyPressing("ArrowRight") )
+				this.turtle.moveBy(distance, 0);
+			if ( this.game.input.keyPressing("ArrowUp") )
+				this.turtle.moveBy(0, -distance);
+			if ( this.game.input.keyPressing("ArrowDown") )
+				this.turtle.moveBy(0, distance);
+		}
 
 		for ( let starfish of this.getGroupSpriteList("starfish") )
 		{
