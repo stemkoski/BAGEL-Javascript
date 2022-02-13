@@ -85,7 +85,7 @@ class Gamepad
 		this.buttonPressingSet = new Set();
 		this.buttonReleasedSet = new Set();
 
-		// this.deadZone = 0.10;
+		this.deadZone = 0.10;
 	}
 
 	/**
@@ -168,7 +168,11 @@ class Gamepad
     {
   	  let axisIndex = this.axisMapping[axisName];
   	  let axisValue = this.gamepadAxes[axisIndex];
-  	  // TODO: deadZone smoothing
+
+  	  // values less than this.deadZone are mapped to 0
+  	  if ( Math.abs(axisValue) < this.deadZone )
+  	  	return 0;
+
   	  return axisValue;
     }
 
@@ -182,9 +186,13 @@ class Gamepad
     getJoystickVector(joystickNumber)
     {
   	  if (joystickNumber == 1)
-  	  	return new BAGEL.Vector(this.gamepadAxes[0], this.gamepadAxes[1]);
+  	  	return new BAGEL.Vector(
+  	  		this.getAxisValue("Axis1X"), 
+  	  		this.getAxisValue("Axis1Y") );
   	  else if (joystickNumber == 2)
-  	  	return new BAGEL.Vector(this.gamepadAxes[2], this.gamepadAxes[3]);
+  	  	return new BAGEL.Vector(
+  	  		this.getAxisValue("Axis2X"), 
+  	  		this.getAxisValue("Axis2Y") );
   	  else
   	  	return new BAGEL.Vector(0, 0);
     }

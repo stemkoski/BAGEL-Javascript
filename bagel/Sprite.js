@@ -33,6 +33,9 @@ class Sprite
 		this.opacity = 1.0;
 		this.mirrored = false;
 		this.flipped = false;
+
+		// store physics data
+		this.physics = null;
 	}
 	
 	/**
@@ -140,7 +143,6 @@ class Sprite
 		this.moveAtAngle(distance, this.angle);
 	}
 
-
 	/**
      * Determine if this sprite overlaps another sprite (includes overlapping edges).
 	 * @param {Sprite} other - sprite to check for overlap with
@@ -151,13 +153,36 @@ class Sprite
     	return this.rectangle.overlaps( other.rectangle );
     }
 
+    /**
+     * Initialize {@link Physics} data for this sprite and link to position.
+     * Physics object will be automatically updated and used to control position. 
+     * @param {number} accValue - default magnitude of acceleration when using {@link Physics#accelerateAtAngle|accelerateAtAngle}
+	 * @param {number} maxSpeed - maximum speed: if speed is ever above this amount, it will be reduced to this amount
+	 * @param {number} decValue - when not accelerating, object will decelerate (decrease speed) by this amount
+	 */
+    setPhysics(accValue, maxSpeed, decValue)
+    {
+    	this.physics = new BAGEL.Physics(accValue, maxSpeed, decValue);
+    	this.physics.positionVector = this.position;
+    }
+
+    /**
+     * Perform any internal actions that should be repeated every frame.
+     */
+    update(deltaTime)
+    {
+    	// use physics to update position (based on velocity and acceleration)
+        //   if it has been initialized for this sprite
+    	if (this.physics != null)
+            this.physics.update(deltaTime);
+    }
+
 	/**
 	 * Draw the sprite on a canvas, centered at the sprite's position, in an area corresponding to the sprite's size.
 	 * Also take into account sprite's angle, whether the image should be flipped or mirrored, and the opacity of the image.
 	 * If visible is set to false, sprite will not be drawn.
      * @param context - the graphics context object associated to the game canvas
 	 */
-
 	draw(context)
 	{
 		if ( !this.visible )

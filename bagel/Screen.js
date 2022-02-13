@@ -105,6 +105,19 @@ class Screen
 	}	
 
 	/**
+	 * Update all sprites in all groups in the collection.
+     * @param deltaTime - the change in time since the last clock update
+	 */
+	updateGroups(deltaTime)
+	{
+		for (let i = 0; i < this.groupDrawOrder.length; i++)
+		{
+			let groupName = this.groupDrawOrder[i];
+			this.getGroup(groupName).updateSprites(deltaTime);
+		}
+	}	
+
+	/**
 	 *  Create all objects and any other initialization code required by this screen.
 	 *  <br/>
 	 *    Must be implemented by extending class.

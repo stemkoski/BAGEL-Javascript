@@ -10,3 +10,4 @@ export { Game }      from "./Game.js";
 export { Input }     from "./Input.js";
 export { Clock }     from "./Clock.js";
 export { Gamepad }   from "./Gamepad.js";
+export { Physics }   from "./Physics.js";

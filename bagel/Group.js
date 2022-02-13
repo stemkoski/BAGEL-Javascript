@@ -67,6 +67,16 @@ class Group
 			sprite.draw(context);
 	}
 
+	/**
+	 * Update the sprites in this group.
+     * @param deltaTime - the change in time since the last clock update
+	 */ 
+	updateSprites(deltaTime)
+	{
+		for (let sprite of this.spriteList)
+			sprite.update(deltaTime);
+	}
+
 }
 
 export { Group };

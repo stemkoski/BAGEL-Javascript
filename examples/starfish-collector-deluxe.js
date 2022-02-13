@@ -68,6 +68,8 @@ class LevelScreen extends BAGEL.Screen
 		this.turtle.setTexture(turtleTex);
   		this.turtle.setSize(64,64);
  		this.turtle.setPosition(400, 50);
+ 		this.turtle.setAngle(90);
+ 		this.turtle.setPhysics(800, 100, 400);
  		this.addSpriteToGroup(this.turtle);
 
 		let starfishTex = new BAGEL.Texture();
@@ -124,15 +126,25 @@ class LevelScreen extends BAGEL.Screen
 			this.turtle.moveBy(distance * dx, distance * dy);
 			*/
 
+			/*
 			// use joystick 1 to move and rotate turtle
-			let v = this.game.gamepad.getJoystickVector(1);
-			this.turtle.moveBy(distance * v.x, distance * v.y);
+			let vec = this.game.gamepad.getJoystickVector(1);
+			this.turtle.moveBy(distance * vec.x, distance * vec.y);
 			// only rotate turtle when actually moving (not while stopped)
-			if ( v.getLength() > 0.1 )
-				this.turtle.setAngle( v.getAngle() );
+			if ( vec.getLength() > 0.1 )
+				this.turtle.setAngle( vec.getAngle() );
+			*/
+
+			// physics-based movement
+			let vec = this.game.gamepad.getJoystickVector(1);
+			if ( vec.getLength() > 0.01 )
+				this.turtle.physics.accelerateAtAngle( vec.getAngle() );
+
 		}
 		else
 		{
+			/*
+			// pre-physics movement code
 			if ( this.game.input.keyPressing("ArrowLeft") )
 				this.turtle.moveBy(-distance, 0);
 			if ( this.game.input.keyPressing("ArrowRight") )
@@ -141,7 +153,22 @@ class LevelScreen extends BAGEL.Screen
 				this.turtle.moveBy(0, -distance);
 			if ( this.game.input.keyPressing("ArrowDown") )
 				this.turtle.moveBy(0, distance);
+			*/
+
+			// physics-based movement
+			if ( this.game.input.keyPressing("ArrowLeft") )
+				this.turtle.physics.accelerateAtAngle(180);
+			if ( this.game.input.keyPressing("ArrowRight") )
+				this.turtle.physics.accelerateAtAngle(0);
+			if ( this.game.input.keyPressing("ArrowUp") )
+				this.turtle.physics.accelerateAtAngle(270);
+			if ( this.game.input.keyPressing("ArrowDown") )
+				this.turtle.physics.accelerateAtAngle(90);
 		}
+
+		// rotate turtle to face direction of movement
+		if ( this.turtle.physics.getSpeed() > 0.01 )
+			this.turtle.setAngle( this.turtle.physics.getMotionAngle() );
 
 		for ( let starfish of this.getGroupSpriteList("starfish") )
 		{
@@ -156,7 +183,7 @@ class LevelScreen extends BAGEL.Screen
 
 //=========================================================
 
-let game = new StarfishGame();
+var game = new StarfishGame();
 game.start();
 
 //=========================================================

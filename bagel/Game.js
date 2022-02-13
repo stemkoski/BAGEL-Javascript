@@ -124,7 +124,8 @@ class Game
 			this.quit();
 
 		// update active screen's game state
-		// this.activeScreen.group.act(this.deltaTime);
+		let deltaTime = this.clock.getDeltaTime();
+		this.activeScreen.updateGroups(deltaTime);
 		this.activeScreen.update();
 		
 		// clear window canvas
