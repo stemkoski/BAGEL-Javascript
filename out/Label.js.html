@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Label.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Label.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as BAGEL from "./index.js";
+
+/**
+ *  A Label draws text on the canvas of a {@link Game}.
+ *  &lt;br/>
+ *  Labels must be added to {@link Group|Groups}, similar to {@link Sprite|Sprites}, to appear in a Game.
+ */
+class Label
+{
+	/**
+	 * Initialize default values for all properties.
+	 */
+	constructor()
+	{
+		this.text = " ";
+
+		this.x = 0;
+		this.y = 0;
+		this.alignment = "left"; // "left" | "center" | "right"
+
+		// style options, configured by setProperties method		
+		this.visible = true;
+
+		this.fontName = "Arial Black";
+		this.fontSize = 32;
+		this.fontColor = "#00FFFF";
+
+		this.drawBorder = true;
+		this.borderSize = 1;
+		this.borderColor = "black";
+
+		this.drawShadow = true;
+		this.shadowColor = "black";
+		this.shadowSize = 4;
+	}
+
+    /**
+     * Set the location of this label.
+     * @param {number} x - the x coordinate of the text, corresponding to the location specified by the "alignment" parameter
+     * @param {number} x - the y coordinate of the baseline of the text
+     * @param {string} alignment - one of: "left", "center", "right"; determines what location of the text that the x coordinate refers to 
+     */	
+	setPosition(x,y, alignment="left")
+	{
+		this.x = x;
+		this.y = y;
+		this.alignment = alignment;
+	}
+
+	/**
+	 * Set the text displayed by this label.
+	 * @param {string} text - the text displayed by this label
+	 */
+	setText(text)
+	{
+		this.text = text;
+	}
+
+	/**
+	 * Set the style properties for displaying text.
+	 * &lt;br/>
+	 * Properties that can be set include:
+	 * &lt;ul>
+	 * &lt;li> &lt;tt>fontName&lt;/tt> (string, e.g. "Arial Black")
+	 * &lt;li> &lt;tt>drawBorder&lt;/tt> and &lt;tt>drawShadow&lt;/tt> (boolean)
+	 * &lt;li> &lt;tt>fontSize&lt;/tt>, &lt;tt>borderSize&lt;/tt>, and &lt;tt>shadowSize&lt;/tt> (number)
+	 * &lt;li> &lt;tt>fontColor&lt;/tt>, &lt;tt>borderColor&lt;/tt>, and &lt;tt>shadowColor&lt;/tt> (string, e.g. "red" or "#FF0000")
+	 * &lt;/ul>
+	 * Properties are specified with an object.
+	 * &lt;br/>
+	 * For example: &lt;tt>{ "fontSize" : 48, "fontColor" : "#8800FF", "drawShadow" : false }&lt;/tt>
+	 * @param {object} properties - an object containing property name and value pairs
+	 */ 
+	setProperties( properties )
+	{
+		for (let name in properties)
+		{
+			if ( this.hasOwnProperty(name) )
+				this[name] = properties[name];
+		}
+	}
+
+	// must include, since called by containing Group
+	update(deltaTime)
+	{
+
+	}
+
+	/**
+	 * Draw the label on a canvas, using the style properties specified by this object.
+     * @param context - the graphics context object associated to the game canvas
+	 */
+    draw(context)
+	{
+		if ( !this.visible )
+			return;
+
+		context.font = this.fontSize + "px " + this.fontName;
+		context.fillStyle = this.fontColor;
+		context.textAlign = this.alignment;
+		
+		context.setTransform(1,0, 0,1, 0,0); 
+		context.globalAlpha = 1.00;
+
+		// shadow draw settings
+		if (this.drawShadow)
+		{
+			context.shadowColor = this.shadowColor;
+			context.shadowBlur = this.shadowSize;
+		}
+
+		// draw filled in text (multiple times to increase drop shadow intensity)
+		context.fillText( this.text, this.x, this.y );
+		context.fillText( this.text, this.x, this.y );
+
+		// disable shadowBlur, otherwise all sprites drawn later will have shadows
+		context.shadowBlur = 0;
+		// draw filled text again, to fill over interior shadow blur
+		context.fillText( this.text, this.x, this.y );
+
+		// draw border last, so not hidden by filled text
+		if (this.drawBorder)
+		{
+			context.strokeStyle = this.borderColor;
+			context.lineWidth = this.borderSize;
+			context.strokeText( this.text, this.x, this.y );
+		}		
+	}
+
+}
+
+export { Label };</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Clock.html">Clock</a></li><li><a href="Game.html">Game</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="Group.html">Group</a></li><li><a href="Input.html">Input</a></li><li><a href="Label.html">Label</a></li><li><a href="Physics.html">Physics</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Screen.html">Screen</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="Texture.html">Texture</a></li><li><a href="Vector.html">Vector</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 13 2022 16:22:34 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

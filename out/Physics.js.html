@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: Physics.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: Physics.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as BAGEL from "./index.js";
+
+/**
+ *  The Physics class performs position-velocity-acceleration {@link Vector} related calculations
+ *   for more advanced {@link Sprite} movement. 
+ *  &lt;br/>
+ *  For example, can set speed and motion angle of a sprite with constant velocity (no deceleration),
+ *   or player character can accelerate at an angle and automatically decelerate at a fixed rate.
+ *  &lt;br/>
+ *  Similar to the {@link Rectangle} class design, 
+ *   the Physics position Vector can be set to reference the position of a {@link Sprite},
+ *   which keeps them synchronized.
+ *  &lt;br/>
+ *  A Physics object needs to be updated once per frame; for Sprites, this is handled by
+ *   their {@link Sprite#update|update} method.
+ */
+class Physics
+{
+	/**
+	 * Initialize position, velocity, and acceleration vectors,
+	 *   and set acceleration, maximum speed, and deceleration values.
+	 * @param {number} accValue - default magnitude of acceleration when using {@link Physics#accelerateAtAngle|accelerateAtAngle}
+	 * @param {number} maxSpeed - maximum speed: if speed is ever above this amount, it will be reduced to this amount
+	 * @param {number} decValue - when not accelerating, object will decelerate (decrease speed) by this amount
+	 * @constructor
+	 */
+	constructor(accValue, maxSpeed, decValue)
+	{
+		this.positionVector     = new BAGEL.Vector(0,0);
+		this.velocityVector     = new BAGEL.Vector(0,0);
+		this.accelerationVector = new BAGEL.Vector(0,0);
+		this.accelerationValue = accValue
+		this.maximumSpeed      = maxSpeed;
+		this.decelerationValue = decValue;
+	}
+
+    
+    /**
+     * Get the current speed of this object (pixels/second).
+     * @return {number} current speed
+     */	
+	getSpeed() 
+	{ 
+		return this.velocityVector.getLength(); 
+	}
+
+    /**
+     * Set the speed (pixels/second) for this object (without changing the current angle of motion).
+     * @param {number} speed - the new speed
+     */
+	setSpeed(speed) 
+	{ 
+		this.velocityVector.setLength(speed); 
+	}
+	
+    /**
+     * Get the current angle of motion (in degrees) of this object.
+     * &lt;br/>
+     * (The angle is measured from the positive x-axis, 
+     * and angles increase in clockwise direction, since positive y-axis is down.)
+     * @return {number} current angle of motion
+     */	
+	getMotionAngle()
+	{
+		return this.velocityVector.getAngle();
+	}
+	
+    /**
+     * Set the angle of motion (in degrees) for this object (without changing the current speed).
+     * &lt;br/>
+     * (The angle is measured from the positive x-axis, 
+     * and angles increase in clockwise direction, since positive y-axis is down.)
+     * @param {number} angleDegrees - the new angle of motion
+     */
+    setMotionAngle(angleDegrees)
+	{
+		this.velocityVector.setAngle(angleDegrees);
+	}
+		
+	/**
+     * Accelerate this object in the given direction.
+     * &lt;br/>
+     * (Uses the constant acceleration value specified in constructor.)
+     * @param {number} angleDegrees - the direction of acceleration
+     */
+	accelerateAtAngle(angleDegrees)
+	{
+		let v = new BAGEL.Vector();
+		v.setLength(this.accelerationValue);
+		v.setAngle(angleDegrees);
+		this.accelerationVector.addVector( v );
+	}
+
+	/**
+	 *  Update the values for position, velocity, and acceleration vectors.
+	 *  &lt;br/>
+	 *  This method should be called once per frame (automatically handled for {@link Sprite} objects). 
+	 */
+	update(deltaTime)
+	{
+		// apply acceleration to velocity
+        this.velocityVector.addValues( 
+			this.accelerationVector.x * deltaTime, 
+			this.accelerationVector.y * deltaTime );
+
+        let speed = this.getSpeed();
+
+        // decrease speed (decelerate) when not accelerating
+        if (this.accelerationVector.getLength() &lt; 0.001)
+            speed -= this.decelerationValue * deltaTime;
+
+        // keep speed within set bounds
+		if (speed &lt; 0)
+			speed = 0;
+		if (speed > this.maximumSpeed)
+			speed = this.maximumSpeed;
+
+        // update velocity
+        this.setSpeed(speed);
+
+        // apply velocity to position
+        this.positionVector.addValues( 
+			this.velocityVector.x * deltaTime, 
+			this.velocityVector.y * deltaTime );
+
+        // reset acceleration
+        this.accelerationVector.setValues(0,0);
+    }
+
+}
+
+export { Physics };</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Clock.html">Clock</a></li><li><a href="Game.html">Game</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="Group.html">Group</a></li><li><a href="Input.html">Input</a></li><li><a href="Label.html">Label</a></li><li><a href="Physics.html">Physics</a></li><li><a href="Rectangle.html">Rectangle</a></li><li><a href="Screen.html">Screen</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="Texture.html">Texture</a></li><li><a href="Vector.html">Vector</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Sun Feb 13 2022 16:22:34 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
