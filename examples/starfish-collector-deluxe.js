@@ -91,6 +91,26 @@ class LevelScreen extends BAGEL.Screen
  			this.addSpriteToGroup(starfish, "starfish");
  		}
 
+ 		// create a new group so that fish are draw above stars
+ 		this.createGroup("fish");
+
+ 		let fishAnim = new BAGEL.Animation();
+ 		await fishAnim.load("assets/starfish-collector/fish.png", 8, 1, 0.10, true);
+ 		this.fish = new BAGEL.Sprite();
+		this.fish.setAnimation(fishAnim);
+ 		this.fish.setPosition(400, 300);
+ 		this.fish.setSize(48, 24);
+ 		this.fish.setPhysics(0,100,0);
+ 		
+ 		this.fish.physics.setSpeed(150);
+ 		this.fish.physics.setMotionAngle(40);
+ 		this.fish.setAngle(40);
+ 		this.fish.setWrapRectangle(800,600);
+
+ 		this.addSpriteToGroup(this.fish, "fish");
+
+ 		this.createGroup("UI");
+
 		let winTex = new BAGEL.Texture();
   		await winTex.load("assets/starfish-collector/win.png");
   		this.win = new BAGEL.Sprite();
@@ -98,13 +118,13 @@ class LevelScreen extends BAGEL.Screen
  		this.win.setPosition(400, 300);
  		this.win.setVisible(false);
  		this.win.opacity = 0.80;
- 		this.addSpriteToGroup(this.win);
+ 		this.addSpriteToGroup(this.win, "UI");
 
  		this.starfishLabel = new BAGEL.Label();
  		this.starfishLabel.setText("Starfish Left: ??");
  		this.starfishLabel.setPosition(400, 590, "center");
  		this.starfishLabel.setProperties( {"fontColor": "yellow", "borderColor": "orange"} );
- 		this.addSpriteToGroup(this.starfishLabel);
+ 		this.addSpriteToGroup(this.starfishLabel, "UI");
 
 	}
 
@@ -190,7 +210,7 @@ class LevelScreen extends BAGEL.Screen
 		if ( count == 0 && !this.win.visible)
 		{
 			this.win.setVisible(true);
-			this.starfishLabel.setProperties( {"visible": false} );
+			// this.starfishLabel.setProperties( {"visible": false} );
 		}
 	}
 }

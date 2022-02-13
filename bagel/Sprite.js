@@ -42,6 +42,9 @@ class Sprite
 		this.boundRectangle   = null;
 		this.wrapRectangle    = null;
 		this.destroyRectangle = null;
+
+		// store animation data
+		this.animation = null;
 	}
 	
 	/**
@@ -72,8 +75,8 @@ class Sprite
 	setTexture(texture)
 	{
 		this.texture = texture;
-		this.rectangle.width  = texture.image.width;
-		this.rectangle.height = texture.image.height;
+		this.rectangle.width  = texture.region.width;
+		this.rectangle.height = texture.region.height;
 	}
 	
 	/**
@@ -161,6 +164,7 @@ class Sprite
 
     /**
      * Initialize {@link Physics} data for this sprite and link to position.
+     * <br/>
      * Physics object will be automatically updated and used to control position. 
      * @param {number} accValue - default magnitude of acceleration when using {@link Physics#accelerateAtAngle|accelerateAtAngle}
 	 * @param {number} maxSpeed - maximum speed: if speed is ever above this amount, it will be reduced to this amount
@@ -173,7 +177,12 @@ class Sprite
     }
 
     /**
-     * Set world dimensions (width and height) to be used to bound sprite position.
+     * Set world dimensions (width and height) to be used to bound sprite position within the world.
+     * <br/>
+     * Calling this function will cause {@link Sprite#boundWithinRectangle|boundWithinRectangle} 
+     *  to be called automatically by the {@link Sprite#update|update} function.
+     * @param {number} width - the width of the screen or world
+     * @param {number} height - the height of the screen or world
      */
     setBoundRectangle(width, height)
     {
@@ -181,8 +190,34 @@ class Sprite
     }
 
     /**
-     * Adjusts position of sprite (if necessary)
-     *  to be completely contained within screen or world dimensions.
+     * Set world dimensions (width and height) to be used to wrap sprite around world when moving beyond screen edges.
+     * <br/>
+     * Calling this function will cause {@link Sprite#wrapAroundRectangle|wrapAroundRectangle} 
+     *  to be called automatically by the {@link Sprite#update|update} function.     
+     * @param {number} width - the width of the screen or world
+     * @param {number} height - the height of the screen or world
+     */
+    setWrapRectangle(width, height)
+    {
+    	this.wrapRectangle = new BAGEL.Rectangle(width/2,height/2, width,height);
+    }
+
+    /**
+     * Set world dimensions (width and height) to be used to destroy sprite if it moves beyond world edges.
+     * <br/>
+     * Calling this function will cause {@link Sprite#destroyOutsideRectangle|destroyOutsideRectangle} 
+     *  to be called automatically by the {@link Sprite#update|update} function.     
+     * @param {number} width - the width of the screen or world
+     * @param {number} height - the height of the screen or world
+     */
+    setDestroyRectangle(width, height)
+    {
+    	this.destroyRectangle = new BAGEL.Rectangle(width/2,height/2, width,height);
+    }
+
+    /**
+     * Adjusts the position of this sprite
+     *  so that it remains completely contained within screen or world dimensions.
      * <br/>
      * Called automatically by {@link Sprite#update|update} if {@link Sprite#setBoundRectangle|setBoundRectangle} was previously called.
      * @param {number} worldWidth - the width of the screen or world
@@ -204,6 +239,62 @@ class Sprite
     }
 
     /**
+     * If this sprite moves completely beyond an edge of the screen or world,
+     *   adjust its position to the opposite side.
+     * <br/>
+     * Called automatically by {@link Sprite#update|update} if {@link Sprite#setWrapRectangle|setWrapRectangle} was previously called.
+     * @param {number} worldWidth - the width of the screen or world
+     * @param {number} worldHeight - the height of the screen or world
+     */
+    wrapAroundRectangle(worldWidth, worldHeight)
+    {
+    	if (this.position.x + this.rectangle.width/2 < 0)
+    		this.position.x = worldWidth + this.rectangle.width/2;
+
+    	if (this.position.x - this.rectangle.width/2 > worldWidth)
+    		this.position.x = -this.rectangle.width/2;
+
+    	if (this.position.y + this.rectangle.height/2 < 0)
+    		this.position.y = worldHeight + this.rectangle.height/2;    		 
+
+    	if (this.position.y - this.rectangle.height/2 > worldHeight)
+    		this.position.y = -this.rectangle.height/2;
+    }
+
+    /**
+     * Destroy this sprite if it moves completely beyond the edges of the screen or world.
+     * <br/>
+     * Called automatically by {@link Sprite#update|update} if {@link Sprite#setDestroyRectangle|setDestroyRectangle} was previously called.
+     * @param {number} worldWidth - the width of the screen or world
+     * @param {number} worldHeight - the height of the screen or world
+     */
+    destroyOutsideRectangle(worldWidth, worldHeight)
+    {
+    	if ( (this.position.x + this.rectangle.width/2 < 0) || 
+    		
+    		 (this.position.x - this.rectangle.width/2 > worldWidth) ||
+    		 (this.position.y + this.rectangle.height/2 < 0) ||
+    		 (this.position.y - this.rectangle.height/2 > worldHeight) )
+    		this.destroy();
+    }
+
+	/**
+     * Set the {@link Animation} used when drawing this sprite.
+     * <br/>
+     * Also updates the size of the sprite to the size of an animation frame.
+     * <br/>
+     * Animation object will be automatically updated and used when drawing sprite. 
+     * @param {Animation} animation - the animation to use when drawing this sprite
+     */
+	setAnimation(animation)
+	{
+		this.animation = animation;
+		this.texture = animation.texture;
+		this.rectangle.width  = animation.texture.region.width;
+		this.rectangle.height = animation.texture.region.height;
+	}
+
+    /**
      * Perform any internal actions that should be repeated every frame.
      */
     update(deltaTime)
@@ -213,9 +304,17 @@ class Sprite
     	if (this.physics != null)
             this.physics.update(deltaTime);
 
-        if (this.boundRectangle)
+        if (this.boundRectangle != null)
         	this.boundWithinRectangle(this.boundRectangle.width, this.boundRectangle.height);
 
+        if (this.wrapRectangle != null)
+        	this.wrapAroundRectangle(this.wrapRectangle.width, this.wrapRectangle.height);
+
+        if (this.destroyRectangle != null)
+        	this.destroyOutsideRectangle(this.destroyRectangle.width, this.destroyRectangle.height);
+
+    	if (this.animation != null)
+            this.animation.update(deltaTime);
     }
 
 	/**

@@ -12,3 +12,4 @@ export { Clock }     from "./Clock.js";
 export { Gamepad }   from "./Gamepad.js";
 export { Physics }   from "./Physics.js";
 export { Label }     from "./Label.js";
+export { Animation } from "./Animation.js";
