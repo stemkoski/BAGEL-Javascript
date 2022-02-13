@@ -14,5 +14,5 @@ Example games available:
 * [Starfish Collector](https://stemkoski.github.io/BAGEL-Javascript/examples/starfish-collector.html)
 
 Notes:
-* Running locally requires a web server. This is easy with Python, but requires a bit of configuration so that *.js files are served as "application/javascript" and not "text/plain"; this is handled with the file `server.py` in the root directory.
+* Running locally requires a web server. This is easy with Python, but requires a bit of configuration so that *.js files are served as "application/javascript" and not "text/plain"; this is handled by the file `server.py` in the root directory.
   
