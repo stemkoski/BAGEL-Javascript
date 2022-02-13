@@ -170,7 +170,25 @@ class Gamepad
   	  let axisValue = this.gamepadAxes[axisIndex];
   	  // TODO: deadZone smoothing
   	  return axisValue;
-    }	
+    }
+
+	/**
+	 * Get a Vector containing both axis values of a joystick.
+	 * <br/>
+	 * (May be useful to simplify calculating length and angle of joystick position.)
+	 * @param {number} joystickNumber - left joystick = 1, right joystick = 2
+	 * @return {Vector} vector containing both axis values of specified joystick
+	 */
+    getJoystickVector(joystickNumber)
+    {
+  	  if (joystickNumber == 1)
+  	  	return new BAGEL.Vector(this.gamepadAxes[0], this.gamepadAxes[1]);
+  	  else if (joystickNumber == 2)
+  	  	return new BAGEL.Vector(this.gamepadAxes[2], this.gamepadAxes[3]);
+  	  else
+  	  	return new BAGEL.Vector(0, 0);
+    }
+
 }
 
 export { Gamepad };
