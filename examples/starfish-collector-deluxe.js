@@ -70,6 +70,9 @@ class LevelScreen extends BAGEL.Screen
  		this.turtle.setPosition(400, 50);
  		this.turtle.setAngle(90);
  		this.turtle.setPhysics(800, 100, 400);
+ 		// keep turtle bound to screen area
+ 		this.turtle.setBoundRectangle(800, 600);
+
  		this.addSpriteToGroup(this.turtle);
 
 		let starfishTex = new BAGEL.Texture();

@@ -36,6 +36,12 @@ class Sprite
 
 		// store physics data
 		this.physics = null;
+
+		// store rectangles to define boundary/wrapping/destroy areas.
+		// if a rectangle exists, corresponding function called during update.
+		this.boundRectangle   = null;
+		this.wrapRectangle    = null;
+		this.destroyRectangle = null;
 	}
 	
 	/**
@@ -167,6 +173,37 @@ class Sprite
     }
 
     /**
+     * Set world dimensions (width and height) to be used to bound sprite position.
+     */
+    setBoundRectangle(width, height)
+    {
+    	this.boundRectangle = new BAGEL.Rectangle(width/2,height/2, width,height);
+    }
+
+    /**
+     * Adjusts position of sprite (if necessary)
+     *  to be completely contained within screen or world dimensions.
+     * <br/>
+     * Called automatically by {@link Sprite#update|update} if {@link Sprite#setBoundRectangle|setBoundRectangle} was previously called.
+     * @param {number} worldWidth - the width of the screen or world
+     * @param {number} worldHeight - the height of the screen or world
+     */
+    boundWithinRectangle(worldWidth, worldHeight)
+    {
+    	if (this.position.x - this.rectangle.width/2 < 0)
+    		this.position.x = this.rectangle.width/2;
+
+    	if (this.position.x + this.rectangle.width/2 > worldWidth)
+    		this.position.x = worldWidth - this.rectangle.width/2;
+
+    	if (this.position.y - this.rectangle.height/2 < 0)
+    		this.position.y = this.rectangle.height/2;
+
+    	if (this.position.y + this.rectangle.height/2 > worldHeight)
+    		this.position.y = worldHeight - this.rectangle.height/2;    		 
+    }
+
+    /**
      * Perform any internal actions that should be repeated every frame.
      */
     update(deltaTime)
@@ -175,6 +212,10 @@ class Sprite
         //   if it has been initialized for this sprite
     	if (this.physics != null)
             this.physics.update(deltaTime);
+
+        if (this.boundRectangle)
+        	this.boundWithinRectangle(this.boundRectangle.width, this.boundRectangle.height);
+
     }
 
 	/**
