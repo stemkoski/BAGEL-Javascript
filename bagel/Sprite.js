@@ -25,12 +25,20 @@ class Sprite
 
 		// the Group that contains this sprite
 		this.parentGroup = null;
+
+		// additional graphics-related data
+
+		// initial angle = 0 indicates sprite is initially facing to the right
+		this.angle  = 0;
+		this.opacity = 1.0;
+		this.mirrored = false;
+		this.flipped = false;
 	}
 	
 	/**
-     * Set the x and y coordinates of the center of the sprite.
-     * @param {number} x the x coordinate of the center
-     * @param {number} y the y coordinate of the center
+     * Set the x and y coordinates of the center of this sprite.
+     * @param {number} x - the new x coordinate of the center of this sprite
+     * @param {number} y - the new y coordinate of the center of this sprite
      */
     setPosition(x, y)
 	{
@@ -38,9 +46,9 @@ class Sprite
 	}
 
 	/**
-     * Change the sprite's position by given amounts.
-     * @param {number} dx value to add to the position x coordinate
-     * @param {number} dy value to add to the position y coordinate
+     * Change this sprite's position by the given amounts.
+     * @param {number} dx - value to add to the position x coordinate
+     * @param {number} dy - value to add to the position y coordinate
      */
 	moveBy(dx, dy)
 	{
@@ -50,7 +58,7 @@ class Sprite
 	/**
      * Set the texture used when drawing this sprite.
      *  Also updates the size of the sprite to the size of the texture.
-     * @param {Texture} texture
+     * @param {Texture} texture - the texture to use when drawing this sprite
      */
 	setTexture(texture)
 	{
@@ -62,8 +70,8 @@ class Sprite
 	/**
      * Set the size (rectangle width and height) of the sprite;
      *  used when drawing sprite and checking for overlap with other sprites.
-     * @param {number} width the width of the sprite
-     * @param {number} height the height of the sprite
+     * @param {number} width - the new width of this sprite
+     * @param {number} height - the new height of this sprite
      */
 	setSize(width, height)
 	{
@@ -74,12 +82,64 @@ class Sprite
 	/**
      * Set whether this sprite should be visible or not;
      *  determines whether sprite will be drawn on canvas.
-     * @param {boolean} visible - determines if sprite is visible or not
+     * @param {boolean} visible - determines if this sprite is visible or not
      */
     setVisible(visible)
 	{
 		this.visible = visible;
 	}
+
+	/**
+     * Get the angle (in degrees) between this sprite and the positive x-axis.
+     * <br/>
+     * (Angles increase in clockwise direction, since positive y-axis is down.)
+     * @return {number} angle between this sprite and positive x-axis
+     */
+    getAngle(angleDegrees)
+	{
+		this.angle = angleDegrees;
+	}
+
+	/**
+     * Set the angle (in degrees) between this sprite and the positive x-axis.
+     * <br/>
+     * (Angles increase in clockwise direction, since positive y-axis is down.)
+     * @param {number} angleDegrees - the new direction angle of this sprite
+     */
+    setAngle(angleDegrees)
+	{
+		this.angle = angleDegrees;
+	}
+
+	/**
+     * Rotate this sprite by the given amount.
+     * @param {number} angleDegrees - the angle (in degrees) to rotate this sprite by
+     */
+    rotateBy(angleDegrees)
+	{
+		this.angle += angleDegrees;
+	}
+
+	/**
+     * Move this sprite by a given distance in a given direction.
+     * @param {number} distance - distance this sprite will move
+     * @param {number} angle - direction along which this sprite will move
+     */
+    moveAtAngle(distance, angleDegrees)
+	{
+		this.position.x += distance * Math.cos(angleDegrees * Math.PI/180);
+		this.position.y += distance * Math.sin(angleDegrees * Math.PI/180);
+	}
+	
+	/**
+     * Move this sprite by a given distance along its current direction angle.
+     * @param {number} distance - distance this sprite will move
+     */
+    moveForward(distance)
+	{
+		this.moveAtAngle(distance, this.angle);
+	}
+
 
 	/**
      * Determine if this sprite overlaps another sprite (includes overlapping edges).
@@ -93,15 +153,30 @@ class Sprite
 
 	/**
 	 * Draw the sprite on a canvas, centered at the sprite's position, in an area corresponding to the sprite's size.
+	 * Also take into account sprite's angle, whether the image should be flipped or mirrored, and the opacity of the image.
 	 * If visible is set to false, sprite will not be drawn.
      * @param context - the graphics context object associated to the game canvas
 	 */
+
 	draw(context)
 	{
 		if ( !this.visible )
 			return;
 		
-		context.setTransform(1,0, 0,1, this.position.x, this.position.y);
+		let A = this.angle * Math.PI/180;
+		let scaleX = 1;
+		let scaleY = 1;
+		if (this.mirrored)
+			scaleX *= -1;
+		if (this.flipped)
+			scaleY *= -1;
+		let cosA = Math.cos(A);
+		let sinA = Math.sin(A);
+
+		context.setTransform(scaleX*cosA, scaleX*sinA, -scaleY*sinA, scaleY*cosA, 
+			this.position.x, this.position.y);
+
+		context.globalAlpha = this.opacity;
 
 		// image, 4 source parameters, 4 destination parameters
         context.drawImage(this.texture.image, 
