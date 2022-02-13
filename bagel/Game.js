@@ -79,6 +79,9 @@ class Game
 	{
 		this.input = new BAGEL.Input();
 		this.clock = new BAGEL.Clock();
+		
+		// gamepad support
+		this.gamepad = new BAGEL.Gamepad();
 	
 		// store collection of screen objects, indexed by name
 		this.screenList = {};
@@ -115,6 +118,7 @@ class Game
 
 		// process input
 		this.input.update();
+		this.gamepad.update();
 		
 		if ( this.input.keyPressed("Escape") )
 			this.quit();

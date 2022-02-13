@@ -24,12 +24,14 @@ class Gamepad
 		{
     		self.index = gamepadEventData.gamepad.index;
     		self.active = true;
+    		console.log("gamepad connected");
 		}
 		window.addEventListener( "gamepadconnected", connected );
 		
 		let disconnected = function(gamepadEventData)
 		{
 			self.active = false;
+    		console.log("gamepad disconnected");
 		}
 
 		window.addEventListener( "gamepaddisconnected", disconnected );
@@ -129,7 +131,7 @@ class Gamepad
 	 * @param {string} buttonName - the name of the button to check
 	 * @return {boolean} true if the button was just pressed
 	 */
-	isButtonPressed(buttonName)
+	buttonPressed(buttonName)
 	{
 		let buttonIndex = this.buttonMapping[buttonName];
         return this.buttonPressedSet.has(buttonIndex);
@@ -140,10 +142,10 @@ class Gamepad
 	 * @param {string} buttonName - the name of the button to check
 	 * @return {boolean} true if the button is currently down
 	 */
-	isButtonPressing(buttonName)
+	buttonPressing(buttonName)
 	{
 		let buttonIndex = this.buttonMapping[buttonName];
-		return this.buttonPressedSet.has(buttonIndex);
+		return this.buttonPressingSet.has(buttonIndex);
 	}
 
 	/**
@@ -151,10 +153,10 @@ class Gamepad
 	 * @param {string} buttonName - the name of the button to check
 	 * @return {boolean} true if the button was just released
 	 */
-	isButtonReleased(buttonName)
+	buttonReleased(buttonName)
 	{
 		let buttonIndex = this.buttonMapping[buttonName];
-		return this.buttonPressedSet.has(buttonIndex);
+		return this.buttonReleasedSet.has(buttonIndex);
 	}
 
 	/**
@@ -165,10 +167,6 @@ class Gamepad
     getAxisValue(axisName)
     {
   	  let axisIndex = this.axisMapping[axisName];
-  	
-  	  if ( !axisIndex )
-  	    return 0;
-
   	  let axisValue = this.gamepadAxes[axisIndex];
   	  // TODO: deadZone smoothing
   	  return axisValue;
