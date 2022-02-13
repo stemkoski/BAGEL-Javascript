@@ -81,6 +81,7 @@ class Input
 	/**
 	 * Check if a key was just pressed; only true for a single frame after key is pressed.
 	 * @param {string} keyName - the name of the key to check
+	 * @return {boolean} true if the key was just pressed
 	 */
 	keyPressed( keyName )
 	{
@@ -91,6 +92,7 @@ class Input
 	/**
 	 * Check if a key is currently down; true for the duration between key pressed and key released.
 	 * @param {string} keyName - the name of the key to check
+	 * @return {boolean} true if the key is currently down
 	 */
 	keyPressing( keyName )
 	{
@@ -101,6 +103,7 @@ class Input
 	/**
 	 * Check if a key was just pressed; only true for a single frame after key is released.
 	 * @param {string} keyName - the name of the key to check
+	 * @return {boolean} true if the key was just released
 	 */
 	keyReleased( keyName )
 	{
