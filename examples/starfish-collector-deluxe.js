@@ -63,7 +63,7 @@ class LevelScreen extends BAGEL.Screen
 		this.addSpriteToGroup(water);
 
 		let turtleTex = new BAGEL.Texture();
-  		await turtleTex.load("assets/starfish-collector/turtle-down.png");
+  		await turtleTex.load("assets/starfish-collector/turtle.png");
   		this.turtle = new BAGEL.Sprite();
 		this.turtle.setTexture(turtleTex);
   		this.turtle.setSize(64,64);
@@ -92,6 +92,7 @@ class LevelScreen extends BAGEL.Screen
 		this.win.setTexture(winTex);
  		this.win.setPosition(400, 300);
  		this.win.setVisible(false);
+ 		this.win.opacity = 0.80;
  		this.addSpriteToGroup(this.win);
 
 	}
@@ -116,10 +117,19 @@ class LevelScreen extends BAGEL.Screen
 				this.turtle.moveBy(0, distance);
 			*/
 
-			// use axis 1 to move turtle
+			/*
+			// use joystick 1 to move turtle
 			let dx = this.game.gamepad.getAxisValue("Axis1X");
 			let dy = this.game.gamepad.getAxisValue("Axis1Y");
 			this.turtle.moveBy(distance * dx, distance * dy);
+			*/
+
+			// use joystick 1 to move and rotate turtle
+			let v = this.game.gamepad.getJoystickVector(1);
+			this.turtle.moveBy(distance * v.x, distance * v.y);
+			// only rotate turtle when actually moving (not while stopped)
+			if ( v.getLength() > 0.1 )
+				this.turtle.setAngle( v.getAngle() );
 		}
 		else
 		{
