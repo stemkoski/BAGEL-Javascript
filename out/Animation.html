@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Clock</title>
+    <title>JSDoc: Class: Animation</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Clock</h1>
+    <h1 class="page-title">Class: Animation</h1>
 
     
 
@@ -28,9 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Clock<span class="signature">()</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Animation<span class="signature">()</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">The Clock keeps track of time-related values for a <a href="Game.html">Game</a>: <ul>  <li>elapsed time (total time since initialization)  <li>delta time (the change in time since last <a href="Clock.html#update">update</a>). </ul></div>
+            <div class="class-description">An Animation is similar to a <a href="Texture.html">Texture</a> but designed for drawing images from a spritesheet  (a grid of images), with methods to automatically update</div>
         
     
 </header>
@@ -45,7 +45,7 @@
     
 
     
-    <h4 class="name" id="Clock"><span class="type-signature"></span>new Clock<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Animation"><span class="type-signature"></span>new Animation<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -53,7 +53,7 @@
 
 
 <div class="description">
-    Initialize required variables and begin tracking time.
+    Initialize empty Image and Rectangle objects; data set with the <a href="Texture.html#load">load</a> method.
 </div>
 
 
@@ -97,7 +97,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Clock.js.html">Clock.js</a>, <a href="Clock.js.html#line10">line 10</a>
+        <a href="Animation.js.html">Animation.js</a>, <a href="Animation.js.html#line7">line 7</a>
     </li></ul></dd>
     
 
@@ -153,16 +153,12 @@
     
 
     
-    <h4 class="name" id="getDeltaTime"><span class="type-signature"></span>getDeltaTime<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="clone"><span class="type-signature"></span>clone<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
 
 
-
-<div class="description">
-    Return the time (seconds) since the last time the <a href="Clock.html#update">update</a> method was called.
-</div>
 
 
 
@@ -205,7 +201,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Clock.js.html">Clock.js</a>, <a href="Clock.js.html#line28">line 28</a>
+        <a href="Animation.js.html">Animation.js</a>, <a href="Animation.js.html#line87">line 87</a>
     </li></ul></dd>
     
 
@@ -230,28 +226,6 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    time (seconds) since last update
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -263,16 +237,12 @@
     
 
     
-    <h4 class="name" id="getElapsedTime"><span class="type-signature"></span>getElapsedTime<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="isFinished"><span class="type-signature"></span>isFinished<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
 
 
-
-<div class="description">
-    Return the time (seconds) since the last time the <a href="Clock.html#update">update</a> method was called.
-</div>
 
 
 
@@ -315,7 +285,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Clock.js.html">Clock.js</a>, <a href="Clock.js.html#line37">line 37</a>
+        <a href="Animation.js.html">Animation.js</a>, <a href="Animation.js.html#line79">line 79</a>
     </li></ul></dd>
     
 
@@ -340,28 +310,143 @@
 
 
 
-<h5>Returns:</h5>
+
+
+
+
 
         
-<div class="param-desc">
-    time (seconds) since clock was created
+            
+
+    
+
+    
+    <h4 class="name" id="load"><span class="type-signature">(async) </span>load<span class="signature">(filename)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Load image file and create list of regions depending on number of rows and columns in spritesheet.
 </div>
 
 
 
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
         
-<span class="param-type">number</span>
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
-    </dd>
-</dl>
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the name (including path) of the image file</td>
+        </tr>
 
     
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Animation.js.html">Animation.js</a>, <a href="Animation.js.html#line32">line 32</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -381,7 +466,7 @@
 
 
 <div class="description">
-    Update the values for delta time and elapsed time. <br/> This method should be called once per frame by the <a href="Game.html">Game</a> class.
+    Updates elapsedTime and region used by texture
 </div>
 
 
@@ -425,7 +510,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Clock.js.html">Clock.js</a>, <a href="Clock.js.html#line47">line 47</a>
+        <a href="Animation.js.html">Animation.js</a>, <a href="Animation.js.html#line59">line 59</a>
     </li></ul></dd>
     
 
