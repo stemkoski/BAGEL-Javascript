@@ -100,6 +100,12 @@ class LevelScreen extends BAGEL.Screen
  		this.win.opacity = 0.80;
  		this.addSpriteToGroup(this.win);
 
+ 		this.starfishLabel = new BAGEL.Label();
+ 		this.starfishLabel.setText("Starfish Left: ??");
+ 		this.starfishLabel.setPosition(400, 590, "center");
+ 		this.starfishLabel.setProperties( {"fontColor": "yellow", "borderColor": "orange"} );
+ 		this.addSpriteToGroup(this.starfishLabel);
+
 	}
 
 	update()
@@ -179,8 +185,13 @@ class LevelScreen extends BAGEL.Screen
 				starfish.destroy();
 		}
 
-		if ( this.getGroupSpriteCount("starfish") == 0 && !this.win.visible)
+		let count = this.getGroupSpriteCount("starfish");
+		this.starfishLabel.setText( "Starfish Left: " + count );
+		if ( count == 0 && !this.win.visible)
+		{
 			this.win.setVisible(true);
+			this.starfishLabel.setProperties( {"visible": false} );
+		}
 	}
 }
 
