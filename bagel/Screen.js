@@ -122,9 +122,8 @@ class Screen
 	 *  <br/>
 	 *    Must be implemented by extending class.
 	 *  <br/>
-	 *  Note: this method will typically be "async" because "await" should be used when loading textures.
 	 */
-	async initialize()
+	initialize()
 	{ 
 		throw new Error("initialize() method not implemented");
 	}

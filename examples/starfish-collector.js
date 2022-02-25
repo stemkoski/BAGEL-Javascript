@@ -16,19 +16,19 @@ class StarfishGame extends BAGEL.Game
 
 class TitleScreen extends BAGEL.Screen 
 {
-	async initialize()
+	initialize()
 	{
-		let titleTex = new BAGEL.Texture();
-		await titleTex.load("assets/starfish-collector/title.png");
 		let title = new BAGEL.Sprite();
-		title.setTexture(titleTex);
+		title.setTexture(
+    	  new BAGEL.Texture("assets/starfish-collector/title.png") );
+		title.setSize(500,200);
 		title.setPosition(400,250);
 		this.addSpriteToGroup(title);		
 
-		let startTex = new BAGEL.Texture();
-		await startTex.load("assets/starfish-collector/start.png");
 		let start = new BAGEL.Sprite();
-		start.setTexture(startTex);
+		start.setTexture(
+		  new BAGEL.Texture("assets/starfish-collector/start.png") );
+		start.setSize(400,60);
 		start.setPosition(400,450);
 		this.addSpriteToGroup(start);		
 	}
@@ -44,26 +44,23 @@ class TitleScreen extends BAGEL.Screen
 
 class LevelScreen extends BAGEL.Screen
 {
-	async initialize()
+	initialize()
 	{
-		let waterTex = new BAGEL.Texture();
-		await waterTex.load("assets/starfish-collector/water.png");
 		let water = new BAGEL.Sprite();
-		water.setTexture(waterTex);
+		water.setTexture(
+		  new BAGEL.Texture("assets/starfish-collector/water.png") );
+		water.setSize(800,600);
 		water.setPosition(400,300);
 		this.addSpriteToGroup(water);
 
-		let turtleTex = new BAGEL.Texture();
-  		await turtleTex.load("assets/starfish-collector/turtle-down.png");
   		this.turtle = new BAGEL.Sprite();
-		this.turtle.setTexture(turtleTex);
+		this.turtle.setTexture(
+		  new BAGEL.Texture("assets/starfish-collector/turtle-down.png") );
   		this.turtle.setSize(64,64);
  		this.turtle.setPosition(400, 50);
  		this.addSpriteToGroup(this.turtle);
 
-		let starfishTex = new BAGEL.Texture();
-  		await starfishTex.load("assets/starfish-collector/starfish.png");
-  		
+		let starfishTex = new BAGEL.Texture("assets/starfish-collector/starfish.png");  		
   		this.createGroup("starfish");
   		let starfishCount = 100;
   		for (let i = 0; i < starfishCount; i++)
@@ -77,10 +74,9 @@ class LevelScreen extends BAGEL.Screen
  			this.addSpriteToGroup(starfish, "starfish");
  		}
 
-		let winTex = new BAGEL.Texture();
-  		await winTex.load("assets/starfish-collector/win.png");
   		this.win = new BAGEL.Sprite();
-		this.win.setTexture(winTex);
+		this.win.setTexture(
+		  new BAGEL.Texture("assets/starfish-collector/win.png") );
  		this.win.setPosition(400, 300);
  		this.win.setVisible(false);
  		this.addSpriteToGroup(this.win);

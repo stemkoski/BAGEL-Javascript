@@ -7,26 +7,28 @@ import * as BAGEL from "./index.js";
 class Texture
 {
 	/**
-	 * Initialize empty Image and Rectangle objects;
-	 *  data set with the {@link Texture#load|load} method.
+	 * Initialize Image and Rectangle objects;
+	 * Load image file and set size of rectangle to image dimensions.
+	 * @param {string} filename the name (including path) of the image file  	 
 	 * @constructor
 	 */
-	constructor()
+	constructor(fileName)
 	{
 		this.image  = new Image();
 		this.region = new BAGEL.Rectangle();
+
+		if ( fileName != null )
+		{
+			let self = this;
+			// this code automatically runs after image data loaded
+			this.image.onload = function()
+			{
+				self.region.setSize(self.image.width, self.image.height);
+			}
+			this.image.src = fileName;
+		}
 	}
-	
-	/**
-	 * Load image file and set size of rectangle to image dimensions.
-	 * @param {string} filename the name (including path) of the image file  
-	 */
-	async load(filename)
-	{
-		this.image.src = filename;
-  		await this.image.decode();
-		this.region.setSize(this.image.width, this.image.height);
-	}
+
 }
 
 export { Texture };
