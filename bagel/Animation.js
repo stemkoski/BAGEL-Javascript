@@ -10,7 +10,10 @@ class Animation
 	/**
 	 * Load image file and create list of regions depending on number of rows and columns in spritesheet.
 	 * @param {string} filename the name (including path) of the image file  
-	 * @param
+	 * @param {number} rows - the number of rows in the spritesheet
+	 * @param {number} cols - the number of columns in the spritesheet
+	 * @param {number} frameDuration - time (seconds) to display each frame (region in spritesheet)
+	 * @param {boolean} loop - whether to restart animation once all frames have been displayed
 	 * @constructor
 	 */
 	constructor(fileName, rows=1, cols=1, frameDuration=0.25, loop=false)
@@ -53,8 +56,8 @@ class Animation
 	
 
 	/**
-	 * Updates elapsedTime and region used by texture
-	 * 
+	 * Updates elapsedTime and updates the rectangular region used by texture
+	 *  depending on how much time has elapsed.
 	 */
     update(deltaTime)
     {
@@ -74,7 +77,8 @@ class Animation
     }
 
 	/**
-	 * 
+	 *  Determines if this animation is finished displaying all frames (and is not set to loop).
+	 *  @return {boolean} if this animation has finished
 	 */
     isFinished()
     {
@@ -82,16 +86,20 @@ class Animation
     }
 
 	/**
-	 * 
+	 *  Make a copy of this object.
+	 *  <br>An animation object can not be shared between multiple sprites because each
+	 *   may have started at different times, thus have different elapsedTime values.
+	 *  @return {Animation} a copy of this Animation object
 	 */
     clone()
     {
-        let anim            = new Animation();
-		anim.textureList    = this.textureList;
+        let anim            = new BAGEL.Animation();
+        anim.texture.image  = this.texture.image;
+        anim.texture.region = this.regionList[0];
+		anim.regionList     = this.regionList;
         anim.frameDuration  = this.frameDuration;
-        anim.loop           = this.loop;
 		anim.totalDuration  = this.totalDuration;
-        anim.currentTexture = this.textureList[0];
+        anim.loop           = this.loop;
         return anim;
     }
 

@@ -11,6 +11,7 @@ class Clock
 {
 	/**
 	 * Initialize required variables and begin tracking time.
+	 * @constructor
 	 */
 	constructor()
 	{
