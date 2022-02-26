@@ -53,15 +53,15 @@ class ActionFactory
      * <br> &nbsp;&nbsp; ActionFactory.remove() 
      * <br> ])
      * </code>
-     * @param {number} fadeRate - amount to reduce opacity by per second
+     * @param {number} fadeDuration - how long (seconds) until fade is complete
      * @return {Action} Action to fade out a Sprite over a period of time
      */
-    static fadeOut(fadeRate)
+    static fadeOut(fadeDuration)
     {
         return new BAGEL.Action(
             function(targetSprite, deltaTime, totalTime)
             {
-                targetSprite.opacity -= fadeRate * deltaTime;
+                targetSprite.opacity -= deltaTime/fadeDuration;
                 if (targetSprite.opacity < 0)
                     targetSprite.opacity = 0;
                 return (targetSprite.opacity <= 0);
@@ -72,15 +72,15 @@ class ActionFactory
     /**
      * Create an Action to fade in (increase opacity of) a Sprite over a period of time.
      * <br>This Action is complete once the Sprite's opacity reaches 1.
-     * @param {number} fadeRate - amount to increase opacity by per second
+     * @param {number} fadeDuration - how long (seconds) until fade is complete
      * @return {Action} Action to fade in a Sprite over a period of time
      */
-    static fadeIn(fadeRate)
+    static fadeIn(fadeDuration)
     {
         return new BAGEL.Action(
             function(targetSprite, deltaTime, totalTime)
             {
-                targetSprite.opacity += fadeRate * deltaTime;
+                targetSprite.opacity += deltaTime/fadeDuration;
                 if (targetSprite.opacity > 1)
                     targetSprite.opacity = 1;
                 return (targetSprite.opacity >= 1);
