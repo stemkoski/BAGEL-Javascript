@@ -17,7 +17,8 @@ class Texture
 		this.image  = new Image();
 		this.region = new BAGEL.Rectangle();
 
-		if ( fileName != null )
+		// only try to load a file if a fileName is given
+		if ( fileName )
 		{
 			let self = this;
 			// this code automatically runs after image data loaded

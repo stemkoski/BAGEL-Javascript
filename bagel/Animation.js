@@ -27,31 +27,36 @@ class Animation
 		this.totalDuration = null;
 		this.loop = false;
 
-		let self = this;
-
-		// this code automatically runs after image data loaded
-		this.texture.image.onload = function()
+		// only try to load a file if a fileName is given
+		// (this will not be the case when cloning an Animation)
+		if ( fileName )
 		{
+			let self = this;
 
-			// create list of rectangles
-			let frameWidth  = self.texture.image.width  / cols;
-			let frameHeight = self.texture.image.height / rows;			
-			for (let y = 0; y < rows; y++)
-	        {
-	            for (let x = 0; x < cols; x++)
-	            {
-					let region = new BAGEL.Rectangle(x*frameWidth, y*frameHeight, frameWidth, frameHeight)
-	                self.regionList.push( region );
-	            }
-	        }
-	        self.texture.region = self.regionList[0];
+			// this code automatically runs after image data loaded
+			this.texture.image.onload = function()
+			{
 
-	        self.frameDuration = frameDuration;
-			self.totalDuration  = frameDuration * self.regionList.length;
-	        self.loop = loop;
+				// create list of rectangles
+				let frameWidth  = self.texture.image.width  / cols;
+				let frameHeight = self.texture.image.height / rows;			
+				for (let y = 0; y < rows; y++)
+		        {
+		            for (let x = 0; x < cols; x++)
+		            {
+						let region = new BAGEL.Rectangle(x*frameWidth, y*frameHeight, frameWidth, frameHeight)
+		                self.regionList.push( region );
+		            }
+		        }
+		        self.texture.region = self.regionList[0];
+
+		        self.frameDuration = frameDuration;
+				self.totalDuration  = frameDuration * self.regionList.length;
+		        self.loop = loop;
+			}
+
+			this.texture.image.src = fileName;
 		}
-
-		this.texture.image.src = fileName;
 	}
 	
 
@@ -82,7 +87,7 @@ class Animation
 	 */
     isFinished()
     {
-        return (this.elapsedTime >= this.textureList.length * this.frameDuration) && !this.loop;
+        return (this.elapsedTime >= this.regionList.length * this.frameDuration) && !this.loop;
     }
 
 	/**
