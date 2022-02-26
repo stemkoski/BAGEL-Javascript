@@ -63,8 +63,11 @@ class Input
 		// update current event status
 		for (let k of this.keyDownQueue)
 		{
-			this.keyPressedSet.add(k);
-			this.keyPressingSet.add(k);
+			if ( !this.keyPressingSet.has(k) )
+			{
+				this.keyPressedSet.add(k);
+				this.keyPressingSet.add(k);
+			}
 		}
 		
 		for (let k of this.keyUpQueue)
