@@ -200,12 +200,12 @@ class ActionFactory
      * <br>This Action is complete immediately.
      * @return {Action} Action that automatically removes a Sprite
      */
-    static remove()
+    static destroy()
     {
         return new BAGEL.Action(
             function(targetSprite, deltaTime, totalTime)
             {
-                target.remove();
+                targetSprite.destroy();
                 return true;
             }
         );
@@ -229,7 +229,7 @@ class ActionFactory
         return new BAGEL.Action(
             function(targetSprite, deltaTime, totalTime)
             {
-                return target.animation.isFinished();
+                return targetSprite.animation.isFinished();
             }
         );
     }
