@@ -45,6 +45,9 @@ class Sprite
 
 		// store animation data
 		this.animation = null;
+
+		// list of Actions: functions applied to object over time
+		this.actionList = [];	
 	}
 	
 	/**
@@ -294,6 +297,23 @@ class Sprite
 		this.rectangle.height = animation.texture.region.height;
 	}
 
+	/**
+	 * Add an {@link Action} to this sprite: a special function that
+	 *  will be automatically applied to the sprite over time until it is complete.
+	 * <br>
+	 * Most common actions can be created with the static methods in the
+	 * {@link ActionFactory} class.
+	 * <br>
+	 * All actions added to this sprite are performed in parallel, unless
+	 *  enclosed by a {@link ActionFactory#sequence|Sequence} action.
+	 * @param {Action} action - an action to be 
+	 */
+	addAction(action)
+	{
+		this.actionList.push(action);
+	}
+
+
     /**
      * Perform any internal actions that should be repeated every frame.
      */
@@ -315,6 +335,21 @@ class Sprite
 
     	if (this.animation != null)
             this.animation.update(deltaTime);
+
+        // Update all actions (in parallel, by default).
+        // Using a copy of the list to avoid skipping the next action in the list
+        //  when the previous action is removed.
+		let actionListCopy = this.actionList.slice();
+		for (let action of actionListCopy)
+		{
+			let finished = action.apply(this, deltaTime);
+			if (finished)
+			{
+				let index = this.actionList.indexOf(action);
+				if (index > -1)
+					this.actionList.splice(index, 1);
+			}
+		}
     }
 
 	/**
