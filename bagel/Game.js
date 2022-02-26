@@ -67,11 +67,39 @@ class Game
 	 */
 	setScreen(screenName)
 	{
-		this.activeScreen = this.screenList[screenName];
-
-		this.activeScreen.game = this;
+		if ( !this.screenFadeTransition || this.activeScreen == null)
+		{
+			this.activeScreen = this.screenList[screenName];
+		    this.activeScreen.game = this;
+		}
+		else
+		{
+			this.screenFadeInProgress = true;
+			this.screenFadeType = "out";
+			this.screenFadeOpacity = 0.00;
+			this.nextScreenName = screenName;
+		}
 	}
+
 	
+	/**
+	 * Determine whether current screen will fade out and
+	 *  next screen will fade in, when the screen is changed
+	 *  using {@link Game#setScreen|setScreen}, 
+	 *  and set the screen fade duration and color. 
+	 * @param {boolean} screenFadeTransition - whether or not screens will fade in and fade out
+	 * @param {number} screenFadeDuration - the amount of time to fade in and fade out
+	 * @param {string} screenFadeColor - the color of the fade between screens
+	 */
+	setScreenFadeTransition(screenFadeTransition = true,
+		screenFadeDuration = 1.0, screenFadeColor = "#000000" )
+	{
+		this.screenFadeTransition = screenFadeTransition;
+		this.screenFadeDuration   = screenFadeDuration;
+		this.screenFadeColor      = screenFadeColor;
+	}
+
+
 	/**
 	 * Start the game: create game objects and run the {@link Game#initialize|initialize} method.
 	 */
@@ -90,6 +118,15 @@ class Game
 		this.activeScreen = null;
 
 		this.running = true;
+
+		// variables for screen fade transitions
+		this.screenFadeTransition = false;
+		this.screenFadeInProgress = false;
+		this.screenFadeType = "out";
+		this.screenFadeDuration = 1.0;
+		this.screenFadeColor = "#000000";
+		this.screenFadeOpacity = 0.00;
+		this.nextScreenName = null;
 
 		// TODO: global data structure for passing data between screens?
 
@@ -133,6 +170,36 @@ class Game
 
 		// render active screen's sprite images to canvas
 		this.activeScreen.drawGroups(this.context);
+
+		// if screen fade is active, draw a translucent overlay
+		//  and switch screen between fade in and out
+		if (this.screenFadeTransition && this.screenFadeInProgress)
+		{
+			if (this.screenFadeType == "out")
+			{
+				this.screenFadeOpacity += deltaTime / this.screenFadeDuration;
+				if (this.screenFadeOpacity > 1)
+				{
+					this.screenFadeOpacity = 1;
+					this.activeScreen = this.screenList[this.nextScreenName];
+		    		this.activeScreen.game = this;
+		    		this.screenFadeType = "in";
+				}
+			}
+			else if (this.screenFadeType == "in")
+			{
+				this.screenFadeOpacity -= deltaTime / this.screenFadeDuration;
+				if (this.screenFadeOpacity < 0)
+				{
+					this.screenFadeOpacity = 0;
+					this.screenFadeInProgress = false;
+				}
+			}
+
+			this.context.globalAlpha = this.screenFadeOpacity;
+			this.clearCanvas(this.screenFadeColor);
+			this.context.globalAlpha = 1.00;
+		}
 
 		// creates a loop that repeats at monitor refresh rate.
 		// bind(this) required so update function uses correct context for "this"
