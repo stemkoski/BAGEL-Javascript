@@ -156,6 +156,19 @@ class Sprite
 	}
 
 	/**
+     * Change the opacity when drawing, 
+     *   enabling objects underneath to be partially visible
+     *   by blending their colors with the colors of this object.
+     * <br>
+     * 0 = fully transparent (appears invisible);  1 = fully opaque (appears solid) 
+     * @param {number} opacity - opacity of this object
+     */
+    setOpacity(opacity)
+	{
+		this.opacity = opacity;
+	}
+
+	/**
      * Determine if this sprite overlaps another sprite (includes overlapping edges).
 	 * @param {Sprite} other - sprite to check for overlap with
 	 * @return {boolean} true if this sprite overlaps other sprite, false otherwise
@@ -306,7 +319,7 @@ class Sprite
 	 * <br>
 	 * All actions added to this sprite are performed in parallel, unless
 	 *  enclosed by a {@link ActionFactory#sequence|Sequence} action.
-	 * @param {Action} action - an action to be 
+	 * @param {Action} action - an action to be applied to this object
 	 */
 	addAction(action)
 	{
@@ -316,6 +329,7 @@ class Sprite
 
     /**
      * Perform any internal actions that should be repeated every frame.
+     * @param {number} deltaTime - time elapsed since previous frame
      */
     update(deltaTime)
     {
