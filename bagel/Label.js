@@ -188,21 +188,34 @@ class Label
 			context.shadowBlur = this.shadowSize;
 		}
 
+		// add support for multiline text (line breaks indicated by "\n")
+		let textArray  = this.text.split("\n");
+		let lineHeight = this.fontSize * 1.5;
+
 		// draw filled in text (multiple times to increase drop shadow intensity)
-		context.fillText( this.text, this.position.x, this.position.y );
-		context.fillText( this.text, this.position.x, this.position.y );
+		for (let i = 0; i < textArray.length; i++)
+		{
+			context.fillText( textArray[i], this.position.x, this.position.y + i * lineHeight);
+			context.fillText( textArray[i], this.position.x, this.position.y + i * lineHeight);
+		}
 
 		// disable shadowBlur, otherwise all sprites drawn later will have shadows
 		context.shadowBlur = 0;
-		// draw filled text again, to fill over interior shadow blur
-		context.fillText( this.text, this.position.x, this.position.y );
+		// draw filled text again, to fill over interior shadow blur, that may be a different color
+		for (let i = 0; i < textArray.length; i++)
+		{
+			context.fillText( textArray[i], this.position.x, this.position.y + i * lineHeight);
+		}
 
 		// draw border last, so not hidden by filled text
 		if (this.drawBorder)
 		{
 			context.strokeStyle = this.borderColor;
 			context.lineWidth = this.borderSize;
-			context.strokeText( this.text, this.position.x, this.position.y );
+			for (let i = 0; i < textArray.length; i++)
+			{
+				context.strokeText( textArray[i], this.position.x, this.position.y + i * lineHeight);
+			}
 		}		
 	}
 
