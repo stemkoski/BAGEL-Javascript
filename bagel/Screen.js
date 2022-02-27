@@ -18,9 +18,10 @@ class Screen
 	 *  Creates a collection to store {@link Group|Groups}, a default Group named "main",
 	 *  a variable to reference the {@link Game} containing this screen,
 	 *  and calls the {@link Screen#initialize|initialize} method.
+	 *  @param {Game} game - a reference to the Game containing this Screen
 	 *  @constructor
 	 */
-	constructor()
+	constructor(game)
 	{		
 		// collection of Groups to be rendered by Game
 		this.groupCollection = {};
@@ -32,7 +33,7 @@ class Screen
 		this.groupDrawOrder.push("main");
 
 		// store reference to Game containing this Screen
-		this.game = null;
+		this.game = game;
 
     	// set up screen-specific objects
 		this.initialize();

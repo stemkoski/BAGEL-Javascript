@@ -6,8 +6,9 @@ class StarfishGame extends BAGEL.Game
 {
 	initialize()
 	{
-		this.addScreen( "title", new TitleScreen() );
-		this.addScreen( "level", new LevelScreen() );
+		this.setScreenFadeTransition(true, 0.25, "#000022");
+		this.addScreen( "title", new TitleScreen(this) );
+		this.addScreen( "level", new LevelScreen(this) );
 		this.setScreen( "title" );
 	}
 }
@@ -122,7 +123,8 @@ class LevelScreen extends BAGEL.Screen
  		this.starfishLabel = new BAGEL.Label();
  		this.starfishLabel.setText("Starfish Left: ??");
  		this.starfishLabel.setPosition(400, 590, "center");
- 		this.starfishLabel.setProperties( {"fontColor": "yellow", "borderColor": "orange"} );
+ 		this.starfishLabel.setProperties( {
+ 			"fontColor": "yellow", "borderColor": "orange"} );
  		this.addSpriteToGroup(this.starfishLabel, "UI");
 
 	}
@@ -211,6 +213,13 @@ class LevelScreen extends BAGEL.Screen
 			this.win.setVisible(true);
 			// this.starfishLabel.setProperties( {"visible": false} );
 		}
+
+		// exit back to title screen
+		if ( this.game.input.keyPressed("X") )
+		{
+		   this.game.setScreen("title");
+		}
+
 	}
 }
 

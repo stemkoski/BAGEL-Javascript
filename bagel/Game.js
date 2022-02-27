@@ -101,6 +101,26 @@ class Game
 
 
 	/**
+	 * Store data at a global level so it is accessible to all {@link Screen|screens} via {@link Game#getData|getData}.
+	 * <br>
+	 * Note: required data must be set before screens are created.
+	 * @param {string} dataName - name used to reference and retrieve data later
+	 * @param {object} dataValue - value to be stored
+	 */
+	setData(dataName, dataValue)
+	{
+		this.data[dataName] = dataValue;
+	}
+
+	/**
+	 * Retrieve data previously stored by {@link Game#setData|setData}.
+	 */
+	getData(dataName)
+	{
+		return this.data[dataName];
+	}
+
+	/**
 	 * Start the game: create game objects and run the {@link Game#initialize|initialize} method.
 	 */
 	start()
@@ -128,7 +148,8 @@ class Game
 		this.screenFadeOpacity = 0.00;
 		this.nextScreenName = null;
 
-		// TODO: global data structure for passing data between screens?
+		// global data structure for passing data between screens
+		this.data = {};
 
 		this.initialize();
 		this.update();

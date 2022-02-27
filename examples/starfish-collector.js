@@ -6,8 +6,8 @@ class StarfishGame extends BAGEL.Game
 {
 	initialize()
 	{
-		this.addScreen( "title", new TitleScreen() );
-		this.addScreen( "level", new LevelScreen() );
+		this.addScreen( "title", new TitleScreen(this) );
+		this.addScreen( "level", new LevelScreen(this) );
 		this.setScreen( "title" );
 	}
 }
