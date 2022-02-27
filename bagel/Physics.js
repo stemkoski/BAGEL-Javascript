@@ -76,7 +76,20 @@ class Physics
 	{
 		this.velocityVector.setAngle(angleDegrees);
 	}
-		
+
+	/**
+     * Accelerate this object by a multiple of base acceleration value in the given direction.
+     * @param {number} percent - percentage of acceleration value (specified in constructor) to apply
+     * @param {number} angleDegrees - the direction of acceleration
+     */
+	acceleratePercentAtAngle(percent, angleDegrees)
+	{
+		let v = new BAGEL.Vector();
+		v.setLength(this.accelerationValue * percent);
+		v.setAngle(angleDegrees);
+		this.accelerationVector.addVector( v );
+	}
+
 	/**
      * Accelerate this object in the given direction.
      * <br/>
@@ -85,10 +98,7 @@ class Physics
      */
 	accelerateAtAngle(angleDegrees)
 	{
-		let v = new BAGEL.Vector();
-		v.setLength(this.accelerationValue);
-		v.setAngle(angleDegrees);
-		this.accelerationVector.addVector( v );
+		this.acceleratePercentAtAngle( 1.00, angleDegrees );
 	}
 
 	/**
