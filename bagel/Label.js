@@ -36,6 +36,8 @@ class Label
 		this.visible = true;
 		this.opacity = 1.00;
 
+		this.lineHeight = 1.5;
+
 		// list of Actions: functions applied to object over time
 		this.actionList = [];
 	}
@@ -190,13 +192,13 @@ class Label
 
 		// add support for multiline text (line breaks indicated by "\n")
 		let textArray  = this.text.split("\n");
-		let lineHeight = this.fontSize * 1.5;
+		let lineSkip = this.fontSize * this.lineHeight;
 
 		// draw filled in text (multiple times to increase drop shadow intensity)
 		for (let i = 0; i < textArray.length; i++)
 		{
-			context.fillText( textArray[i], this.position.x, this.position.y + i * lineHeight);
-			context.fillText( textArray[i], this.position.x, this.position.y + i * lineHeight);
+			context.fillText( textArray[i], this.position.x, this.position.y + i * lineSkip);
+			context.fillText( textArray[i], this.position.x, this.position.y + i * lineSkip);
 		}
 
 		// disable shadowBlur, otherwise all sprites drawn later will have shadows
@@ -204,7 +206,7 @@ class Label
 		// draw filled text again, to fill over interior shadow blur, that may be a different color
 		for (let i = 0; i < textArray.length; i++)
 		{
-			context.fillText( textArray[i], this.position.x, this.position.y + i * lineHeight);
+			context.fillText( textArray[i], this.position.x, this.position.y + i * lineSkip);
 		}
 
 		// draw border last, so not hidden by filled text
@@ -214,7 +216,7 @@ class Label
 			context.lineWidth = this.borderSize;
 			for (let i = 0; i < textArray.length; i++)
 			{
-				context.strokeText( textArray[i], this.position.x, this.position.y + i * lineHeight);
+				context.strokeText( textArray[i], this.position.x, this.position.y + i * lineSkip);
 			}
 		}		
 	}
