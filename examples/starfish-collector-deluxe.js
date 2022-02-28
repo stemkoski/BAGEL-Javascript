@@ -37,9 +37,9 @@ class TitleScreen extends BAGEL.Screen
 	update()
 	{
 		// use gamepad axes/buttons for control, with keyboard fallback
-		if ( this.game.gamepad.active )
+		if ( this.game.input.gamepad.active )
 		{
-			if ( this.game.gamepad.buttonPressed("Start") )
+			if ( this.game.input.gamepad.buttonPressed("Start") )
 			    this.game.setScreen("level");
 		}
 		else
@@ -135,7 +135,7 @@ class LevelScreen extends BAGEL.Screen
 		let distance = speed * this.game.clock.getDeltaTime();
 
 		// use gamepad axes/buttons for control, with keyboard fallback
-		if ( this.game.gamepad.active )
+		if ( this.game.input.gamepad.active )
 		{
 			/*
 			// use directional pad to move turtle
@@ -166,7 +166,7 @@ class LevelScreen extends BAGEL.Screen
 			*/
 
 			// physics-based movement
-			let vec = this.game.gamepad.getJoystickVector(1);
+			let vec = this.game.input.gamepad.getJoystickVector(1);
 			if ( vec.getLength() > 0.01 )
 				this.turtle.physics.accelerateAtAngle( vec.getAngle() );
 

@@ -47,6 +47,8 @@ class Input
 		document.addEventListener( "keydown", this.keydownfunc );		
 		document.addEventListener( "keyup",   this.keyupfunc );
 
+		// optional gamepad support
+		this.gamepad = new BAGEL.Gamepad();
 	};
 	
 	/**
@@ -79,6 +81,10 @@ class Input
 		// clear the queues used to store events
 		this.keyDownQueue.clear();
 		this.keyUpQueue.clear();
+
+		// optional gamepad support
+		if (this.gamepad.active)
+			this.gamepad.update();
 	};
 	
 	/**

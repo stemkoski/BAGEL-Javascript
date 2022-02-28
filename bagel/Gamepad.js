@@ -24,14 +24,14 @@ class Gamepad
 		{
     		self.index = gamepadEventData.gamepad.index;
     		self.active = true;
-    		console.log("gamepad connected");
+    		// console.log("gamepad connected");
 		}
 		window.addEventListener( "gamepadconnected", connected );
 		
 		let disconnected = function(gamepadEventData)
 		{
 			self.active = false;
-    		console.log("gamepad disconnected");
+    		// console.log("gamepad disconnected");
 		}
 
 		window.addEventListener( "gamepaddisconnected", disconnected );
