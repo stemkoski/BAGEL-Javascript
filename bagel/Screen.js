@@ -70,6 +70,34 @@ class Screen
 	}	
 
 	/**
+	 * Remove a sprite from a group in the collection.
+	 * <br/>
+	 * (Note: simpler to use the {@link Sprite} class {@link Sprite#destroy|destroy} method.) 
+	 * @param {Sprite} sprite - the sprite to be removed
+	 * @param {string} groupName - the name of the group
+	 */
+	removeSpriteFromGroup(sprite, groupName)
+	{
+	  this.getGroup(groupName).removeSprite(sprite);
+	}	
+
+	/**
+	 * Remove all sprites from a group in the collection.
+	 * @param {string} groupName - the name of the group
+	 */
+	removeAllSpritesFromGroup(groupName)
+	{
+	  let spriteList = this.getGroupSpriteList(groupName);
+	  // traverse list in reverse order
+	  //  because splicing from list changes indices
+	  for (let i = spriteList.length - 1; i >= 0; i--)
+	  {
+	  	  let sprite = spriteList[i];
+	  	  sprite.destroy();
+	  }
+	}	
+
+	/**
 	 * Get the list of sprites stored in the group with the given name.
 	 * <br/>
 	 * Typically used in loops that involve all sprites in this group.
