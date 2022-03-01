@@ -95,11 +95,59 @@ class Game
 	 */
 	setScreen(screenName)
 	{
-		this.activeScreen = this.screenList[screenName];
-
-		this.activeScreen.game = this;
+		if ( !this.screenFadeTransition || this.activeScreen == null)
+		{
+			this.activeScreen = this.screenList[screenName];
+		    this.activeScreen.resume();
+		}
+		else
+		{
+			this.screenFadeInProgress = true;
+			this.screenFadeType = "out";
+			this.screenFadeOpacity = 0.00;
+			this.nextScreenName = screenName;
+		}
 	}
+
 	
+	/**
+	 * Determine whether current screen will fade out and
+	 *  next screen will fade in, when the screen is changed
+	 *  using {@link Game#setScreen|setScreen}, 
+	 *  and set the screen fade duration and color. 
+	 * @param {boolean} screenFadeTransition - whether or not screens will fade in and fade out
+	 * @param {number} screenFadeDuration - the amount of time to fade in and fade out
+	 * @param {string} screenFadeColor - the color of the fade between screens
+	 */
+	setScreenFadeTransition(screenFadeTransition = true,
+		screenFadeDuration = 1.0, screenFadeColor = "#000000" )
+	{
+		this.screenFadeTransition = screenFadeTransition;
+		this.screenFadeDuration   = screenFadeDuration;
+		this.screenFadeColor      = screenFadeColor;
+	}
+
+
+	/**
+	 * Store data at a global level so it is accessible to all {@link Screen|screens} via {@link Game#getData|getData}.
+	 * &lt;br>
+	 * Note: required data must be set before screens are created.
+	 * @param {string} dataName - name used to reference and retrieve data later
+	 * @param {object} dataValue - value to be stored
+	 */
+	setData(dataName, dataValue)
+	{
+		this.data[dataName] = dataValue;
+	}
+
+	/**
+	 * Retrieve data previously stored by {@link Game#setData|setData}.
+	 */
+	getData(dataName)
+	{
+		return this.data[dataName];
+	}
+
 	/**
 	 * Start the game: create game objects and run the {@link Game#initialize|initialize} method.
 	 */
@@ -107,9 +155,6 @@ class Game
 	{
 		this.input = new BAGEL.Input();
 		this.clock = new BAGEL.Clock();
-		
-		// gamepad support
-		this.gamepad = new BAGEL.Gamepad();
 	
 		// store collection of screen objects, indexed by name
 		this.screenList = {};
@@ -117,9 +162,23 @@ class Game
 		// the currently active screen, will be displayed in game
 		this.activeScreen = null;
 
+		// controls entire update loop
 		this.running = true;
 
-		// TODO: global data structure for passing data between screens?
+		// controls automatic group updates (calling update function of all sprites)
+		this.paused = false;
+
+		// variables for screen fade transitions
+		this.screenFadeTransition = false;
+		this.screenFadeInProgress = false;
+		this.screenFadeType = "out";
+		this.screenFadeDuration = 1.0;
+		this.screenFadeColor = "#000000";
+		this.screenFadeOpacity = 0.00;
+		this.nextScreenName = null;
+
+		// global data structure for passing data between screens
+		this.data = {};
 
 		this.initialize();
 		this.update();
@@ -136,6 +195,7 @@ class Game
 		this.context.fillRect(0,0, this.canvas.width, this.canvas.height);
 	}
 
+
     /**
 	 * Update the game: update the game {@link Input} and {@link Clock} objects,
 	 *   run the active screen's update method, and draw the active screen's sprite images to the canvas. 
@@ -146,7 +206,6 @@ class Game
 
 		// process input
 		this.input.update();
-		this.gamepad.update();
 		
 		if ( this.input.keyPressed("Escape") )
 			this.quit();
@@ -162,37 +221,50 @@ class Game
 		// render active screen's sprite images to canvas
 		this.activeScreen.drawGroups(this.context);
 
+		// if screen fade is active, draw a translucent overlay
+		//  and switch screen between fade in and out
+		if (this.screenFadeTransition &amp;&amp; this.screenFadeInProgress)
+		{
+			if (this.screenFadeType == "out")
+			{
+				this.screenFadeOpacity += deltaTime / this.screenFadeDuration;
+				if (this.screenFadeOpacity > 1)
+				{
+					this.screenFadeOpacity = 1;
+					this.activeScreen = this.screenList[this.nextScreenName];
+		    		this.activeScreen.resume();
+		    		this.screenFadeType = "in";
+				}
+			}
+			else if (this.screenFadeType == "in")
+			{
+				this.screenFadeOpacity -= deltaTime / this.screenFadeDuration;
+				if (this.screenFadeOpacity &lt; 0)
+				{
+					this.screenFadeOpacity = 0;
+					this.screenFadeInProgress = false;
+				}
+			}
+
+			this.context.globalAlpha = this.screenFadeOpacity;
+			this.clearCanvas(this.screenFadeColor);
+			this.context.globalAlpha = 1.00;
+		}
+
 		// creates a loop that repeats at monitor refresh rate.
 		// bind(this) required so update function uses correct context for "this"
 		if (this.running)
 		  this.intervalID = requestAnimationFrame( this.update.bind(this) );
 	}
 	
-	/**
-	 * Pause the game: stop the {@link Game#update|update} method from looping.
-	 * &lt;br/>
-	 * Note that this also stops the {@link Input} class from processing user keyboard input,
-	 *   so the game must be resumed by an alternative source. 
-	 */
-	pause()
-	{
-		this.running = false;
-	}
 
 	/**
-	 * Resume the game.
-	 */
-	resume()
-	{
-		this.running = true;
-		this.update();
-	}
-
-	/**
-	 * Quit the game: stop the game from listening for user keyboard input, and clear the canvas.
+	 * Quit the game: stop the game loop, stop the game from listening for user keyboard input, and clear the canvas.
 	 */
 	quit()
 	{
+		this.running = false;
+
 		// stop game from listening for player input
 		this.input.shutdown();
 
@@ -220,7 +292,7 @@ export { Game };</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Fri Feb 25 2022 15:56:38 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.10</a> on Tue Mar 01 2022 12:06:26 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
