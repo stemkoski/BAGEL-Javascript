@@ -13,6 +13,7 @@ The meaning behind the BAGEL acronym:
 Example games available:
 * [Starfish Collector](https://stemkoski.github.io/BAGEL-Javascript/examples/starfish-collector.html)
 * [Starfish Collector Deluxe](https://stemkoski.github.io/BAGEL-Javascript/examples/starfish-collector-deluxe.html)
+* [Space Rocks](https://stemkoski.github.io/BAGEL-Javascript/examples/space-rocks.html)
 
 Notes:
 * Running locally requires a web server. This is easy with Python, but requires a bit of configuration so that *.js files are served as "application/javascript" and not "text/plain"; this is handled by the file `server.py` in the root directory.
