@@ -10,6 +10,9 @@ import * as BAGEL from "./index.js";
  *  Methods check for key names such as "A", "3", "ArrowUp", "Shift", " " (space).
  *  <br/>
  *  Names include effects of modifier keys, for example, "Shift" & "2" yields "@".
+ *  <br/>
+ *  Also stores a {@link Gamepad} object that is automatically enabled when a gamepad is connected;
+ *   check status from the boolean variable input.gamepad.active.
  */
 class Input
 {
