@@ -665,7 +665,7 @@ BAGEL.Game = class
         // update active screen's game state
         let deltaTime = this.clock.getDeltaTime();
         this.activeScreen.updateGroups(deltaTime);
-        this.activeScreen.update();
+        this.activeScreen.update(deltaTime);
         
         // clear window canvas
         this.clearCanvas("#337");
@@ -1765,8 +1765,9 @@ BAGEL.Screen = class
      *    interaction between sprites, and game event conditions (such as win/lose). 
      *  <br/>
      *    Must be implemented by extending class.
+     * @param deltaTime - the change in time since the last clock update
      */
-    update()
+    update(deltaTime)
     { 
         throw new Error("update() method not implemented");
     }
