@@ -134,7 +134,11 @@ class Game
 		// the currently active screen, will be displayed in game
 		this.activeScreen = null;
 
+		// controls entire update loop
 		this.running = true;
+
+		// controls automatic group updates (calling update function of all sprites)
+		this.paused = false;
 
 		// variables for screen fade transitions
 		this.screenFadeTransition = false;
@@ -163,6 +167,19 @@ class Game
 		this.context.fillRect(0,0, this.canvas.width, this.canvas.height);
 	}
 
+	/**
+	 * Pauses the game: enables or disables automatic {@link Group#update|Group updates}, 
+	 *   which in turn calls the {@link Sprite#update|Sprite update} functions.
+	 * <br>
+	 * The {@link Screen#update|Screen update} function is still called, 
+	 *   so {@link Input} functions can still be checked,
+	 *   to enable the user to un-pause the currently running {@link Game}.
+	 */
+	setPaused(paused)
+	{	
+		this.paused = false;
+	}
+
     /**
 	 * Update the game: update the game {@link Input} and {@link Clock} objects,
 	 *   run the active screen's update method, and draw the active screen's sprite images to the canvas. 
@@ -179,7 +196,10 @@ class Game
 
 		// update active screen's game state
 		let deltaTime = this.clock.getDeltaTime();
-		this.activeScreen.updateGroups(deltaTime);
+
+		if ( !this.paused )
+			this.activeScreen.updateGroups(deltaTime);
+
 		this.activeScreen.update();
 		
 		// clear window canvas
