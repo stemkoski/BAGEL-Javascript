@@ -1,8 +1,7 @@
 import * as BAGEL from "./index.js";
 
 /**
- * Initialize Set objects to store names of keys pressed and released;
- *  set up event listeners to handle keyboard input.
+ * Handle gamepad input.
  *  <br/>
  * Assumes Standard Gamepad Layout, as described at
  * {@link https://w3c.github.io/gamepad/#dfn-standard-gamepad}
