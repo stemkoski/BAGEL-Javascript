@@ -34,7 +34,7 @@ class TitleScreen extends BAGEL.Screen
 		this.addSpriteToGroup(start);		
 	}
 
-	update()
+	update(deltaTime)
 	{
 		// use gamepad axes/buttons for control, with keyboard fallback
 		if ( this.game.input.gamepad.active )
@@ -129,10 +129,10 @@ class LevelScreen extends BAGEL.Screen
 
 	}
 
-	update()
+	update(deltaTime)
 	{
 		let speed = 100; // pixels per second
-		let distance = speed * this.game.clock.getDeltaTime();
+		let distance = speed * deltaTime;
 
 		// use gamepad axes/buttons for control, with keyboard fallback
 		if ( this.game.input.gamepad.active )

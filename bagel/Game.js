@@ -150,6 +150,7 @@ class Game
 		this.data = {};
 
 		this.initialize();
+		// call to start the game loop
 		this.update();
 	}
 
@@ -182,7 +183,7 @@ class Game
 		// update active screen's game state
 		let deltaTime = this.clock.getDeltaTime();
 		this.activeScreen.updateGroups(deltaTime);
-		this.activeScreen.update();
+		this.activeScreen.update(deltaTime);
 		
 		// clear window canvas
 		this.clearCanvas("#337");

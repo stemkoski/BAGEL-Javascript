@@ -83,10 +83,10 @@ class LevelScreen extends BAGEL.Screen
 
 	}
 
-	update()
+	update(deltaTime)
 	{
 		let speed = 100; // pixels per second
-		let distance = speed * this.game.clock.getDeltaTime();
+		let distance = speed * deltaTime;
 
 		// move turtle
 		if ( this.game.input.keyPressing("ArrowLeft") )

@@ -295,7 +295,7 @@ class InstructionsScreen extends BAGEL.Screen
  		this.spaceship.physics.setSpeed(0);
 	}
 
-	update()
+	update(deltaTime)
 	{
 		if ( this.game.input.gamepad.active )
 		{
@@ -327,7 +327,6 @@ class InstructionsScreen extends BAGEL.Screen
 		// spaceship movement 
 
 		let rotateSpeed = 240; // degrees per second
-		let deltaTime = this.game.clock.getDeltaTime();
 		let angle = rotateSpeed * deltaTime;
 
 		if ( this.game.input.gamepad.active )
@@ -677,7 +676,7 @@ class LevelScreen extends BAGEL.Screen
         this.addSpriteToGroup(spark, "effects"); 
 	}
 
-	update()
+	update(deltaTime)
 	{
 		// if game is over, do not process any more user input beyond this point
 		if ( this.gameOver )
@@ -725,7 +724,6 @@ class LevelScreen extends BAGEL.Screen
 		// spaceship movement 
 
 		let rotateSpeed = 240; // degrees per second
-		let deltaTime = this.game.clock.getDeltaTime();
 		let angle = rotateSpeed * deltaTime;
 
 		if ( this.game.input.gamepad.active )
