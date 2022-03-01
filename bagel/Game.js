@@ -137,9 +137,6 @@ class Game
 		// controls entire update loop
 		this.running = true;
 
-		// controls automatic group updates (calling update function of all sprites)
-		this.paused = false;
-
 		// variables for screen fade transitions
 		this.screenFadeTransition = false;
 		this.screenFadeInProgress = false;
