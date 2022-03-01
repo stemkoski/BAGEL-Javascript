@@ -70,7 +70,7 @@ class Game
 		if ( !this.screenFadeTransition || this.activeScreen == null)
 		{
 			this.activeScreen = this.screenList[screenName];
-		    this.activeScreen.game = this;
+		    this.activeScreen.resume();
 		}
 		else
 		{
@@ -167,18 +167,6 @@ class Game
 		this.context.fillRect(0,0, this.canvas.width, this.canvas.height);
 	}
 
-	/**
-	 * Pauses the game: enables or disables automatic {@link Group#update|Group updates}, 
-	 *   which in turn calls the {@link Sprite#update|Sprite update} functions.
-	 * <br>
-	 * The {@link Screen#update|Screen update} function is still called, 
-	 *   so {@link Input} functions can still be checked,
-	 *   to enable the user to un-pause the currently running {@link Game}.
-	 */
-	setPaused(paused)
-	{	
-		this.paused = false;
-	}
 
     /**
 	 * Update the game: update the game {@link Input} and {@link Clock} objects,
@@ -196,10 +184,7 @@ class Game
 
 		// update active screen's game state
 		let deltaTime = this.clock.getDeltaTime();
-
-		if ( !this.paused )
-			this.activeScreen.updateGroups(deltaTime);
-
+		this.activeScreen.updateGroups(deltaTime);
 		this.activeScreen.update();
 		
 		// clear window canvas
@@ -219,7 +204,7 @@ class Game
 				{
 					this.screenFadeOpacity = 1;
 					this.activeScreen = this.screenList[this.nextScreenName];
-		    		this.activeScreen.game = this;
+		    		this.activeScreen.resume();
 		    		this.screenFadeType = "in";
 				}
 			}
@@ -244,31 +229,14 @@ class Game
 		  this.intervalID = requestAnimationFrame( this.update.bind(this) );
 	}
 	
-	/**
-	 * Pause the game: stop the {@link Game#update|update} method from looping.
-	 * <br/>
-	 * Note that this also stops the {@link Input} class from processing user keyboard input,
-	 *   so the game must be resumed by an alternative source. 
-	 */
-	pause()
-	{
-		this.running = false;
-	}
 
 	/**
-	 * Resume the game.
-	 */
-	resume()
-	{
-		this.running = true;
-		this.update();
-	}
-
-	/**
-	 * Quit the game: stop the game from listening for user keyboard input, and clear the canvas.
+	 * Quit the game: stop the game loop, stop the game from listening for user keyboard input, and clear the canvas.
 	 */
 	quit()
 	{
+		this.running = false;
+
 		// stop game from listening for player input
 		this.input.shutdown();
 

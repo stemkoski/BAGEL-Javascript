@@ -134,11 +134,29 @@ class Screen
 	}	
 
 	/**
+	 * Pauses the game: enables/disables automatic {@link Group#update|Group updates}, 
+	 *   which in turn calls the {@link Sprite#update|Sprite update} functions.
+	 * <br>
+	 * The {@link Screen#update|Screen update} function is still called, 
+	 *   so {@link Input} functions can still be checked,
+	 *   to enable the user to un-pause the currently running game.
+	 */
+	setPaused(paused)
+	{	
+		this.paused = paused;
+	}
+
+	/**
 	 * Update all sprites in all groups in the collection.
+	 * <br>
+	 * Can be enabled/disabled with {@link Screen#setPaused|setPaused}.
      * @param deltaTime - the change in time since the last clock update
 	 */
 	updateGroups(deltaTime)
 	{
+		if (this.paused)
+			return;
+
 		for (let i = 0; i < this.groupDrawOrder.length; i++)
 		{
 			let groupName = this.groupDrawOrder[i];
@@ -169,9 +187,16 @@ class Screen
 	}
 
 
-	// TODO: is a resume() method necessary? 
-	//  - only if events on other screens affect the last known state of objects on this screen?
-	//    for example, the player re-enters this screen from a different location, causing the player sprite to be repositioned?
+	/**
+	 *  Resume function is called by Game {@link Game#setScreen|setScreen} function, 
+	 *    which enables screen data to be updated, if needed. 
+	 *  <br/>
+	 *    Optional to implement in extending class.
+	 */
+	resume()
+	{ 
+		
+	}
 
 }
 
